@@ -1,8 +1,15 @@
-zathura - a document viewer
+zathura-numerator - a document numerator
 ===========================
 
 zathura is a highly customizable and functional document viewer based on the
 girara user interface library and several document libraries.
+
+zathura-numerator is a fork of zathura that adds a new feature: every click on the document draws a number.
+This is useful when you want to mark some parts of the document (as bubbles in manga) in a continuous way.
+
+zathura can't actually change the pdf file, so it just shows the numbers while document is opened. 
+But it creates the "numbers.txt" file with coordinates that can be used with other tools to draw the marks on the pdf file.
+For saving the marks on the document I use [manga-numerator](https://gitlab.com/utzuro/manga-numeration).
 
 Requirements
 ------------
@@ -65,8 +72,3 @@ To build and install zathura using meson's ninja backend:
 
 Note that the default backend for meson might vary based on the platform. Please
 refer to the meson documentation for platform specific dependencies.
-
-Bugs
-----
-
-Please report bugs at http://git.pwmt.org/pwmt/zathura.
