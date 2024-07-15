@@ -37,4 +37,5 @@ RUN git clone https://github.com/pwmt/zathura-pdf-mupdf.git \
 # Force newely builded zathura to use the plugins
 ENV ZATHURA_PLUGINS_PATH=/usr/lib/zathura
 
-CMD ["bash"]
+ENTRYPOINT ["./build/zathura"]
+CMD ["./volume/manga.pdf"]
