@@ -1,0 +1,103 @@
+# Use ubuntu, because archlinux fails to show GUI.
+FROM ubuntu:22.04
+
+RUN apt-get update
+
+# For GUI to work
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install required dependencies
+RUN apt-get install -y \
+    libgtk-3-dev \
+    libglib2.0-dev \
+    libgirara-gtk3-3 \
+    libmagic-dev \
+    libjson-glib-dev \
+    libsqlite3-dev \
+    libsynctex-dev \
+    libseccomp-dev \
+    librsvg2-bin \
+    python3-sphinx \
+    python3-breathe \
+    python3-sphinx-rtd-theme \
+    pkg-config \
+    doxygen
+
+# Tools
+RUN apt-get install -y \
+    cmake \
+    meson \
+    git \
+    gettext \
+    ninja-build
+
+# Plugin Dependencies
+RUN apt-get install -y \
+    mupdf \
+    libmupdf-dev \
+    xorg-dev \
+    mesa-common-dev \
+    libgl1-mesa-dev \
+    libglu1-mesa-dev \
+    libxcursor-dev \
+    libxrandr-dev \
+    libxinerama-dev
+
+# Clean up
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Archlinux doesn't want to show gui on wayland with error ⇩
+# Authorization required, but no authorization protocol specified
+# Keeping this to try again later
+# =================================================================
+# FROM archlinux:base-devel
+
+# RUN pacman-key --init
+# RUN pacman -Syu --noconfirm
+
+# # For GUI to work
+# RUN pacman -S socat xorg xorg-auth mesa mesa-utils --noconfirm
+
+# # Dependencies
+# RUN pacman -S --noconfirm file gtk3 girara json-glib sqlite mujs
+
+# # Tools
+# RUN pacman -S --noconfirm git meson ninja gettext pkgconf gcc
+
+# # Install zathura to use as dependency for pdf plugin
+# # (they refuse to build with my version)
+# RUN pacman -S --noconfirm zathura mupdf girara
+
+WORKDIR /app
+COPY . .
+
+# Build modified zathura
+RUN meson build \
+    && cd build \
+    && ninja \
+    && ninja install
+
+# Build mupdf for the plugin
+# RUN git clone https://github.com/ArtifexSoftware/mupdf \
+#         && cd mupdf \
+#         && make prefix=/usr/local install
+
+# Get the newest pdf plugin
+# RUN git clone https://github.com/pwmt/zathura-pdf-mupdf.git \
+#     && cd zathura-pdf-mupdf \
+#     && git switch develop \
+#     # mupdfthird is not required and causes build error
+#     && sed -i 's/, mupdfthird//g' meson.build \
+#     && sed -i '/mupdf-third/d' meson.build \
+#     && mkdir build \
+#     && meson build \
+#     && cd build \
+#     && ninja \
+#     && ninja install
+
+# Force newely builded zathura to use the plugins
+ENV ZATHURA_PLUGINS_PATH=/usr/lib/zathura
+
+CMD ["bash"]
+# ENTRYPOINT ["zathura"]
+# CMD ["./volume/manga.pdf"]

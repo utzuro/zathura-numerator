@@ -1,8 +1,3 @@
-option('sqlite',
-  type: 'feature',
-  value: 'auto',
-  description: 'SQLite database backend'
-)
 option('synctex',
   type: 'feature',
   value: 'auto',
@@ -12,6 +7,11 @@ option('seccomp',
   type: 'feature',
   value: 'auto',
   description: 'seccomp-based sandbox'
+)
+option('landlock',
+  type: 'feature',
+  value: 'auto',
+  description: 'landlock-based sandbox'
 )
 option('manpages',
   type: 'feature',

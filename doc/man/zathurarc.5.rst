@@ -188,9 +188,9 @@ the *zathurarc* file to make those changes permanent:
 
     Identifier Description
 
-    Button1    Mouse button 1
-    Button2    Mouse button 2
-    Button3    Mouse button 3
+    Button1    Mouse button 1 (left)
+    Button2    Mouse button 2 (right)
+    Button3    Mouse button 3 (middle)
     Button4    Mouse button 4
     Button5    Mouse button 5
 
@@ -224,6 +224,10 @@ They can also be combined with modifiers:
   * ``change_mode``
 
     Change current mode. Pass the desired mode as argument.
+
+  * ``cycle_first_page``
+
+    In multiple page layout, cycle the column in which the first page is displayed.
 
   * ``display_link``:
 
@@ -605,8 +609,13 @@ zathura
 
 *database*
   Defines the database backend to use for bookmarks and input history. Possible
-  values are "plain", "sqlite" (if built with sqlite support) and "null". If
-  "null" is used, bookmarks and input history will not be stored.
+  values are "plain", "sqlite" and "null". If "null" is used, bookmarks and
+  input history will not be stored.
+
+  Note that the "plain" backend is deprecated. If selected, the "sqlite" backend
+  will import old history from the "plain" database and operation will continue
+  with the "sqlite" backend. After the first import, the setting can safely be
+  changed to "sqlite". The default will change after a release of Debian trixie.
 
   * Value type: String
   * Default value: plain
@@ -659,27 +668,21 @@ zathura
   (e.g: current search result)
 
   * Value type: String
-  * Default value: #00BC00
+  * Default value: rgba(0,188,0,0.5)
 
 *highlight-color*
   Defines the color that is used for highlighting parts of the document (e.g.:
   show search results)
 
   * Value type: String
-  * Default value: #9FBC00
+  * Default value: rgba(159,251,0,0.5)
 
 *highlight-fg*
   Defines the color that is used for text when highlighting parts of the
   document (e.g.: number for links).
 
   * Value type: String
-  * Default value: #9FBC00
-
-*highlight-transparency*
-  Defines the opacity of a highlighted element
-
-  * Value type: Float
-  * Default value: 0.5
+  * Default value: rgba(0,0,0,0.5)
 
 *highlighter-modifier*
   Defines the modifier that needs to be pressed together with the left mouse button
@@ -718,6 +721,12 @@ zathura
   * Value type: String
   * Default value: #DDDDDD
 
+*jumplist-size*
+  Maximum number of positions to remember in the jumplist.
+
+  * Value type: Integer
+  * Default value: 2000
+
 *link-hadjust*
   En/Disables aligning to the left internal link targets, for example from the
   index.
@@ -730,6 +739,19 @@ zathura
 
   * Value type: Boolean
   * Default value: true
+
+*nohlsearch*
+  Dis/Enables the highlighting of search results.
+
+  * Value type: Boolean
+  * Default value: false
+
+*open-first-page*
+  Always open documents on the first page. If disabled, zathura will jump to the
+  last remembered position.
+
+  * Value type: Boolean
+  * Default value: false
 
 *page-cache-size*
   Defines the maximum number of pages that could be kept in the page cache. When
@@ -817,31 +839,6 @@ zathura
 
   * Value type: String
   * Default value: #000000
-
-*sandbox*
-  Defines the sandbox mode to use for the seccomp syscall filter. Possible
-  values are "none", "normal" and "strict". If "none" is used, the sandbox
-  will be disabled. The use of "normal" will provide minimal protection and
-  allow normal use of zathura with support for all features. The "strict" mode
-  is a read only sandbox that is intended for viewing documents only.
-
-  * Value type: String
-  * Default value: normal
-
-  Some features are disabled when using strict sandbox mode:
-
-  * saving/writing files
-  * use of input methods like ibus
-  * printing
-  * bookmarks and history
-
-  The strict sandbox mode is still experimental with some libc implementations.
-  Currently supported and tested libc implementations: glibc
-
-  No feature regressions are expected when using normal sandbox mode.
-
-  When running under WSL, the default is "none" since seccomp is not supported in
-  that environment.
 
 *scroll-full-overlap*
   Defines the proportion of the current viewing area that should be
@@ -943,13 +940,6 @@ zathura
 
   * value type: Boolean
   * Default value false
-
-*smooth-reload*
-  Defines if flickering will be removed when a file is reloaded on change. This
-  option might increase memory usage.
-
-  * Value type: Boolean
-  * Default value: true
 
 *statusbar-basename*
   Use basename of the file in the statusbar.

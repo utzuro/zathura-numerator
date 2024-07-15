@@ -1,3 +1,6 @@
+# Don't accidentaly push manga pdf
+volume
+
 # IDE files
 .idea
 .vscode
