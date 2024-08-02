@@ -11,7 +11,7 @@ RUN pacman -S --noconfirm git meson ninja gettext pkgconf gcc
 
 # Install zathura to use as dependency for plugins 
 # (they refuse to build my builded version)
-RUN pacman -S --noconfirm zathura mupdf girara
+RUN pacman -S --noconfirm mupdf girara
 
 WORKDIR /app
 COPY . .
@@ -22,7 +22,10 @@ RUN meson build \
     && ninja \
     && ninja install
 
-# Get the pdf plugin
+# Make zathura.pc available for the plugin building
+ENV PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
+
+# Build the pdf plugin
 RUN git clone https://github.com/pwmt/zathura-pdf-mupdf.git \
     && cd zathura-pdf-mupdf \
     && git switch develop \
@@ -37,5 +40,6 @@ RUN git clone https://github.com/pwmt/zathura-pdf-mupdf.git \
 # Force newely builded zathura to use the plugins
 ENV ZATHURA_PLUGINS_PATH=/usr/lib/zathura
 
-ENTRYPOINT ["./build/zathura"]
-CMD ["./volume/manga.pdf"]
+# numbers file will be available in /volume folder
+ENTRYPOINT ["/bin/sh", "-c", "cd /app/volume && zathura manga.pdf"]
+

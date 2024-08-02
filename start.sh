@@ -3,9 +3,12 @@
 # for GUI to work
 xhost +local:docker
 
-docker build -t zathura .
+# get the current directory
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-docker run -it \
+docker build -t zathura . \
+&& docker run -it \
 --env DISPLAY=$DISPLAY \
 --volume /tmp/.X11-unix:/tmp/.X11-unix \
-zathura
+--volume $DIR:/app \
+zathura:latest
