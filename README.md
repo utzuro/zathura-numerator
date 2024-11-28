@@ -1,5 +1,10 @@
-zathura - a document viewer
+zathura-numerator - my fork of zathura with numeration
 ===========================
+
+This fork replaces highlighting functionality with ability to draw numbers with clicks. 
+One mouse click -- incremented number shows up.
+Zathura is not able to save changes to the PDF, so numbers are saved in append only local file in the form of coordinates (including zoom level).
+This file can be used later to really draw numbers on the PDF, for example with another my tool [manga-numeration](https://gitlab.com/utzuro/manga-numeration)
 
 zathura is a highly customizable and functional document viewer based on the
 girara user interface library and several document libraries.
