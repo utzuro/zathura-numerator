@@ -770,6 +770,13 @@ The settings described here can be changed with ``set``.
   * Value type: Integer
   * Default value: 2000
 
+*numbers-file*
+  Path to the coordinates file that receives double-click markers. Set this to
+  an empty string to disable exporting markers to disk.
+
+  * Value type: String
+  * Default value: numbers.txt
+
 *link-hadjust*
   En/Disables aligning to the left internal link targets, for example from the
   index.

@@ -10,6 +10,7 @@
 #include <string.h>
 #include <glib/gi18n.h>
 #include <math.h>
+#include <stdio.h>
 
 #include "links-internal.h"
 #include "page.h"
@@ -107,6 +108,7 @@ static bool surface_small_enough(cairo_surface_t* surface, size_t max_size, cair
 static cairo_surface_t* draw_thumbnail_image(cairo_surface_t* surface, size_t max_size);
 static void page_widget_add_marker(ZathuraPage* page, double x, double y);
 static void page_widget_draw_markers(ZathuraPage* page, cairo_t* cairo);
+static void page_widget_log_marker(ZathuraPage* page, double x, double y);
 
 enum properties_e {
   PROP_0,
@@ -1010,6 +1012,27 @@ static void rotate_point(zathura_t* zathura, unsigned int page, double orig_x, d
   }
 }
 
+static void page_widget_log_marker(ZathuraPage* page, double x, double y) {
+  ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(page);
+  if (priv == NULL || priv->zathura == NULL || priv->zathura->numbering.file == NULL) {
+    return;
+  }
+
+  zathura_document_t* document = zathura_page_get_document(priv->page);
+  if (document == NULL) {
+    return;
+  }
+
+  const unsigned int page_number = zathura_page_get_index(priv->page) + 1;
+  double scale                   = zathura_document_get_scale(document);
+  if (scale <= DBL_EPSILON) {
+    scale = 1.0;
+  }
+
+  fprintf(priv->zathura->numbering.file, "%u %.6f %.6f %.6f\n", page_number, x, y, scale);
+  fflush(priv->zathura->numbering.file);
+}
+
 static void page_widget_add_marker(ZathuraPage* page, double x, double y) {
   g_return_if_fail(page != NULL);
 
@@ -1033,6 +1056,8 @@ static void page_widget_add_marker(ZathuraPage* page, double x, double y) {
   if (marker == NULL) {
     return;
   }
+
+  page_widget_log_marker(page, x, y);
 
   double rotated_x = 0;
   double rotated_y = 0;

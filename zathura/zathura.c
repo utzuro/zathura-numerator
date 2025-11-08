@@ -58,6 +58,8 @@ typedef struct zathura_document_info_s {
 } zathura_document_info_t;
 
 static gboolean document_info_open(gpointer data);
+static void numbering_prepare_logging(zathura_t* zathura);
+static void numbering_close_logging(zathura_t* zathura);
 
 #ifdef G_OS_UNIX
 static gboolean zathura_signal_sigterm(gpointer data);
@@ -77,6 +79,54 @@ static void free_document_info(zathura_document_info_t* document_info) {
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(zathura_document_info_t, free_document_info)
 
+static void numbering_close_logging(zathura_t* zathura) {
+  if (zathura == NULL) {
+    return;
+  }
+
+  if (zathura->numbering.file != NULL) {
+    fclose(zathura->numbering.file);
+    zathura->numbering.file = NULL;
+  }
+
+  g_clear_pointer(&zathura->numbering.file_path, g_free);
+}
+
+static void numbering_prepare_logging(zathura_t* zathura) {
+  if (zathura == NULL || zathura->ui.session == NULL) {
+    return;
+  }
+
+  numbering_close_logging(zathura);
+
+  char* configured_path = NULL;
+  if (girara_setting_get(zathura->ui.session, "numbers-file", &configured_path) == false) {
+    return;
+  }
+
+  if (configured_path == NULL || *configured_path == '\0') {
+    g_free(configured_path);
+    return;
+  }
+
+  char* resolved_path = girara_fix_path(configured_path);
+  if (resolved_path != NULL) {
+    g_free(configured_path);
+  } else {
+    resolved_path = configured_path;
+  }
+
+  FILE* file = g_fopen(resolved_path, "w");
+  if (file == NULL) {
+    girara_warning("Failed to open numbers file '%s': %s", resolved_path, g_strerror(errno));
+    g_free(resolved_path);
+    return;
+  }
+
+  zathura->numbering.file_path = resolved_path;
+  zathura->numbering.file      = file;
+}
+
 /* function implementation */
 zathura_t* zathura_create(void) {
   g_autoptr(zathura_t) zathura = g_try_malloc0(sizeof(zathura_t));
@@ -89,6 +139,9 @@ zathura_t* zathura_create(void) {
   zathura->global.synctex_edit_modmask = GDK_CONTROL_MASK;
   zathura->global.highlighter_modmask  = GDK_SHIFT_MASK;
   zathura->global.double_click_follow  = true;
+  zathura->numbering.counter           = 0;
+  zathura->numbering.file_path         = NULL;
+  zathura->numbering.file              = NULL;
 
   /* initialize with default paths */
   {
@@ -1182,6 +1235,7 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
   girara_setting_get(zathura->ui.session, "show-signature-information", &show_signature_information);
   zathura_show_signature_information(zathura, show_signature_information);
   update_visible_pages(zathura);
+  numbering_prepare_logging(zathura);
 
   /* apply default page mode */
   {
@@ -1355,6 +1409,7 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
   }
 
   zathura->numbering.counter = 0;
+  numbering_close_logging(zathura);
 
   /* stop rendering */
   zathura_renderer_stop(zathura->sync.render_thread);
