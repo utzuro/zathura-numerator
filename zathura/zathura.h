@@ -5,6 +5,7 @@
 
 #include <stdbool.h>
 #include <stdio.h>
+#include <glib.h>
 #include <girara/types.h>
 #include <girara/session.h>
 #include <gtk/gtk.h>
@@ -224,6 +225,7 @@ struct zathura_s {
     unsigned int counter; /**< Sequential counter for page markers */
     char* file_path;      /**< Path to the exported coordinates file */
     FILE* file;           /**< Handle to the exported coordinates file */
+    GSList* history;      /**< Stack of placed markers for undo */
   } numbering;
 
   /**
@@ -231,6 +233,9 @@ struct zathura_s {
    */
   zathura_content_type_context_t* content_type_context;
 };
+
+bool zathura_numbering_undo(zathura_t* zathura);
+void zathura_numbering_record(zathura_t* zathura, ZathuraPage* page, unsigned int number, long file_offset);
 
 /**
  * Creates a zathura session

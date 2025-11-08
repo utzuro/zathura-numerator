@@ -1518,3 +1518,13 @@ bool sc_snap_to_page(girara_session_t* session, girara_argument_t* UNUSED(argume
   int page = zathura_document_get_current_page_number(document);
   return page_set(zathura, page);
 }
+
+bool sc_marker_undo(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
+                    unsigned int UNUSED(t)) {
+  if (session == NULL || session->global.data == NULL) {
+    return false;
+  }
+
+  zathura_t* zathura = session->global.data;
+  return zathura_numbering_undo(zathura);
+}

@@ -350,4 +350,9 @@ bool sc_nohlsearch(girara_session_t* session, girara_argument_t* argument, girar
  */
 bool sc_snap_to_page(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
 
+/**
+ * Undo the last numbered marker placement.
+ */
+bool sc_marker_undo(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
 #endif // SHORTCUTS_H

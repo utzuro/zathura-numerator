@@ -102,7 +102,7 @@ static bool surface_small_enough(cairo_surface_t* surface, size_t max_size, cair
 static cairo_surface_t* draw_thumbnail_image(cairo_surface_t* surface, size_t max_size);
 static void page_widget_add_marker(ZathuraPage* page, double x, double y);
 static void page_widget_draw_markers(ZathuraPage* page, cairo_t* cairo);
-static void page_widget_log_marker(ZathuraPage* page, double x, double y);
+static bool page_widget_log_marker(ZathuraPage* page, double x, double y, long* file_offset);
 
 enum properties_e {
   PROP_0,
@@ -1009,15 +1009,19 @@ static void rotate_point(zathura_document_t* document, double orig_x, double ori
   }
 }
 
-static void page_widget_log_marker(ZathuraPage* page, double x, double y) {
+static bool page_widget_log_marker(ZathuraPage* page, double x, double y, long* file_offset) {
   ZathuraPagePrivate* priv = zathura_page_widget_get_instance_private(page);
+  if (file_offset != NULL) {
+    *file_offset = -1;
+  }
+
   if (priv == NULL || priv->zathura == NULL || priv->zathura->numbering.file == NULL) {
-    return;
+    return false;
   }
 
   zathura_document_t* document = zathura_page_get_document(priv->page);
   if (document == NULL) {
-    return;
+    return false;
   }
 
   const unsigned int page_number = zathura_page_get_index(priv->page) + 1;
@@ -1026,8 +1030,17 @@ static void page_widget_log_marker(ZathuraPage* page, double x, double y) {
     scale = 1.0;
   }
 
-  fprintf(priv->zathura->numbering.file, "%u %.6f %.6f %.6f\n", page_number, x, y, scale);
-  fflush(priv->zathura->numbering.file);
+  FILE* file = priv->zathura->numbering.file;
+  if (file_offset != NULL) {
+    const long offset = ftell(file);
+    *file_offset      = offset;
+  }
+
+  if (fprintf(file, "%u %.6f %.6f %.6f\n", page_number, x, y, scale) < 0) {
+    return false;
+  }
+  fflush(file);
+  return true;
 }
 
 static void page_widget_add_marker(ZathuraPage* page, double x, double y) {
@@ -1054,7 +1067,8 @@ static void page_widget_add_marker(ZathuraPage* page, double x, double y) {
     return;
   }
 
-  page_widget_log_marker(page, x, y);
+  long file_offset = -1;
+  page_widget_log_marker(page, x, y, &file_offset);
 
   double rotated_x = 0;
   double rotated_y = 0;
@@ -1071,7 +1085,29 @@ static void page_widget_add_marker(ZathuraPage* page, double x, double y) {
   marker->number                            = ++priv->zathura->numbering.counter;
 
   girara_list_append(priv->markers.list, marker);
+  zathura_numbering_record(priv->zathura, page, marker->number, file_offset);
   zathura_page_widget_redraw_canvas(page);
+}
+
+unsigned int zathura_page_widget_remove_last_marker(ZathuraPage* page) {
+  g_return_val_if_fail(ZATHURA_IS_PAGE(page), 0);
+
+  ZathuraPagePrivate* priv = zathura_page_widget_get_instance_private(page);
+  if (priv == NULL || priv->markers.list == NULL || girara_list_size(priv->markers.list) == 0) {
+    return 0;
+  }
+
+  const size_t last_index       = girara_list_size(priv->markers.list) - 1;
+  zathura_page_marker_t* marker = girara_list_nth(priv->markers.list, last_index);
+  if (marker == NULL) {
+    return 0;
+  }
+
+  const unsigned int number = marker->number;
+  girara_list_remove(priv->markers.list, marker);
+  zathura_page_widget_redraw_canvas(page);
+
+  return number;
 }
 
 static void page_widget_draw_markers(ZathuraPage* page, cairo_t* cairo) {

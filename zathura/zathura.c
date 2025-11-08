@@ -23,6 +23,7 @@
 #ifdef G_OS_UNIX
 #include <glib-unix.h>
 #include <gio/gunixinputstream.h>
+#include <unistd.h>
 #endif
 
 #include "bookmarks.h"
@@ -56,9 +57,17 @@ typedef struct zathura_document_info_s {
   int page_number;
 } zathura_document_info_t;
 
+typedef struct numbering_history_entry_s {
+  ZathuraPage* page;
+  unsigned int number;
+  long file_offset;
+} numbering_history_entry_t;
+
 static gboolean document_info_open(gpointer data);
 static void numbering_prepare_logging(zathura_t* zathura);
 static void numbering_close_logging(zathura_t* zathura);
+static void numbering_truncate_to(zathura_t* zathura, long file_offset);
+static void numbering_clear_history(zathura_t* zathura);
 
 #ifdef G_OS_UNIX
 static gboolean zathura_signal_sigterm(gpointer data);
@@ -87,6 +96,7 @@ static void numbering_close_logging(zathura_t* zathura) {
   }
 
   g_clear_pointer(&zathura->numbering.file_path, g_free);
+  numbering_clear_history(zathura);
 }
 
 static void numbering_prepare_logging(zathura_t* zathura) {
@@ -122,6 +132,86 @@ static void numbering_prepare_logging(zathura_t* zathura) {
 
   zathura->numbering.file_path = resolved_path;
   zathura->numbering.file      = file;
+}
+
+static void numbering_clear_history(zathura_t* zathura) {
+  if (zathura == NULL || zathura->numbering.history == NULL) {
+    return;
+  }
+
+  g_slist_free_full(zathura->numbering.history, g_free);
+  zathura->numbering.history = NULL;
+}
+
+static void numbering_truncate_to(zathura_t* zathura, long file_offset) {
+  if (zathura == NULL || zathura->numbering.file == NULL || file_offset < 0) {
+    return;
+  }
+
+  FILE* file = zathura->numbering.file;
+  fflush(file);
+
+#ifdef G_OS_UNIX
+  const int fd = fileno(file);
+  if (fd >= 0) {
+    if (ftruncate(fd, file_offset) != 0) {
+      girara_warning("Failed to truncate numbers file: %s", g_strerror(errno));
+    }
+  }
+#else
+  girara_warning("Marker undo file truncation is not supported on this platform.");
+  return;
+#endif
+
+  fseek(file, file_offset, SEEK_SET);
+  fflush(file);
+}
+
+void zathura_numbering_record(zathura_t* zathura, ZathuraPage* page, unsigned int number, long file_offset) {
+  if (zathura == NULL || page == NULL) {
+    return;
+  }
+
+  numbering_history_entry_t* entry = g_try_malloc0(sizeof(numbering_history_entry_t));
+  if (entry == NULL) {
+    return;
+  }
+
+  entry->page                = page;
+  entry->number              = number;
+  entry->file_offset         = file_offset;
+  zathura->numbering.history = g_slist_prepend(zathura->numbering.history, entry);
+}
+
+bool zathura_numbering_undo(zathura_t* zathura) {
+  if (zathura == NULL || zathura->numbering.history == NULL) {
+    return false;
+  }
+
+  GSList* head                     = zathura->numbering.history;
+  numbering_history_entry_t* entry = head->data;
+  zathura->numbering.history       = g_slist_delete_link(zathura->numbering.history, head);
+
+  if (entry == NULL || entry->page == NULL) {
+    g_free(entry);
+    return false;
+  }
+
+  unsigned int removed_number = zathura_page_widget_remove_last_marker(entry->page);
+  if (removed_number == 0) {
+    g_free(entry);
+    return false;
+  }
+
+  if (removed_number <= zathura->numbering.counter) {
+    zathura->numbering.counter = removed_number > 0 ? removed_number - 1 : 0;
+  } else if (zathura->numbering.counter > 0) {
+    zathura->numbering.counter--;
+  }
+
+  numbering_truncate_to(zathura, entry->file_offset);
+  g_free(entry);
+  return true;
 }
 
 /* function implementation */

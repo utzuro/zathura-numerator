@@ -89,4 +89,12 @@ void zathura_page_widget_abort_render_request(ZathuraPage* widget);
  */
 zathura_page_t* zathura_page_widget_get_page(ZathuraPage* widget);
 
+/**
+ * Removes the last marker placed on this widget (if any) and triggers redraw.
+ *
+ * @param widget the widget
+ * @return the number of the removed marker or 0 if none was removed
+ */
+unsigned int zathura_page_widget_remove_last_marker(ZathuraPage* widget);
+
 #endif
