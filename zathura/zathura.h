@@ -139,7 +139,7 @@ struct zathura_s {
     GdkModifierType synctex_edit_modmask; /**< Modifier to trigger synctex edit */
     GdkModifierType highlighter_modmask;  /**< Modifier to draw with a highlighter */
     bool double_click_follow;             /**< Double/Single click to follow link */
-    gchar *current_index_path;
+    gchar* current_index_path;
   } global;
 
   struct {
@@ -218,6 +218,10 @@ struct zathura_s {
   struct {
     double initial_zoom;
   } gesture;
+
+  struct {
+    unsigned int counter; /**< Sequential counter for page markers */
+  } numbering;
 
   /**
    * Context for MIME type detection

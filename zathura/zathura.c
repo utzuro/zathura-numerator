@@ -969,7 +969,8 @@ bool document_open(zathura_t* zathura, const char* path, const char* uri, const 
     goto error_free;
   }
 
-  zathura->document = document;
+  zathura->document          = document;
+  zathura->numbering.counter = 0;
 
   /* read history file */
   zathura_fileinfo_t file_info = {
@@ -1430,6 +1431,8 @@ bool document_close(zathura_t* zathura, bool keep_monitor) {
   if (zathura == NULL || zathura->document == NULL) {
     return false;
   }
+
+  zathura->numbering.counter = 0;
 
   /* reset window icon */
   if (zathura->ui.session != NULL && zathura->window_icon_render_request != NULL) {

@@ -16,6 +16,11 @@
 #include "shortcuts.h"
 #include "zathura.h"
 
+typedef struct zathura_page_marker_s {
+  zathura_rectangle_t location; /**< Marker position in document coordinates */
+  unsigned int number;          /**< Sequential marker number */
+} zathura_page_marker_t;
+
 typedef struct zathura_page_widget_private_s {
   zathura_page_t* page;                 /**< Page object */
   zathura_t* zathura;                   /**< Zathura object */
@@ -64,6 +69,10 @@ typedef struct zathura_page_widget_private_s {
     gboolean retrieved;  /**< True if we already tried to retrieve the list of signatures */
     gboolean draw;       /**< True if links should be drawn */
   } signatures;
+
+  struct {
+    girara_list_t* list; /**< Stored numbered markers placed via double click */
+  } markers;
 } ZathuraPagePrivate;
 
 G_DEFINE_TYPE_WITH_CODE(ZathuraPage, zathura_page_widget, GTK_TYPE_DRAWING_AREA, G_ADD_PRIVATE(ZathuraPage))
@@ -90,6 +99,8 @@ static void cb_cache_added(ZathuraRenderRequest* request, void* data);
 static void cb_cache_invalidated(ZathuraRenderRequest* request, void* data);
 static bool surface_small_enough(cairo_surface_t* surface, size_t max_size, cairo_surface_t* old);
 static cairo_surface_t* draw_thumbnail_image(cairo_surface_t* surface, size_t max_size);
+static void page_widget_add_marker(ZathuraPage* page, double x, double y);
+static void page_widget_draw_markers(ZathuraPage* page, cairo_t* cairo);
 
 enum properties_e {
   PROP_0,
@@ -282,6 +293,10 @@ static void zathura_page_widget_finalize(GObject* object) {
 
   if (priv->links.list != NULL) {
     girara_list_free(priv->links.list);
+  }
+
+  if (priv->markers.list != NULL) {
+    girara_list_free(priv->markers.list);
   }
 
   G_OBJECT_CLASS(zathura_page_widget_parent_class)->finalize(object);
@@ -722,6 +737,8 @@ static gboolean zathura_page_widget_draw(GtkWidget* widget, cairo_t* cairo) {
       cairo_rectangle(cairo, rectangle.x1, rectangle.y1, rectangle.x2 - rectangle.x1, rectangle.y2 - rectangle.y1);
       cairo_fill(cairo);
     }
+
+    page_widget_draw_markers(page, cairo);
   } else {
     girara_debug("rendering loading screen, flicker might be happening");
 
@@ -990,6 +1007,99 @@ static void rotate_point(zathura_document_t* document, double orig_x, double ori
   }
 }
 
+static void page_widget_add_marker(ZathuraPage* page, double x, double y) {
+  g_return_if_fail(page != NULL);
+
+  ZathuraPagePrivate* priv = zathura_page_widget_get_instance_private(page);
+  g_return_if_fail(priv != NULL);
+  g_return_if_fail(priv->zathura != NULL);
+
+  zathura_document_t* document = zathura_page_get_document(priv->page);
+  if (document == NULL) {
+    return;
+  }
+
+  if (priv->markers.list == NULL) {
+    priv->markers.list = girara_list_new2(g_free);
+    if (priv->markers.list == NULL) {
+      return;
+    }
+  }
+
+  zathura_page_marker_t* marker = g_try_malloc0(sizeof(zathura_page_marker_t));
+  if (marker == NULL) {
+    return;
+  }
+
+  double rotated_x = 0;
+  double rotated_y = 0;
+  rotate_point(document, x, y, &rotated_x, &rotated_y);
+
+  const double scale = zathura_document_get_scale(document);
+  if (fabs(scale) < DBL_EPSILON) {
+    g_free(marker);
+    return;
+  }
+
+  marker->location.x1 = marker->location.x2 = rotated_x / scale;
+  marker->location.y1 = marker->location.y2 = rotated_y / scale;
+  marker->number                            = ++priv->zathura->numbering.counter;
+
+  girara_list_append(priv->markers.list, marker);
+  zathura_page_widget_redraw_canvas(page);
+}
+
+static void page_widget_draw_markers(ZathuraPage* page, cairo_t* cairo) {
+  g_return_if_fail(page != NULL);
+  g_return_if_fail(cairo != NULL);
+
+  ZathuraPagePrivate* priv = zathura_page_widget_get_instance_private(page);
+  if (priv->markers.list == NULL || girara_list_size(priv->markers.list) == 0) {
+    return;
+  }
+
+  set_font_from_property(cairo, priv->zathura, CAIRO_FONT_WEIGHT_BOLD);
+  cairo_set_font_size(cairo, 24.0);
+
+  const GdkRGBA bg_color = priv->zathura->ui.colors.highlight_color_active;
+  const GdkRGBA fg_color = priv->zathura->ui.colors.highlight_color_fg;
+
+  const size_t marker_count = girara_list_size(priv->markers.list);
+  for (size_t idx = 0; idx != marker_count; ++idx) {
+    zathura_page_marker_t* marker = girara_list_nth(priv->markers.list, idx);
+    if (marker == NULL) {
+      continue;
+    }
+
+    zathura_rectangle_t rect = recalc_rectangle(priv->page, marker->location);
+    const double center_x    = rect.x1;
+    const double center_y    = rect.y1;
+
+    char* text = g_strdup_printf("%u", marker->number);
+    if (text == NULL) {
+      continue;
+    }
+
+    cairo_text_extents_t extents;
+    cairo_text_extents(cairo, text, &extents);
+
+    const double min_radius = fmax(extents.width, extents.height) * 0.5 + 4.0;
+    const double radius     = fmax(20.0, min_radius);
+
+    cairo_set_source_rgba(cairo, bg_color.red, bg_color.green, bg_color.blue, bg_color.alpha);
+    cairo_arc(cairo, center_x, center_y, radius, 0, 2 * G_PI);
+    cairo_fill(cairo);
+
+    cairo_set_source_rgba(cairo, fg_color.red, fg_color.green, fg_color.blue, fg_color.alpha);
+    const double text_x = center_x - (extents.width * 0.5 + extents.x_bearing);
+    const double text_y = center_y - (extents.height * 0.5 + extents.y_bearing);
+    cairo_move_to(cairo, text_x, text_y);
+    cairo_show_text(cairo, text);
+
+    g_free(text);
+  }
+}
+
 void zathura_page_widget_clear_selection(ZathuraPage* widget) {
   ZathuraPagePrivate* priv = zathura_page_widget_get_instance_private(widget);
   if (priv->selection.list != NULL) {
@@ -1032,6 +1142,10 @@ static gboolean cb_zathura_page_widget_button_press_event(GtkWidget* widget, Gdk
       priv->mouse.selection.y1 = -1;
       priv->mouse.selection.x2 = -1;
       priv->mouse.selection.y2 = -1;
+
+      if (button->type == GDK_2BUTTON_PRESS) {
+        page_widget_add_marker(page, button->x, button->y);
+      }
     }
 
     return true;
