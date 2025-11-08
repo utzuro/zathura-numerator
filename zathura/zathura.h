@@ -4,6 +4,7 @@
 #define ZATHURA_H
 
 #include <stdbool.h>
+#include <stdio.h>
 #include <girara/types.h>
 #include <girara/session.h>
 #include <gtk/gtk.h>
@@ -221,6 +222,8 @@ struct zathura_s {
 
   struct {
     unsigned int counter; /**< Sequential counter for page markers */
+    char* file_path;      /**< Path to the exported coordinates file */
+    FILE* file;           /**< Handle to the exported coordinates file */
   } numbering;
 
   /**

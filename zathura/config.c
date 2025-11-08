@@ -228,6 +228,8 @@ void config_load_default(zathura_t* zathura) {
   girara_setting_add(gsession, "page-thumbnail-size",   &int_value,   INT,    true,  _("Maximum size in pixels of thumbnails to keep in the cache"), NULL, NULL);
   int_value = 2000;
   girara_setting_add(gsession, "jumplist-size",         &int_value,   INT,    false, _("Number of positions to remember in the jumplist"), cb_jumplist_change, NULL);
+  girara_setting_add(gsession, "numbers-file",          "numbers.txt", STRING, false,
+                     _("Path to the coordinates file that stores double-click markers"), NULL, NULL);
 
   girara_setting_add(gsession, "recolor-darkcolor",      "#FFFFFF", STRING, false, _("Recoloring (dark color)"),            cb_color_change, NULL);
   girara_setting_add(gsession, "recolor-lightcolor",     "#000000", STRING, false, _("Recoloring (light color)"),           cb_color_change, NULL);
