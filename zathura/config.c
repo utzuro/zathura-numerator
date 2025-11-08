@@ -326,6 +326,7 @@ static void add_default_shortcuts(girara_session_t* gsession, girara_mode_t mode
   girara_shortcut_add(gsession, 0, GDK_KEY_Back, NULL, sc_navigate, mode, PREVIOUS, NULL);
 
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_p, NULL, sc_print, mode, 0, NULL);
+  girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_z, NULL, sc_marker_undo, mode, 0, NULL);
 
   girara_shortcut_add(gsession, GDK_CONTROL_MASK, GDK_KEY_r, NULL, sc_recolor, mode, 0, NULL);
 
@@ -806,6 +807,7 @@ void config_load_default(zathura_t* zathura) {
   girara_shortcut_mapping_add(gsession, "jumplist",                 sc_jumplist);
   girara_shortcut_mapping_add(gsession, "mark_add",                 sc_mark_add);
   girara_shortcut_mapping_add(gsession, "mark_evaluate",            sc_mark_evaluate);
+  girara_shortcut_mapping_add(gsession, "marker-undo",              sc_marker_undo);
   girara_shortcut_mapping_add(gsession, "navigate",                 sc_navigate);
   girara_shortcut_mapping_add(gsession, "navigate_index",           sc_navigate_index);
   girara_shortcut_mapping_add(gsession, "nohlsearch",               sc_nohlsearch);

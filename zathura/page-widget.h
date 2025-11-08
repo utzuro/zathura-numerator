@@ -114,4 +114,12 @@ typedef struct scaled_button_release_event_s {
   GdkModifierType state; /**< modifier state */
 } scaled_button_release_event_t;
 
+/**
+ * Removes the last marker placed on this widget (if any) and triggers redraw.
+ *
+ * @param widget the widget
+ * @return the number of the removed marker or 0 if none was removed
+ */
+unsigned int zathura_page_widget_remove_last_marker(ZathuraPageWidget* widget);
+
 #endif

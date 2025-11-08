@@ -1812,3 +1812,13 @@ bool sc_file_chooser(girara_session_t* session, girara_argument_t* UNUSED(argume
   gtk_file_dialog_open(dialog, parent, NULL, cb_file_chooser_open, zathura);
   return true;
 }
+
+bool sc_marker_undo(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
+                    unsigned int UNUSED(t)) {
+  if (session == NULL || session->global.data == NULL) {
+    return false;
+  }
+
+  zathura_t* zathura = session->global.data;
+  return zathura_numbering_undo(zathura);
+}

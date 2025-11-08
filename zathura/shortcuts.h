@@ -406,4 +406,9 @@ bool sc_file_chooser(girara_session_t* session, girara_argument_t* argument, gir
  */
 bool apply_equal_page_mode(zathura_t* zathura, zathura_equal_mode_t mode);
 
+/**
+ * Undo the last numbered marker placement.
+ */
+bool sc_marker_undo(girara_session_t* session, girara_argument_t* argument, girara_event_t* event, unsigned int t);
+
 #endif // SHORTCUTS_H
