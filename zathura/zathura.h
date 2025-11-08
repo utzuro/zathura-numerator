@@ -231,6 +231,10 @@ struct zathura_s {
     double initial_zoom;
   } gesture;
 
+  struct {
+    unsigned int counter; /**< Sequential counter for page markers */
+  } numbering;
+
   /**
    * Context for MIME type detection
    */
