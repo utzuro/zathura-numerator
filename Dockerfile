@@ -1,6 +1,10 @@
 FROM archlinux:base-devel
 
 RUN pacman-key --init
+# Refresh mirrorlist early so pacman does not hit dead mirrors during setup
+RUN pacman -Sy --noconfirm reflector \
+    && reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+
 RUN pacman -Syu --noconfirm
 
 # Dependencies
@@ -42,4 +46,3 @@ ENV ZATHURA_PLUGINS_PATH=/usr/lib/zathura
 
 # numbers file will be available in /volume folder
 ENTRYPOINT ["/bin/sh", "-c", "cd /app/volume && zathura manga.pdf"]
-
