@@ -2,8 +2,9 @@
 
 zathura is a highly customizable and functional document viewer based on the
 girara user interface library and several document libraries. This fork adds a
-lightweight numbering workflow aimed at manga translation: double-click anywhere
-on a page to drop sequential bubble numbers, and use <kbd>Ctrl</kbd>+<kbd>Z</kbd>
+lightweight numbering workflow aimed at manga translation: double-click or
+double-tap anywhere on a page to drop sequential bubble numbers, and use
+<kbd>Ctrl</kbd>+<kbd>Z</kbd>
 to undo the last placement. Every click is logged to `numbers.txt` so the
 companion `manga-numeration` script can burn the numbers into the PDF later.
 

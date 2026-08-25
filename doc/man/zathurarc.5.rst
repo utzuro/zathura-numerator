@@ -771,8 +771,8 @@ The settings described here can be changed with ``set``.
   * Default value: 2000
 
 *numbers-file*
-  Path to the coordinates file that receives double-click markers. Set this to
-  an empty string to disable exporting markers to disk.
+  Path to the coordinates file that receives double-click or double-tap
+  markers. Set this to an empty string to disable exporting markers to disk.
 
   * Value type: String
   * Default value: numbers.txt

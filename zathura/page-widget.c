@@ -79,7 +79,9 @@ typedef struct zathura_page_widget_private_s {
   GtkWidget* image_popover;          /**< lazily created image context menu */
   GSimpleActionGroup* image_actions; /**< action group for the image popup */
   struct {
-    girara_list_t* list; /**< Stored numbered markers placed via double click */
+    girara_list_t* list;     /**< Stored numbered markers placed via double click */
+    gboolean pending;        /**< Whether a double press may become a marker */
+    double press_x, press_y; /**< Position of the pending double press */
   } markers;
 } ZathuraPageWidgetPrivate;
 
@@ -1183,6 +1185,7 @@ static void cb_zathura_page_widget_button_press_event(GtkGestureClick* gesture, 
 
   const guint gbutton   = gtk_gesture_single_get_current_button(GTK_GESTURE_SINGLE(gesture));
   GdkModifierType state = gtk_event_controller_get_current_event_state(GTK_EVENT_CONTROLLER(gesture));
+  priv->markers.pending = false;
 
   /* yield to configured mouse bindings (dispatched by the view gestures) instead of starting a selection */
   girara_event_type_t etype = GIRARA_EVENT_BUTTON_PRESS;
@@ -1231,7 +1234,9 @@ static void cb_zathura_page_widget_button_press_event(GtkGestureClick* gesture, 
       priv->mouse.selection.y2 = -1;
 
       if (n_press == 2) {
-        page_widget_add_marker(page, bx, by);
+        priv->markers.pending = true;
+        priv->markers.press_x = bx;
+        priv->markers.press_y = by;
       }
     }
   } else if (gbutton == GDK_BUTTON_SECONDARY && n_press == 1) {
@@ -1239,8 +1244,8 @@ static void cb_zathura_page_widget_button_press_event(GtkGestureClick* gesture, 
   }
 }
 
-static void cb_zathura_page_widget_button_release_event(GtkGestureClick* gesture, gint UNUSED(n_press), gdouble bx,
-                                                        gdouble by, gpointer data) {
+static void cb_zathura_page_widget_button_release_event(GtkGestureClick* gesture, gint n_press, gdouble bx, gdouble by,
+                                                        gpointer data) {
   GtkWidget* widget              = GTK_WIDGET(data);
   ZathuraPageWidget* page        = ZATHURA_PAGE_WIDGET(widget);
   ZathuraPageWidgetPrivate* priv = zathura_page_widget_get_instance_private(page);
@@ -1258,6 +1263,16 @@ static void cb_zathura_page_widget_button_release_event(GtkGestureClick* gesture
   g_signal_emit(page, signals[BUTTON_RELEASE], 0, &srelease);
 
   if (gbutton != GDK_BUTTON_PRIMARY) {
+    return;
+  }
+
+  if (n_press == 2) {
+    const gboolean moved =
+        gtk_drag_check_threshold(widget, (int)priv->markers.press_x, (int)priv->markers.press_y, (int)bx, (int)by);
+    if (priv->markers.pending == true && moved == false) {
+      page_widget_add_marker(page, bx, by);
+    }
+    priv->markers.pending = false;
     return;
   }
 
