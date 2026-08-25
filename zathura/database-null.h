@@ -25,7 +25,7 @@ struct _ZathuraNullDatabaseClass {
   GObjectClass parent_class;
 };
 
-GType zathura_nulldatabase_get_type(void) G_GNUC_CONST;
+GType zathura_nulldatabase_get_type(void);
 
 /**
  * Initialize database system.

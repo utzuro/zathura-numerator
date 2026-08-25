@@ -1,25 +1,23 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "completion.h"
+
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 
-#include "completion.h"
 #include "internal.h"
 #include "session.h"
 #include "settings.h"
 #include "shortcuts.h"
 
-static GtkEventBox* girara_completion_row_create(const char*, const char*, bool);
-static void girara_completion_row_set_color(GtkEventBox*, int);
-
 /* completion */
 struct girara_internal_completion_entry_s {
-  GtkEventBox* widget; /**< Eventbox widget */
-  char* value;         /**< Name of the entry */
-  bool group;          /**< The entry is a group */
+  GtkWidget* widget; /**< Row widget (GtkBox) */
+  char* value;       /**< Name of the entry */
+  bool group;        /**< The entry is a group */
 };
 
 /**
@@ -58,24 +56,32 @@ static void completion_element_free(void* data) {
 }
 
 girara_completion_t* girara_completion_init(void) {
-  girara_completion_t* completion = g_malloc(sizeof(girara_completion_t));
-  completion->groups              = girara_list_new_with_free((girara_free_function_t)girara_completion_group_free);
-
-  return completion;
-}
-
-girara_completion_group_t* girara_completion_group_create(girara_session_t* UNUSED(session), const char* name) {
-  girara_completion_group_t* group = g_malloc(sizeof(girara_completion_group_t));
-
-  group->value    = g_strdup(name);
-  group->elements = girara_list_new_with_free(completion_element_free);
-
-  if (group->elements == NULL) {
-    g_free(group);
+  g_autoptr(girara_completion_t) completion = g_try_malloc0(sizeof(girara_completion_t));
+  if (!completion) {
     return NULL;
   }
 
-  return group;
+  completion->groups = girara_list_new_with_free((girara_free_function_t)girara_completion_group_free);
+  if (!completion->groups) {
+    return NULL;
+  }
+
+  return g_steal_pointer(&completion);
+}
+
+girara_completion_group_t* girara_completion_group_create(const char* name) {
+  g_autoptr(girara_completion_group_t) group = g_try_malloc0(sizeof(girara_completion_group_t));
+  if (!group) {
+    return NULL;
+  }
+
+  group->value    = g_strdup(name);
+  group->elements = girara_list_new_with_free(completion_element_free);
+  if (group->elements == NULL) {
+    return NULL;
+  }
+
+  return g_steal_pointer(&group);
 }
 
 void girara_completion_add_group(girara_completion_t* completion, girara_completion_group_t* group) {
@@ -123,6 +129,67 @@ static unsigned int find_completion_group_index(GList* current_entry, unsigned i
   return UINT_MAX;
 }
 
+static GtkWidget* girara_completion_row_create(const char* command, const char* description, bool group) {
+  GtkBox* col = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
+
+  GtkWidget* row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+
+  GtkLabel* show_command     = GTK_LABEL(gtk_label_new(NULL));
+  GtkLabel* show_description = GTK_LABEL(gtk_label_new(NULL));
+
+  gtk_widget_set_halign(GTK_WIDGET(show_command), GTK_ALIGN_START);
+  gtk_widget_set_valign(GTK_WIDGET(show_command), GTK_ALIGN_START);
+  gtk_widget_set_halign(GTK_WIDGET(show_description), GTK_ALIGN_END);
+  gtk_widget_set_valign(GTK_WIDGET(show_description), GTK_ALIGN_START);
+
+  gtk_label_set_use_markup(show_command, TRUE);
+  gtk_label_set_use_markup(show_description, TRUE);
+
+  gtk_label_set_ellipsize(show_command, PANGO_ELLIPSIZE_END);
+  gtk_label_set_ellipsize(show_description, PANGO_ELLIPSIZE_END);
+
+  g_autofree gchar* c = command ? g_markup_printf_escaped(FORMAT_COMMAND, command) : NULL;
+  g_autofree gchar* d = description ? g_markup_printf_escaped(FORMAT_DESCRIPTION, description) : NULL;
+  gtk_label_set_markup(show_command, command ? c : "");
+  gtk_label_set_markup(show_description, description ? d : "");
+
+  const char* class = group == true ? "completion-group" : "completion";
+  widget_add_class(GTK_WIDGET(show_command), class);
+  widget_add_class(GTK_WIDGET(show_description), class);
+  widget_add_class(GTK_WIDGET(row), class);
+  widget_add_class(GTK_WIDGET(col), class);
+
+  gtk_widget_set_hexpand(GTK_WIDGET(show_command), TRUE);
+  gtk_widget_set_hexpand(GTK_WIDGET(show_description), TRUE);
+  gtk_box_append(GTK_BOX(col), GTK_WIDGET(show_command));
+  gtk_box_append(GTK_BOX(col), GTK_WIDGET(show_description));
+
+  gtk_box_append(GTK_BOX(row), GTK_WIDGET(col));
+
+  return row;
+}
+
+static void girara_completion_row_set_color(GtkWidget* row, int mode) {
+  g_return_if_fail(row != NULL);
+
+  GtkWidget* col  = gtk_widget_get_first_child(row);
+  GtkWidget* cmd  = col ? gtk_widget_get_first_child(col) : NULL;
+  GtkWidget* desc = cmd ? gtk_widget_get_next_sibling(cmd) : NULL;
+  if (cmd == NULL || desc == NULL) {
+    return;
+  }
+
+  if (mode == GIRARA_HIGHLIGHT) {
+    gtk_widget_set_state_flags(cmd, GTK_STATE_FLAG_SELECTED, false);
+    gtk_widget_set_state_flags(desc, GTK_STATE_FLAG_SELECTED, false);
+    gtk_widget_set_state_flags(GTK_WIDGET(row), GTK_STATE_FLAG_SELECTED, false);
+  } else {
+    gtk_widget_unset_state_flags(cmd, GTK_STATE_FLAG_SELECTED);
+    gtk_widget_unset_state_flags(desc, GTK_STATE_FLAG_SELECTED);
+    gtk_widget_unset_state_flags(GTK_WIDGET(row), GTK_STATE_FLAG_SELECTED);
+  }
+}
+
 bool girara_isc_completion(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
                            unsigned int UNUSED(t)) {
   g_return_val_if_fail(session != NULL, false);
@@ -140,10 +207,10 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
     return false;
   }
 
-  gchar** elements = NULL;
-  gint n_parameter = 0;
+  g_auto(GStrv) elements = NULL;
+  gint n_parameter       = 0;
   if (input_length > 1) {
-    if (g_shell_parse_argv(input + 1, &n_parameter, &elements, NULL) == FALSE) {
+    if (!g_shell_parse_argv(input + 1, &n_parameter, &elements, NULL)) {
       return false;
     }
   } else {
@@ -159,8 +226,8 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
   }
 
   /* get current values */
-  gchar* current_command   = (elements[0] != NULL && elements[0][0] != '\0') ? g_strdup(elements[0]) : NULL;
-  gchar* current_parameter = (elements[0] != NULL && elements[1] != NULL) ? g_strdup(elements[1]) : NULL;
+  g_autofree gchar* current_command   = (elements[0] != NULL && elements[0][0] != '\0') ? g_strdup(elements[0]) : NULL;
+  g_autofree gchar* current_parameter = (elements[0] != NULL && elements[1] != NULL) ? g_strdup(elements[1]) : NULL;
 
   size_t current_command_length = current_command ? strlen(current_command) : 0;
 
@@ -185,7 +252,10 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
         girara_internal_completion_entry_t* entry = (girara_internal_completion_entry_t*)element->data;
 
         if (entry != NULL) {
-          gtk_widget_destroy(GTK_WIDGET(entry->widget));
+          if (entry->widget != NULL) {
+            gtk_box_remove(GTK_BOX(session->gtk.results), entry->widget);
+            entry->widget = NULL;
+          }
           g_free(entry->value);
           g_free(entry);
         }
@@ -195,8 +265,19 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
       priv->completion.entries         = NULL;
       priv->completion.entries_current = NULL;
 
-      /* delete row box */
-      gtk_widget_destroy(GTK_WIDGET(session->gtk.results));
+      /* a scrolled window wraps plain children in a viewport */
+      GtkWidget* results = GTK_WIDGET(session->gtk.results);
+      GtkWidget* scroll  = gtk_widget_get_ancestor(results, GTK_TYPE_SCROLLED_WINDOW);
+      if (scroll != NULL) {
+        gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scroll), NULL);
+        gtk_box_remove(GTK_BOX(priv->gtk.bottom_box), scroll);
+      } else if (gtk_widget_get_parent(results) != NULL) {
+        gtk_widget_unparent(results);
+      } else {
+        /* sink and drop a results box that never got a parent */
+        g_object_ref_sink(results);
+        g_object_unref(results);
+      }
       session->gtk.results = NULL;
     }
 
@@ -208,11 +289,6 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
 
       g_free(priv->completion.previous_parameter);
       priv->completion.previous_parameter = NULL;
-
-      g_strfreev(elements);
-
-      g_free(current_parameter);
-      g_free(current_command);
 
       return false;
     }
@@ -226,10 +302,6 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
     widget_add_class(GTK_WIDGET(session->gtk.results), "completion-box");
 
     if (session->gtk.results == NULL) {
-      g_free(current_parameter);
-      g_free(current_command);
-
-      g_strfreev(elements);
       return false;
     }
 
@@ -252,7 +324,7 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
           priv->completion.entries = g_list_append(priv->completion.entries, entry);
 
           /* show entry row */
-          gtk_box_pack_start(session->gtk.results, GTK_WIDGET(entry->widget), FALSE, FALSE, 0);
+          gtk_box_append(GTK_BOX(session->gtk.results), GTK_WIDGET(entry->widget));
         }
       }
     }
@@ -263,16 +335,19 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
       if (g_list_length(priv->completion.entries) == 1) {
         girara_internal_completion_entry_t* entry = g_list_first(priv->completion.entries)->data;
 
+        g_free(current_command);
         /* unset command mode */
         priv->completion.command_mode = false;
         current_command               = entry->value;
         current_command_length        = strlen(current_command);
 
         /* clear list */
-        gtk_widget_destroy(GTK_WIDGET(entry->widget));
+        if (entry->widget != NULL) {
+          gtk_box_remove(GTK_BOX(session->gtk.results), entry->widget);
+          entry->widget = NULL;
+        }
 
-        priv->completion.entries =
-            g_list_remove(priv->completion.entries, g_list_first(priv->completion.entries)->data);
+        priv->completion.entries = g_list_remove(priv->completion.entries, entry);
         g_free(entry);
       }
 
@@ -292,10 +367,6 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
       }
 
       if (command == NULL) {
-        g_free(current_command);
-        g_free(current_parameter);
-
-        g_strfreev(elements);
         return false;
       }
 
@@ -307,20 +378,17 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
 
         priv->completion.entries = g_list_append(priv->completion.entries, entry);
 
-        gtk_box_pack_start(session->gtk.results, GTK_WIDGET(entry->widget), FALSE, FALSE, 0);
+        gtk_box_append(GTK_BOX(session->gtk.results), GTK_WIDGET(entry->widget));
         priv->completion.command_mode = true;
       } else {
         /* generate completion result
          * XXX: the last argument should only be current_paramater ... but
          * therefore the completion functions would need to handle NULL correctly
          * (see cc_open in zathura). */
-        girara_completion_t* result = command->completion(session, current_parameter ? current_parameter : "");
+        g_autoptr(girara_completion_t) result =
+            command->completion(session, current_parameter ? current_parameter : "");
 
         if (result == NULL || result->groups == NULL) {
-          g_free(current_parameter);
-          g_free(current_command);
-
-          g_strfreev(elements);
           return false;
         }
 
@@ -334,12 +402,12 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
           if (group->value != NULL) {
             girara_internal_completion_entry_t* entry = g_malloc(sizeof(girara_internal_completion_entry_t));
             entry->group                              = TRUE;
-            entry->value                              = g_strdup(group->value);
-            entry->widget                             = girara_completion_row_create(group->value, NULL, TRUE);
+            entry->value                              = g_steal_pointer(&group->value);
+            entry->widget                             = girara_completion_row_create(entry->value, NULL, TRUE);
 
             priv->completion.entries = g_list_append(priv->completion.entries, entry);
 
-            gtk_box_pack_start(session->gtk.results, GTK_WIDGET(entry->widget), FALSE, FALSE, 0);
+            gtk_box_append(GTK_BOX(session->gtk.results), GTK_WIDGET(entry->widget));
           }
 
           for (size_t inner_idx = 0; inner_idx != girara_list_size(group->elements); ++inner_idx) {
@@ -347,15 +415,14 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
 
             girara_internal_completion_entry_t* entry = g_malloc(sizeof(girara_internal_completion_entry_t));
             entry->group                              = FALSE;
-            entry->value                              = g_strdup(element->value);
-            entry->widget = girara_completion_row_create(element->value, element->description, FALSE);
+            entry->value                              = g_steal_pointer(&element->value);
+            entry->widget = girara_completion_row_create(entry->value, element->description, FALSE);
 
             priv->completion.entries = g_list_append(priv->completion.entries, entry);
 
-            gtk_box_pack_start(session->gtk.results, GTK_WIDGET(entry->widget), FALSE, FALSE, 0);
+            gtk_box_append(GTK_BOX(session->gtk.results), GTK_WIDGET(entry->widget));
           }
         }
-        girara_completion_free(result);
 
         priv->completion.command_mode = false;
       }
@@ -364,8 +431,13 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
     if (priv->completion.entries != NULL) {
       priv->completion.entries_current =
           (argument->n == GIRARA_NEXT) ? g_list_last(priv->completion.entries) : priv->completion.entries;
-      gtk_box_pack_start(priv->gtk.bottom_box, GTK_WIDGET(session->gtk.results), FALSE, FALSE, 0);
-      gtk_widget_show(GTK_WIDGET(session->gtk.results));
+      GtkWidget* scroll = gtk_scrolled_window_new();
+      gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+      gtk_scrolled_window_set_propagate_natural_height(GTK_SCROLLED_WINDOW(scroll), TRUE);
+      gtk_scrolled_window_set_max_content_height(GTK_SCROLLED_WINDOW(scroll), 300);
+      gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scroll), GTK_WIDGET(session->gtk.results));
+      gtk_box_append(GTK_BOX(priv->gtk.bottom_box), scroll);
+      gtk_widget_set_visible(GTK_WIDGET(session->gtk.results), TRUE);
     }
   }
 
@@ -431,21 +503,22 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
         if ((n_elements <= n_completion_items) || (i >= (current_item - lh) && (i <= current_item + uh)) ||
             (i < n_completion_items && current_item < lh) ||
             (i >= (n_elements - n_completion_items) && (current_item >= (n_elements - uh))) || (i == current_group)) {
-          gtk_widget_show(GTK_WIDGET(tmp->widget));
+          gtk_widget_set_visible(GTK_WIDGET(tmp->widget), TRUE);
         } else {
-          gtk_widget_hide(GTK_WIDGET(tmp->widget));
+          gtk_widget_set_visible(GTK_WIDGET(tmp->widget), FALSE);
         }
 
         tmpentry = g_list_next(tmpentry);
       }
     } else {
-      gtk_widget_hide(
-          GTK_WIDGET(((girara_internal_completion_entry_t*)(g_list_nth(priv->completion.entries, 0))->data)->widget));
+      gtk_widget_set_visible(
+          GTK_WIDGET(((girara_internal_completion_entry_t*)(g_list_nth(priv->completion.entries, 0))->data)->widget),
+          FALSE);
     }
 
     /* update text */
-    char* temp;
-    char* escaped_value =
+    g_autofree char* temp = NULL;
+    g_autofree char* escaped_value =
         girara_escape_string(((girara_internal_completion_entry_t*)priv->completion.entries_current->data)->value);
     if (priv->completion.command_mode == true) {
       char* space = (n_elements == 1) ? " " : "";
@@ -454,88 +527,23 @@ bool girara_isc_completion(girara_session_t* session, girara_argument_t* argumen
       temp = g_strconcat(":", priv->completion.previous_command, " ", escaped_value, NULL);
     }
 
-    gtk_entry_set_text(session->gtk.inputbar_entry, temp);
+    gtk_editable_set_text(GTK_EDITABLE(session->gtk.inputbar_entry), temp);
     gtk_editable_set_position(GTK_EDITABLE(session->gtk.inputbar_entry), -1);
-    g_free(escaped_value);
 
     /* update previous */
     g_free(priv->completion.previous_parameter);
     g_free(priv->completion.previous_command);
 
     priv->completion.previous_command =
-        g_strdup((priv->completion.command_mode)
-                     ? ((girara_internal_completion_entry_t*)priv->completion.entries_current->data)->value
-                     : current_command);
+        priv->completion.command_mode
+            ? g_strdup(((girara_internal_completion_entry_t*)priv->completion.entries_current->data)->value)
+            : g_steal_pointer(&current_command);
     priv->completion.previous_parameter =
-        g_strdup((priv->completion.command_mode)
-                     ? current_parameter
-                     : ((girara_internal_completion_entry_t*)priv->completion.entries_current->data)->value);
+        priv->completion.command_mode
+            ? g_steal_pointer(&current_parameter)
+            : g_strdup(((girara_internal_completion_entry_t*)priv->completion.entries_current->data)->value);
     priv->completion.previous_length = strlen(temp);
-    g_free(temp);
   }
-
-  g_free(current_parameter);
-  g_free(current_command);
-
-  g_strfreev(elements);
 
   return false;
-}
-
-static GtkEventBox* girara_completion_row_create(const char* command, const char* description, bool group) {
-  GtkBox* col = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
-
-  GtkEventBox* row = GTK_EVENT_BOX(gtk_event_box_new());
-
-  GtkLabel* show_command     = GTK_LABEL(gtk_label_new(NULL));
-  GtkLabel* show_description = GTK_LABEL(gtk_label_new(NULL));
-
-  gtk_widget_set_halign(GTK_WIDGET(show_command), GTK_ALIGN_START);
-  gtk_widget_set_valign(GTK_WIDGET(show_command), GTK_ALIGN_START);
-  gtk_widget_set_halign(GTK_WIDGET(show_description), GTK_ALIGN_END);
-  gtk_widget_set_valign(GTK_WIDGET(show_description), GTK_ALIGN_START);
-
-  gtk_label_set_use_markup(show_command, TRUE);
-  gtk_label_set_use_markup(show_description, TRUE);
-
-  gtk_label_set_ellipsize(show_command, PANGO_ELLIPSIZE_END);
-  gtk_label_set_ellipsize(show_description, PANGO_ELLIPSIZE_END);
-
-  g_autofree gchar* c = command ? g_markup_printf_escaped(FORMAT_COMMAND, command) : NULL;
-  g_autofree gchar* d = description ? g_markup_printf_escaped(FORMAT_DESCRIPTION, description) : NULL;
-  gtk_label_set_markup(show_command, command ? c : "");
-  gtk_label_set_markup(show_description, description ? d : "");
-
-  const char* class = group == true ? "completion-group" : "completion";
-  widget_add_class(GTK_WIDGET(show_command), class);
-  widget_add_class(GTK_WIDGET(show_description), class);
-  widget_add_class(GTK_WIDGET(row), class);
-  widget_add_class(GTK_WIDGET(col), class);
-
-  gtk_box_pack_start(GTK_BOX(col), GTK_WIDGET(show_command), TRUE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(col), GTK_WIDGET(show_description), TRUE, TRUE, 0);
-
-  gtk_container_add(GTK_CONTAINER(row), GTK_WIDGET(col));
-  gtk_widget_show_all(GTK_WIDGET(row));
-
-  return row;
-}
-
-static void girara_completion_row_set_color(GtkEventBox* row, int mode) {
-  g_return_if_fail(row != NULL);
-
-  GtkBox* col            = GTK_BOX(gtk_bin_get_child(GTK_BIN(row)));
-  g_autoptr(GList) items = gtk_container_get_children(GTK_CONTAINER(col));
-  GtkWidget* cmd         = GTK_WIDGET(g_list_nth_data(items, 0));
-  GtkWidget* desc        = GTK_WIDGET(g_list_nth_data(items, 1));
-
-  if (mode == GIRARA_HIGHLIGHT) {
-    gtk_widget_set_state_flags(cmd, GTK_STATE_FLAG_SELECTED, false);
-    gtk_widget_set_state_flags(desc, GTK_STATE_FLAG_SELECTED, false);
-    gtk_widget_set_state_flags(GTK_WIDGET(row), GTK_STATE_FLAG_SELECTED, false);
-  } else {
-    gtk_widget_unset_state_flags(cmd, GTK_STATE_FLAG_SELECTED);
-    gtk_widget_unset_state_flags(desc, GTK_STATE_FLAG_SELECTED);
-    gtk_widget_unset_state_flags(GTK_WIDGET(row), GTK_STATE_FLAG_SELECTED);
-  }
 }

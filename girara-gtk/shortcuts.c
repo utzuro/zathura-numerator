@@ -2,15 +2,16 @@
 
 #include "shortcuts.h"
 
-#include "internal.h"
-#include "session.h"
-#include "settings.h"
-
 #include <girara/datastructures.h>
 #include <girara/input-history.h>
 #include <girara/log.h>
 #include <gtk/gtk.h>
 #include <string.h>
+
+#include "callbacks.h"
+#include "internal.h"
+#include "session.h"
+#include "settings.h"
 
 bool girara_shortcut_add(girara_session_t* session, guint modifier, guint key, const char* buffer,
                          girara_shortcut_function_t function, girara_mode_t mode, int argument_n, void* argument_data) {
@@ -144,9 +145,9 @@ bool girara_isc_abort(girara_session_t* session, girara_argument_t* UNUSED(argum
   gtk_widget_grab_focus(GTK_WIDGET(session->gtk.view));
 
   /* hide inputbar */
-  gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar_dialog));
+  gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar_dialog), FALSE);
   if (session->global.autohide_inputbar == true) {
-    gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar));
+    gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar), FALSE);
   }
 
   /* Begin from the last command when navigating through history */
@@ -244,7 +245,7 @@ bool girara_isc_command_history(girara_session_t* session, girara_argument_t* ar
                                                      : girara_input_history_previous(session->command_history, temp);
 
   if (command != NULL) {
-    gtk_entry_set_text(session->gtk.inputbar_entry, command);
+    gtk_editable_set_text(GTK_EDITABLE(session->gtk.inputbar_entry), command);
     gtk_widget_grab_focus(GTK_WIDGET(session->gtk.inputbar_entry));
     gtk_editable_set_position(GTK_EDITABLE(session->gtk.inputbar_entry), -1);
   }
@@ -259,27 +260,18 @@ bool girara_sc_focus_inputbar(girara_session_t* session, girara_argument_t* argu
   g_return_val_if_fail(session->gtk.inputbar_entry != NULL, false);
 
   if (gtk_widget_get_visible(GTK_WIDGET(session->gtk.inputbar)) == false) {
-    gtk_widget_show(GTK_WIDGET(session->gtk.inputbar));
+    gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar), TRUE);
   }
 
   if (gtk_widget_get_visible(GTK_WIDGET(session->gtk.notification_area)) == true) {
-    gtk_widget_hide(GTK_WIDGET(session->gtk.notification_area));
+    gtk_widget_set_visible(GTK_WIDGET(session->gtk.notification_area), FALSE);
   }
 
   gtk_widget_grab_focus(GTK_WIDGET(session->gtk.inputbar_entry));
 
   if (argument != NULL && argument->data != NULL) {
-    gtk_entry_set_text(session->gtk.inputbar_entry, (char*)argument->data);
-
-    /* we save the X clipboard that will be clear by "grab_focus" */
-    g_autofree gchar* x_clipboard_text = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY));
-
+    gtk_editable_set_text(GTK_EDITABLE(session->gtk.inputbar_entry), (char*)argument->data);
     gtk_editable_set_position(GTK_EDITABLE(session->gtk.inputbar_entry), -1);
-
-    if (x_clipboard_text != NULL) {
-      /* we reset the X clipboard with saved text */
-      gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), x_clipboard_text, -1);
-    }
   }
 
   return true;
@@ -291,10 +283,10 @@ bool girara_sc_abort(girara_session_t* session, girara_argument_t* UNUSED(argume
 
   girara_isc_abort(session, NULL, NULL, 0);
 
-  gtk_widget_hide(GTK_WIDGET(session->gtk.notification_area));
+  gtk_widget_set_visible(GTK_WIDGET(session->gtk.notification_area), FALSE);
 
   if (session->global.autohide_inputbar == false) {
-    gtk_widget_show(GTK_WIDGET(session->gtk.inputbar));
+    gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar), TRUE);
   }
 
   return false;
@@ -305,10 +297,10 @@ static void girara_toggle_widget_visibility(GtkWidget* widget) {
     return;
   }
 
-  if (gtk_widget_get_visible(widget) == TRUE) {
-    gtk_widget_hide(widget);
+  if (gtk_widget_get_visible(widget)) {
+    gtk_widget_set_visible(widget, FALSE);
   } else {
-    gtk_widget_show(widget);
+    gtk_widget_set_visible(widget, TRUE);
   }
 }
 
@@ -331,25 +323,21 @@ bool girara_sc_toggle_statusbar(girara_session_t* session, girara_argument_t* UN
 }
 
 girara_list_t* argument_to_argument_list(girara_argument_t* argument) {
-  girara_list_t* argument_list = girara_list_new_with_free(g_free);
+  g_autoptr(girara_list_t) argument_list = girara_list_new_with_free(g_free);
   if (argument_list == NULL) {
     return NULL;
   }
 
-  gchar** argv = NULL;
-  gint argc    = 0;
-
-  if (g_shell_parse_argv((const gchar*)argument->data, &argc, &argv, NULL) != FALSE) {
+  g_auto(GStrv) argv = NULL;
+  gint argc          = 0;
+  if (g_shell_parse_argv((const gchar*)argument->data, &argc, &argv, NULL)) {
     for (int i = 0; i < argc; i++) {
       char* arg = g_strdup(argv[i]);
       girara_list_append(argument_list, arg);
     }
-    g_strfreev(argv);
-
-    return argument_list;
+    return g_steal_pointer(&argument_list);
   }
 
-  girara_list_free(argument_list);
   return NULL;
 }
 
@@ -373,46 +361,6 @@ bool girara_sc_set(girara_session_t* session, girara_argument_t* argument, girar
   return false;
 }
 
-static bool simulate_key_press(girara_session_t* session, int state, int key) {
-  if (session == NULL || session->gtk.box == NULL) {
-    return false;
-  }
-
-  g_autoptr(GdkEvent) event = gdk_event_new(GDK_KEY_PRESS);
-
-  event->any.type       = GDK_KEY_PRESS;
-  event->key.window     = g_object_ref(gtk_widget_get_parent_window(GTK_WIDGET(session->gtk.box)));
-  event->key.send_event = false;
-  event->key.time       = GDK_CURRENT_TIME;
-  event->key.state      = state;
-  event->key.keyval     = key;
-
-  GdkDisplay* display           = gtk_widget_get_display(GTK_WIDGET(session->gtk.box));
-  g_autofree GdkKeymapKey* keys = NULL;
-  gint number_of_keys           = 0;
-
-  if (gdk_keymap_get_entries_for_keyval(gdk_keymap_get_for_display(display), event->key.keyval, &keys,
-                                        &number_of_keys) == FALSE) {
-    return false;
-  }
-
-  event->key.hardware_keycode = keys[0].keycode;
-  event->key.group            = keys[0].group;
-
-  GdkSeat* seat       = gdk_display_get_default_seat(display);
-  GdkDevice* keyboard = gdk_seat_get_keyboard(seat);
-  gdk_event_set_device(event, keyboard);
-
-  gdk_event_put(event);
-
-  // process events until there are no pending events left
-  do {
-    g_main_context_iteration(NULL, FALSE);
-  } while (g_main_context_pending(NULL));
-
-  return true;
-}
-
 static int update_state_by_keyval(int state, int keyval) {
   /* The following is probably not true for some keyboard layouts. */
   if ((keyval >= '!' && keyval <= '/') || (keyval >= ':' && keyval <= '@') || (keyval >= '[' && keyval <= '`') ||
@@ -423,13 +371,35 @@ static int update_state_by_keyval(int state, int keyval) {
   return state;
 }
 
+/* type one synthetic key into the inputbar entry */
+static void feed_key_to_inputbar(girara_session_t* session, guint keyval, guint state) {
+  if (girara_process_inputbar_key(session, keyval, state)) {
+    return;
+  }
+
+  GtkWidget* entry = GTK_WIDGET(session->gtk.inputbar_entry);
+  if (keyval == GDK_KEY_Return || keyval == GDK_KEY_KP_Enter) {
+    g_signal_emit_by_name(entry, "activate");
+    return;
+  }
+
+  const gunichar codepoint = gdk_keyval_to_unicode(keyval);
+  if (codepoint != 0 && g_unichar_isprint(codepoint)) {
+    char buffer[6];
+    const int length = g_unichar_to_utf8(codepoint, buffer);
+    int position     = gtk_editable_get_position(GTK_EDITABLE(entry));
+    gtk_editable_insert_text(GTK_EDITABLE(entry), buffer, length, &position);
+    gtk_editable_set_position(GTK_EDITABLE(entry), position);
+  }
+}
+
 bool girara_sc_feedkeys(girara_session_t* session, girara_argument_t* argument, girara_event_t* UNUSED(event),
                         unsigned int t) {
   if (session == NULL || argument == NULL) {
     return false;
   }
 
-  if (g_mutex_trylock(&session->private_data->feedkeys_mutex) == FALSE) {
+  if (!g_mutex_trylock(&session->private_data->feedkeys_mutex)) {
     girara_error("Recursive use of feedkeys detected. Aborting evaluation.");
     return false;
   }
@@ -445,7 +415,7 @@ bool girara_sc_feedkeys(girara_session_t* session, girara_argument_t* argument, 
 
       /* possible special button */
       if ((input_length - i) >= 3 && input[i] == '<') {
-        char* end = strchr(input + i, '>');
+        const char* end = strchr(input + i, '>');
         if (end == NULL) {
           goto single_key;
         }
@@ -461,7 +431,7 @@ bool girara_sc_feedkeys(girara_session_t* session, girara_argument_t* argument, 
             state = GDK_SHIFT_MASK;
             break;
           case 'A':
-            state = GDK_MOD1_MASK;
+            state = GDK_ALT_MASK;
             break;
           case 'C':
             state = GDK_CONTROL_MASK;
@@ -501,7 +471,15 @@ bool girara_sc_feedkeys(girara_session_t* session, girara_argument_t* argument, 
 
     single_key:
       state = update_state_by_keyval(state, keyval);
-      simulate_key_press(session, state, keyval);
+      /* send the key to the widget that would receive a real key press */
+      GtkWidget* entry = GTK_WIDGET(session->gtk.inputbar_entry);
+      GtkRoot* root    = gtk_widget_get_root(entry);
+      GtkWidget* focus = root != NULL ? gtk_root_get_focus(root) : NULL;
+      if (focus != NULL && (focus == entry || gtk_widget_is_ancestor(focus, entry))) {
+        feed_key_to_inputbar(session, keyval, state);
+      } else {
+        girara_process_view_key(session, keyval, state);
+      }
     }
   }
 

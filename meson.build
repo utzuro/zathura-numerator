@@ -1,24 +1,25 @@
 project('zathura', 'c',
-  version: '2026.02.09',
+  version: '2026.07.18',
   meson_version: '>=1.5',
-  default_options: ['c_std=c17', 'warning_level=3'],
+  default_options: ['c_std=c23', 'warning_level=3'],
 )
 
 version = meson.project_version()
 version_array = version.split('.')
 
 # Rules for plugin API and ABI (non-exhaustive):
-# * zathura_plugin_function_t: If functions are addedd or removed or their
+# * zathura_plugin_function_t: If functions are added or removed or their
 #   signature changes, bump both ABI and API.
 # * zathura_plugin_definition_t: If the struct changes in an ABI-incompatible
 #   way, bump the ABI.
-plugin_api_version = '6'
-plugin_abi_version = '7'
+plugin_api_version = '8'
+plugin_abi_version = '9'
 
 conf_data = configuration_data()
 conf_data.set('ZVMAJOR', version_array[0])
 conf_data.set('ZVMINOR', version_array[1])
 conf_data.set('ZVREV', version_array[2])
+conf_data.set('ZVFULL', version)
 conf_data.set('ZVAPI', plugin_api_version)
 conf_data.set('ZVABI', plugin_abi_version)
 
@@ -43,26 +44,19 @@ cc.compiles('''#if !__has_attribute(cleanup)
 
 # required dependencies
 libm = cc.find_library('m', required: false)
-girara = dependency('girara', version: '>=2026.02.03', fallback: ['girara', 'girara_dependency'])
-glib = dependency('glib-2.0', version: '>=2.76')
-gio = dependency('gio-unix-2.0', required: host_machine.system() != 'windows')
-gthread = dependency('gthread-2.0', version: '>=2.72')
-gmodule = dependency('gmodule-no-export-2.0', version: '>=2.72')
-gtk3 = dependency('gtk+-3.0', version: '>=3.24')
+girara = dependency('girara', version: '>=2026.07.07')
+glib = dependency('glib-2.0', version: '>=2.84')
+gio = dependency('gio-unix-2.0', version: '>=2.84', required: host_machine.system() != 'windows')
+gthread = dependency('gthread-2.0', version: '>=2.84')
+gmodule = dependency('gmodule-no-export-2.0', version: '>=2.84')
+gtk4 = dependency('gtk4', version: '>=4.12', include_type: 'system')
 json_glib = dependency('json-glib-1.0')
 cairo = dependency('cairo')
 magic = dependency('libmagic')
-sqlite = dependency('sqlite3', version: '>=3.6.23')
+sqlite = dependency('sqlite3', version: '>=3.35.0')
+xxhash = dependency('libxxhash')
 
-build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk3, cairo, magic, json_glib]
-
-if host_machine.system() == 'darwin'
-  gtk_mac_integration = dependency('gtk-mac-integration-gtk3')
-  build_dependencies += gtk_mac_integration
-endif
-
-# required functions
-cc.has_function('__builtin_umul_overflow', required: true)
+build_dependencies = [libm, girara, glib, gio, gthread, gmodule, gtk4, cairo, magic, json_glib, xxhash]
 
 # defines
 defines = [
@@ -72,9 +66,8 @@ defines = [
   '-DSYSCONFDIR="@0@"'.format(sysconfdir),
   '-D_DEFAULT_SOURCE',
 ]
-
-if host_machine.system() == 'darwin'
-  defines += '-DGTKOSXAPPLICATION'
+if get_option('manpages').allowed()
+  defines += '-DWITH_MANPAGES'
 endif
 
 # compile flags
@@ -90,6 +83,9 @@ flags = cc.get_supported_arguments(flags)
 synctex = dependency('synctex', version: '>=2', required: get_option('synctex'))
 seccomp = dependency('libseccomp', required: get_option('seccomp'))
 landlock = cc.check_header('linux/landlock.h', required: get_option('landlock'))
+if landlock
+  landlock = cc.has_member('struct landlock_ruleset_attr', 'scoped', args: ['-D_GNU_SOURCE'], prefix: ['#include <linux/landlock.h>'])
+endif
 
 if synctex.found()
   build_dependencies += synctex
@@ -137,6 +133,7 @@ sources = files(
   'zathura/file-monitor-glib.c',
   'zathura/file-monitor-noop.c',
   'zathura/file-monitor-signal.c',
+  'zathura/index-element-object.c',
   'zathura/jumplist.c',
   'zathura/links.c',
   'zathura/marks.c',
@@ -201,7 +198,7 @@ if seccomp.found() or landlock or target_machine.system() == 'openbsd'
 
   zathura_sandbox = executable(
     'zathura-sandbox',
-    files('zathura/main-sandbox.c') + sandbox_sources,
+    files('zathura/main.c'),
     dependencies: build_dependencies + [libzathura_sandbox_dep] + sandbox_dependencies,
     install: true,
     include_directories: include_directories,
@@ -233,7 +230,7 @@ pkg.generate(
   description: 'document viewer - plugin API',
   url: 'https://pwmt.org/projects/zathura',
   version: version,
-  requires: ['girara', 'gtk+-3.0', 'cairo'],
+  requires: ['girara', 'cairo'],
   variables: [
     'apiversion=@0@'.format(plugin_api_version),
     'abiversion=@0@'.format(plugin_abi_version),
@@ -243,7 +240,7 @@ pkg.generate(
 
 zathura_dependency = declare_dependency(link_with: zathura, include_directories: include_directories)
 
-subdir('doc')
-if get_option('tests').allowed()
-  subdir('tests')
+if get_option('manpages').allowed()
+  subdir('doc')
 endif
+subdir('tests')

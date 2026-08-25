@@ -26,7 +26,7 @@ struct zathura_dbus_class_s {
 #define ZATHURA_IS_DBUS_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_DBUS))
 #define ZATHURA_DBUS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_DBUS, ZathuraDbusClass))
 
-GType zathura_dbus_get_type(void) G_GNUC_CONST;
+GType zathura_dbus_get_type(void);
 
 ZathuraDbus* zathura_dbus_new(zathura_t* zathura);
 const char* zathura_dbus_get_name(zathura_t* zathura);

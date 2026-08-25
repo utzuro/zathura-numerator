@@ -26,30 +26,14 @@ typedef struct page_offset_s {
 bool file_valid_extension(zathura_t* zathura, const char* path);
 
 /**
- * Generates the document index based upon the list retrieved from the document
- * object.
+ * build a tree of index elements from the document outline
  *
  * @param session The session
- * @param model The tree model
- * @param parent The tree iterator parent
- * @param tree The Tree iterator
+ * @param tree the document index tree
+ * @return root list model of ZathuraIndexElement objects
  */
-void document_index_build(girara_session_t* session, GtkTreeModel* model, GtkTreeIter* parent,
-                          girara_tree_node_t* tree);
+GListModel* document_index_build_model(girara_session_t* session, girara_tree_node_t* tree);
 
-/**
- * A custom search equal function for the index tree view, so that
- * when interactively searching, the string will be recursively compared
- * to all the children of visible entries
- *
- * @param model The tree model
- * @param column The column of the entry
- * @param key The keyword to be compared
- * @param iter The tree iterator
- * @param search_data User data pointer
- */
-gboolean search_equal_func_index(GtkTreeModel* model, gint column, const gchar* key, GtkTreeIter* iter,
-                                 gpointer search_data);
 /**
  * Scrolls the document index to the current page
  *
@@ -77,6 +61,8 @@ zathura_rectangle_t recalc_rectangle(zathura_page_t* page, zathura_rectangle_t r
  */
 GtkWidget* zathura_page_get_widget(zathura_t* zathura, zathura_page_t* page);
 
+GtkWidget* zathura_page_get_widget_by_number(zathura_t* zathura, unsigned int page_number);
+
 /**
  * Set if the search results should be drawn or not
  *
@@ -95,14 +81,13 @@ void document_draw_search_results(zathura_t* zathura, bool value);
 char* zathura_get_version_string(const zathura_plugin_manager_t* plugin_manager, bool markup);
 
 /**
- * Get a pointer to the GdkAtom of the current clipboard.
+ * Get a pointer to the GdkClipboard of the current clipboard.
  *
  * @param zathura The zathura instance
  *
- * @return A pointer to a GdkAtom object correspoinding to the current
- * clipboard, or NULL.
+ * @return the current GdkClipboard, or NULL
  */
-GdkAtom* get_selection(zathura_t* zathura);
+GdkClipboard* get_selection(zathura_t* zathura);
 
 /**
  * Returns the valid zoom value which needs to lie in the interval of zoom_min

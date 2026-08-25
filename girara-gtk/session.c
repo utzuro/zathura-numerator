@@ -2,6 +2,14 @@
 
 #include "session.h"
 
+#include <girara/datastructures.h>
+#include <girara/input-history.h>
+#include <girara/template.h>
+#include <girara/utils.h>
+#include <glib/gi18n-lib.h>
+#include <pango/pango-font.h>
+#include <stdlib.h>
+
 #include "callbacks.h"
 #include "commands.h"
 #include "config.h"
@@ -9,15 +17,6 @@
 #include "internal.h"
 #include "settings.h"
 #include "shortcuts.h"
-
-#include <girara/datastructures.h>
-#include <girara/input-history.h>
-#include <girara/template.h>
-#include <girara/utils.h>
-
-#include <glib/gi18n-lib.h>
-#include <pango/pango-font.h>
-#include <stdlib.h>
 
 static int cb_sort_settings(const void* data1, const void* data2) {
   const girara_setting_t* lhs = data1;
@@ -76,7 +75,7 @@ void css_template_fill_font(GiraraTemplate* csstemplate, const char* font) {
     girara_template_set_variable_value(csstemplate, "font-size", "9pt");
   } else {
     g_autofree char* size = g_strdup_printf("%d%s", pango_font_description_get_size(descr) / PANGO_SCALE,
-                                            pango_font_description_get_size_is_absolute(descr) == FALSE ? "pt" : "");
+                                            pango_font_description_get_size_is_absolute(descr) ? "" : "pt");
     girara_template_set_variable_value(csstemplate, "font-size", size);
   }
 
@@ -174,6 +173,12 @@ static void fill_template_with_values(girara_session_t* session) {
   }
 }
 
+static void cb_css_parsing_error(GtkCssProvider* UNUSED(provider), GtkCssSection* section, const GError* error,
+                                 gpointer UNUSED(data)) {
+  g_autofree char* location = section != NULL ? gtk_css_section_to_string(section) : NULL;
+  girara_error("Unable to load CSS (%s): %s", location != NULL ? location : "unknown location", error->message);
+}
+
 static void css_template_changed(GiraraTemplate* csstemplate, girara_session_t* session) {
   GtkCssProvider* provider  = session->private_data->gtk.cssprovider;
   g_autofree char* css_data = girara_template_evaluate(csstemplate);
@@ -185,17 +190,17 @@ static void css_template_changed(GiraraTemplate* csstemplate, girara_session_t* 
   if (provider == NULL) {
     provider = session->private_data->gtk.cssprovider = gtk_css_provider_new();
 
-    /* add CSS style provider */
+    /* the load call has no error return so errors arrive on this signal */
+    g_signal_connect(provider, "parsing-error", G_CALLBACK(cb_css_parsing_error), NULL);
+
+    /* our CSS comes from the user's config, so it must beat gtk.css */
     GdkDisplay* display = gdk_display_get_default();
-    GdkScreen* screen   = gdk_display_get_default_screen(display);
-    gtk_style_context_add_provider_for_screen(screen, GTK_STYLE_PROVIDER(provider),
-                                              GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    /* gtk loads ~/.config/gtk-4.0/gtk.css at USER priority, so go one above */
+    gtk_style_context_add_provider_for_display(display, GTK_STYLE_PROVIDER(provider),
+                                               GTK_STYLE_PROVIDER_PRIORITY_USER + 1);
   }
 
-  g_autoptr(GError) error = NULL;
-  if (gtk_css_provider_load_from_data(provider, css_data, -1, &error) == FALSE) {
-    girara_error("Unable to load CSS: %s", error->message);
-  }
+  gtk_css_provider_load_from_string(provider, css_data);
 }
 
 static void mode_string_free(void* data) {
@@ -248,7 +253,7 @@ girara_session_t* girara_session_create(void) {
   session->modes.inputbar     = inputbar_mode;
 
   /* config handles */
-  session_private->config.handles = girara_list_new_with_free((girara_free_function_t)girara_config_handle_free);
+  session_private->config.handles = girara_list_new_with_free(girara_config_handle_free);
   session_private->config.shortcut_mappings =
       girara_list_new_with_free((girara_free_function_t)girara_shortcut_mapping_free);
   session_private->config.argument_mappings =
@@ -275,14 +280,13 @@ girara_session_t* girara_session_create(void) {
   session->gtk.inputbar_box       = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
   gtk_box_set_homogeneous(session->gtk.inputbar_box, TRUE);
   session->gtk.view = gtk_stack_new();
-  gtk_widget_add_events(session->gtk.view, GDK_SCROLL_MASK);
   gtk_widget_set_can_focus(session->gtk.view, true);
-  session->gtk.statusbar         = gtk_event_box_new();
-  session->gtk.notification_area = gtk_event_box_new();
+  session->gtk.statusbar         = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+  session->gtk.notification_area = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
   session->gtk.notification_text = gtk_label_new(NULL);
   session->gtk.inputbar_dialog   = GTK_LABEL(gtk_label_new(NULL));
   session->gtk.inputbar_entry    = GTK_ENTRY(gtk_entry_new());
-  session->gtk.inputbar          = gtk_event_box_new();
+  session->gtk.inputbar          = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
   /* make notification text selectable */
   gtk_label_set_selectable(GTK_LABEL(session->gtk.notification_text), TRUE);
@@ -292,87 +296,52 @@ girara_session_t* girara_session_create(void) {
   return session;
 }
 
-static void screen_changed(GtkWidget* widget, GdkScreen* GIRARA_UNUSED(old_screen), gpointer GIRARA_UNUSED(userdata)) {
-  GdkScreen* screen = gtk_widget_get_screen(widget);
-  GdkVisual* visual = gdk_screen_get_rgba_visual(screen);
-  if (!visual) {
-    visual = gdk_screen_get_system_visual(screen);
-  }
-  gtk_widget_set_visual(widget, visual);
-}
-
 bool girara_session_init(girara_session_t* session, const char* sessionname) {
-  if (session == NULL) {
+  if (!session || !sessionname) {
     return false;
   }
 
   /* set session name */
-  session->private_data->session_name = g_strdup((sessionname == NULL) ? "girara" : sessionname);
-
-  /* enable smooth scroll events */
-  gtk_widget_add_events(session->gtk.view, GDK_SMOOTH_SCROLL_MASK);
+  session->private_data->session_name = g_strdup(sessionname);
 
   /* load CSS style */
   fill_template_with_values(session);
   g_signal_connect(G_OBJECT(session->private_data->csstemplate), "changed", G_CALLBACK(css_template_changed), session);
 
   /* window */
-#ifdef GDK_WINDOWING_X11
-  if (session->gtk.embed != 0) {
-    session->gtk.window = gtk_plug_new(session->gtk.embed);
-  } else {
-#endif
-    session->gtk.window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-#ifdef GDK_WINDOWING_X11
-  }
-#endif
-
+  session->gtk.window = gtk_window_new();
   gtk_widget_set_name(session->gtk.window, session->private_data->session_name);
-
-  g_signal_connect(G_OBJECT(session->gtk.window), "screen-changed", G_CALLBACK(screen_changed), NULL);
-  screen_changed(GTK_WIDGET(session->gtk.window), NULL, NULL);
 
   /* apply CSS style */
   css_template_changed(session->private_data->csstemplate, session);
 
-  GdkGeometry hints = {
-      .base_height = 1,
-      .base_width  = 1,
-      .height_inc  = 0,
-      .max_aspect  = 0,
-      .max_height  = 0,
-      .max_width   = 0,
-      .min_aspect  = 0,
-      .min_height  = 0,
-      .min_width   = 0,
-      .width_inc   = 0,
-  };
-
-  gtk_window_set_geometry_hints(GTK_WINDOW(session->gtk.window), NULL, &hints, GDK_HINT_MIN_SIZE);
-
   /* view */
-  session->signals.view_key_pressed = g_signal_connect(G_OBJECT(session->gtk.view), "key-press-event",
-                                                       G_CALLBACK(girara_callback_view_key_press_event), session);
+  /* run in capture phase so the scrolled window does not eat navigation keys */
+  GtkEventController* key_ctrl = gtk_event_controller_key_new();
+  gtk_event_controller_set_propagation_phase(key_ctrl, GTK_PHASE_CAPTURE);
+  g_signal_connect(key_ctrl, "key-pressed", G_CALLBACK(girara_callback_view_key_press_event), session);
+  gtk_widget_add_controller(session->gtk.view, key_ctrl);
 
-  session->signals.view_button_press_event = g_signal_connect(
-      G_OBJECT(session->gtk.view), "button-press-event", G_CALLBACK(girara_callback_view_button_press_event), session);
+  GtkGesture* click = gtk_gesture_click_new();
+  gtk_gesture_single_set_button(GTK_GESTURE_SINGLE(click), 0);
+  g_signal_connect(click, "pressed", G_CALLBACK(girara_callback_view_button_press_event), session);
+  g_signal_connect(click, "released", G_CALLBACK(girara_callback_view_button_release_event), session);
+  gtk_widget_add_controller(session->gtk.view, GTK_EVENT_CONTROLLER(click));
 
-  session->signals.view_button_release_event =
-      g_signal_connect(G_OBJECT(session->gtk.view), "button-release-event",
-                       G_CALLBACK(girara_callback_view_button_release_event), session);
+  GtkEventController* motion = gtk_event_controller_motion_new();
+  g_signal_connect(motion, "motion", G_CALLBACK(girara_callback_view_button_motion_notify_event), session);
+  gtk_widget_add_controller(session->gtk.view, motion);
 
-  session->signals.view_motion_notify_event =
-      g_signal_connect(G_OBJECT(session->gtk.view), "motion-notify-event",
-                       G_CALLBACK(girara_callback_view_button_motion_notify_event), session);
-
-  session->signals.view_scroll_event = g_signal_connect(G_OBJECT(session->gtk.view), "scroll-event",
-                                                        G_CALLBACK(girara_callback_view_scroll_event), session);
+  GtkEventController* scroll = gtk_event_controller_scroll_new(GTK_EVENT_CONTROLLER_SCROLL_BOTH_AXES);
+  gtk_event_controller_set_propagation_phase(scroll, GTK_PHASE_CAPTURE);
+  g_signal_connect(scroll, "scroll", G_CALLBACK(girara_callback_view_scroll_event), session);
+  gtk_widget_add_controller(session->gtk.view, scroll);
 
   /* statusbar */
-  gtk_container_add(GTK_CONTAINER(session->gtk.statusbar), GTK_WIDGET(session->gtk.statusbar_entries));
+  gtk_box_append(GTK_BOX(session->gtk.statusbar), GTK_WIDGET(session->gtk.statusbar_entries));
 
   /* notification area */
-  gtk_container_add(GTK_CONTAINER(session->gtk.notification_area), session->gtk.notification_text);
+  gtk_box_append(GTK_BOX(session->gtk.notification_area), session->gtk.notification_text);
   gtk_widget_set_halign(session->gtk.notification_text, GTK_ALIGN_START);
   gtk_widget_set_valign(session->gtk.notification_text, GTK_ALIGN_CENTER);
   gtk_label_set_use_markup(GTK_LABEL(session->gtk.notification_text), TRUE);
@@ -385,9 +354,9 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
   widget_add_class(session->gtk.notification_text, "bottom_box");
   widget_add_class(GTK_WIDGET(session->gtk.statusbar_entries), "bottom_box");
 
-  session->signals.inputbar_key_pressed =
-      g_signal_connect(G_OBJECT(session->gtk.inputbar_entry), "key-press-event",
-                       G_CALLBACK(girara_callback_inputbar_key_press_event), session);
+  GtkEventController* ib_key = gtk_event_controller_key_new();
+  g_signal_connect(ib_key, "key-pressed", G_CALLBACK(girara_callback_inputbar_key_press_event), session);
+  gtk_widget_add_controller(GTK_WIDGET(session->gtk.inputbar_entry), ib_key);
 
   session->signals.inputbar_changed = g_signal_connect(G_OBJECT(session->gtk.inputbar_entry), "changed",
                                                        G_CALLBACK(girara_callback_inputbar_changed_event), session);
@@ -399,31 +368,32 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
   gtk_box_set_spacing(session->gtk.inputbar_box, 5);
 
   /* inputbar box */
-  gtk_box_pack_start(GTK_BOX(session->gtk.inputbar_box), GTK_WIDGET(session->gtk.inputbar_dialog), FALSE, FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(session->gtk.inputbar_box), GTK_WIDGET(session->gtk.inputbar_entry), TRUE, TRUE, 0);
-  gtk_container_add(GTK_CONTAINER(session->gtk.inputbar), GTK_WIDGET(session->gtk.inputbar_box));
+  gtk_box_append(GTK_BOX(session->gtk.inputbar_box), GTK_WIDGET(session->gtk.inputbar_dialog));
+  gtk_box_append(GTK_BOX(session->gtk.inputbar_box), GTK_WIDGET(session->gtk.inputbar_entry));
+  gtk_widget_set_hexpand(GTK_WIDGET(session->gtk.inputbar_entry), true);
+  gtk_box_append(GTK_BOX(session->gtk.inputbar), GTK_WIDGET(session->gtk.inputbar_box));
 
   /* bottom box */
   gtk_box_set_spacing(session->private_data->gtk.bottom_box, 0);
 
-  gtk_box_pack_end(GTK_BOX(session->private_data->gtk.bottom_box), GTK_WIDGET(session->gtk.inputbar), TRUE, TRUE, 0);
-  gtk_box_pack_end(GTK_BOX(session->private_data->gtk.bottom_box), GTK_WIDGET(session->gtk.notification_area), TRUE,
-                   TRUE, 0);
-  gtk_box_pack_end(GTK_BOX(session->private_data->gtk.bottom_box), GTK_WIDGET(session->gtk.statusbar), TRUE, TRUE, 0);
+  gtk_box_prepend(GTK_BOX(session->private_data->gtk.bottom_box), GTK_WIDGET(session->gtk.inputbar));
+  gtk_box_prepend(GTK_BOX(session->private_data->gtk.bottom_box), GTK_WIDGET(session->gtk.notification_area));
+  gtk_box_prepend(GTK_BOX(session->private_data->gtk.bottom_box), GTK_WIDGET(session->gtk.statusbar));
 
   /* packing */
   gtk_box_set_spacing(session->gtk.box, 0);
-  gtk_box_pack_start(session->gtk.box, GTK_WIDGET(session->gtk.view), TRUE, TRUE, 0);
+  gtk_widget_set_vexpand(GTK_WIDGET(session->gtk.view), TRUE);
+  gtk_box_append(session->gtk.box, GTK_WIDGET(session->gtk.view));
 
   /* box */
-  gtk_container_add(GTK_CONTAINER(session->private_data->gtk.overlay), GTK_WIDGET(session->gtk.box));
+  gtk_overlay_set_child(GTK_OVERLAY(session->private_data->gtk.overlay), GTK_WIDGET(session->gtk.box));
   /* bottom_box */
   g_object_set(session->private_data->gtk.bottom_box, "halign", GTK_ALIGN_FILL, NULL);
   g_object_set(session->private_data->gtk.bottom_box, "valign", GTK_ALIGN_END, NULL);
 
-  gtk_container_add(GTK_CONTAINER(session->gtk.box), GTK_WIDGET(session->private_data->gtk.bottom_box));
+  gtk_box_append(session->gtk.box, GTK_WIDGET(session->private_data->gtk.bottom_box));
 
-  gtk_container_add(GTK_CONTAINER(session->gtk.window), GTK_WIDGET(session->private_data->gtk.overlay));
+  gtk_window_set_child(GTK_WINDOW(session->gtk.window), GTK_WIDGET(session->private_data->gtk.overlay));
 
   /* statusbar */
   widget_add_class(GTK_WIDGET(session->gtk.statusbar), "statusbar");
@@ -439,8 +409,8 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
   widget_add_class(session->gtk.notification_text, "notification");
 
   /* set window size */
-  int window_width  = 0;
-  int window_height = 0;
+  unsigned int window_width  = 0;
+  unsigned int window_height = 0;
   girara_setting_get(session, "window-width", &window_width);
   girara_setting_get(session, "window-height", &window_height);
 
@@ -448,22 +418,16 @@ bool girara_session_init(girara_session_t* session, const char* sessionname) {
     gtk_window_set_default_size(GTK_WINDOW(session->gtk.window), window_width, window_height);
   }
 
-  gtk_widget_show_all(GTK_WIDGET(session->gtk.window));
-  gtk_widget_hide(GTK_WIDGET(session->gtk.notification_area));
-  gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar_dialog));
+  gtk_widget_set_visible(GTK_WIDGET(session->gtk.window), TRUE);
+  gtk_widget_set_visible(GTK_WIDGET(session->gtk.notification_area), FALSE);
+  gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar_dialog), FALSE);
 
   if (session->global.autohide_inputbar == true) {
-    gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar));
+    gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar), FALSE);
   }
 
   if (session->global.hide_statusbar == true) {
-    gtk_widget_hide(GTK_WIDGET(session->gtk.statusbar));
-  }
-
-  g_autofree char* window_icon = NULL;
-  girara_setting_get(session, "window-icon", &window_icon);
-  if (window_icon != NULL && strlen(window_icon) != 0) {
-    girara_set_window_icon(session, window_icon);
+    gtk_widget_set_visible(GTK_WIDGET(session->gtk.statusbar), FALSE);
   }
 
   gtk_widget_grab_focus(GTK_WIDGET(session->gtk.view));
@@ -606,8 +570,8 @@ void girara_notify(girara_session_t* session, int level, const char* format, ...
   gtk_label_set_markup(GTK_LABEL(session->gtk.notification_text), message);
 
   /* update visibility */
-  gtk_widget_show(GTK_WIDGET(session->gtk.notification_area));
-  gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar));
+  gtk_widget_set_visible(GTK_WIDGET(session->gtk.notification_area), TRUE);
+  gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar), FALSE);
 
   gtk_widget_grab_focus(GTK_WIDGET(session->gtk.view));
 }
@@ -620,7 +584,7 @@ void girara_dialog(girara_session_t* session, const char* dialog, bool invisible
     return;
   }
 
-  gtk_widget_show(GTK_WIDGET(session->gtk.inputbar_dialog));
+  gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar_dialog), TRUE);
 
   /* set dialog message */
   if (dialog != NULL) {
@@ -648,7 +612,7 @@ bool girara_set_view(girara_session_t* session, GtkWidget* widget) {
 
   GtkWidget* parent = gtk_widget_get_parent(widget);
   if (parent != session->gtk.view) {
-    gtk_container_add(GTK_CONTAINER(session->gtk.view), widget);
+    gtk_stack_add_child(GTK_STACK(session->gtk.view), widget);
   }
 
   gtk_widget_set_visible(widget, true);
@@ -711,25 +675,9 @@ bool girara_set_window_icon(girara_session_t* session, const char* name) {
     return false;
   }
 
-  GtkWindow* window     = GTK_WINDOW(session->gtk.window);
-  g_autofree char* path = girara_fix_path(name);
-  bool success          = true;
-
-  if (g_file_test(path, G_FILE_TEST_EXISTS) == TRUE) {
-    girara_debug("Loading window icon from file: %s", path);
-
-    g_autoptr(GError) error = NULL;
-    success                 = gtk_window_set_icon_from_file(window, path, &error);
-
-    if (success == false) {
-      girara_debug("Failed to load window icon (file): %s", error->message);
-    }
-  } else {
-    girara_debug("Loading window icon with name: %s", name);
-    gtk_window_set_icon_name(window, name);
-  }
-
-  return success;
+  girara_debug("Loading window icon with name: %s", name);
+  gtk_window_set_icon_name(GTK_WINDOW(session->gtk.window), name);
+  return true;
 }
 
 girara_list_t* girara_get_command_history(girara_session_t* session) {

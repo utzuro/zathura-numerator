@@ -1,25 +1,27 @@
 /* SPDX-License-Identifier: Zlib */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <libgen.h>
-#include <glib/gi18n.h>
-
-#include "bookmarks.h"
-#include "document.h"
 #include "completion.h"
-#include "utils.h"
-#include "page.h"
-#include "database.h"
 
+#include <girara-gtk/completion.h>
 #include <girara-gtk/session.h>
 #include <girara-gtk/settings.h>
-#include <girara-gtk/completion.h>
 #include <girara/datastructures.h>
 #include <girara/log.h>
 #include <girara/utils.h>
+#include <glib/gi18n.h>
+#include <libgen.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#include "bookmarks.h"
+#include "document.h"
+#include "utils.h"
+#include "page.h"
+#include "database.h"
+#include "render.h"
+#include "zathura.h"
 
 static int compare_case_insensitive(const void* data1, const void* data2) {
   const char* str1 = data1;
@@ -44,7 +46,7 @@ static girara_list_t* list_files(zathura_t* zathura, const char* current_path, c
     return NULL;
   }
 
-  girara_list_t* res = girara_sorted_list_new_with_free(compare_case_insensitive, g_free);
+  g_autoptr(girara_list_t) res = girara_sorted_list_new_with_free(compare_case_insensitive, g_free);
 
   bool show_hidden = false;
   girara_setting_get(zathura->ui.session, "show-hidden", &show_hidden);
@@ -56,15 +58,14 @@ static girara_list_t* list_files(zathura_t* zathura, const char* current_path, c
   while ((name = g_dir_read_name(dir)) != NULL) {
     g_autofree char* e_name = g_filename_display_name(name);
     if (e_name == NULL) {
-      goto error_free;
+      return NULL;
     }
-
-    size_t e_length = strlen(e_name);
 
     if (show_hidden == false && e_name[0] == '.') {
       continue;
     }
 
+    const size_t e_length = strlen(e_name);
     if ((current_file_length > e_length) || strncmp(current_file, e_name, current_file_length)) {
       continue;
     }
@@ -103,11 +104,7 @@ static girara_list_t* list_files(zathura_t* zathura, const char* current_path, c
     }
   }
 
-  return res;
-
-error_free:
-  girara_list_free(res);
-  return NULL;
+  return g_steal_pointer(&res);
 }
 
 static void group_add_element(void* data, void* userdata) {
@@ -119,23 +116,16 @@ static void group_add_element(void* data, void* userdata) {
 
 static girara_completion_t* list_files_for_cc(zathura_t* zathura, const char* input, bool check_file_ext,
                                               int show_recent) {
-  girara_completion_t* completion          = girara_completion_init();
-  girara_completion_group_t* group         = girara_completion_group_create(zathura->ui.session, "files");
-  girara_completion_group_t* history_group = NULL;
-  g_autofree gchar* path                   = NULL;
-  g_autofree gchar* current_path           = NULL;
+  g_autoptr(girara_completion_t) completion  = girara_completion_init();
+  g_autoptr(girara_completion_group_t) group = girara_completion_group_create(_("Files"));
 
-  if (show_recent > 0) {
-    history_group = girara_completion_group_create(zathura->ui.session, "recent files");
+  if (completion == NULL || group == NULL) {
+    return NULL;
   }
 
-  if (completion == NULL || group == NULL || (show_recent > 0 && history_group == NULL)) {
-    goto error_free;
-  }
-
-  path = girara_fix_path(input);
+  g_autofree gchar* path = girara_fix_path(input);
   if (path == NULL) {
-    goto error_free;
+    return NULL;
   }
 
   /* If the path does not begin with a slash we update the path with the current
@@ -143,12 +133,12 @@ static girara_completion_t* list_files_for_cc(zathura_t* zathura, const char* in
   if (strlen(path) == 0 || path[0] != '/') {
     g_autofree char* cwd = g_get_current_dir();
     if (cwd == NULL) {
-      goto error_free;
+      return NULL;
     }
 
     char* tmp_path = g_strdup_printf("%s/%s", cwd, path);
     if (tmp_path == NULL) {
-      goto error_free;
+      return NULL;
     }
 
     g_free(path);
@@ -156,8 +146,8 @@ static girara_completion_t* list_files_for_cc(zathura_t* zathura, const char* in
   }
 
   /* Append a slash if the given argument is a directory */
-  bool is_dir = (path[strlen(path) - 1] == '/') ? true : false;
-  if ((g_file_test(path, G_FILE_TEST_IS_DIR) == TRUE) && is_dir == false) {
+  bool is_dir = path[strlen(path) - 1] == '/';
+  if ((g_file_test(path, G_FILE_TEST_IS_DIR)) && is_dir == false) {
     char* tmp_path = g_strdup_printf("%s/", path);
     g_free(path);
     path   = tmp_path;
@@ -165,18 +155,18 @@ static girara_completion_t* list_files_for_cc(zathura_t* zathura, const char* in
   }
 
   /* get current path */
-  current_path = is_dir ? g_strdup(path) : g_path_get_dirname(path);
+  g_autofree gchar* current_path = is_dir ? g_strdup(path) : g_path_get_dirname(path);
 
   /* get current file */
   gchar* current_file              = is_dir ? "" : basename(path);
   const size_t current_file_length = strlen(current_file);
 
   /* read directory */
-  if (g_file_test(current_path, G_FILE_TEST_IS_DIR) == TRUE) {
+  if (g_file_test(current_path, G_FILE_TEST_IS_DIR)) {
     g_autoptr(girara_list_t) names =
         list_files(zathura, current_path, current_file, current_file_length, is_dir, check_file_ext);
     if (names == NULL) {
-      goto error_free;
+      return NULL;
     }
 
     girara_list_foreach(names, group_add_element, group);
@@ -185,36 +175,23 @@ static girara_completion_t* list_files_for_cc(zathura_t* zathura, const char* in
   if (show_recent > 0) {
     g_autoptr(girara_list_t) recent_files = zathura_db_get_recent_files(zathura->database, show_recent, path);
     if (recent_files == NULL) {
-      goto error_free;
+      return NULL;
     }
 
     if (girara_list_size(recent_files) != 0) {
+      g_autoptr(girara_completion_group_t) history_group = girara_completion_group_create(_("Recent files"));
+      if (history_group == NULL) {
+        return NULL;
+      }
+
       girara_list_foreach(recent_files, group_add_element, history_group);
-    } else {
-      girara_completion_group_free(history_group);
-      history_group = NULL;
+      girara_completion_add_group(completion, g_steal_pointer(&history_group));
     }
   }
 
-  if (history_group != NULL) {
-    girara_completion_add_group(completion, history_group);
-  }
-  girara_completion_add_group(completion, group);
+  girara_completion_add_group(completion, g_steal_pointer(&group));
 
-  return completion;
-
-error_free:
-  if (completion) {
-    girara_completion_free(completion);
-  }
-  if (history_group) {
-    girara_completion_group_free(history_group);
-  }
-  if (group) {
-    girara_completion_group_free(group);
-  }
-
-  return NULL;
+  return g_steal_pointer(&completion);
 }
 
 girara_completion_t* cc_open(girara_session_t* session, const char* input) {
@@ -245,11 +222,11 @@ girara_completion_t* cc_bookmarks(girara_session_t* session, const char* input) 
   g_return_val_if_fail(session->global.data != NULL, NULL);
   zathura_t* zathura = session->global.data;
 
-  girara_completion_t* completion  = girara_completion_init();
-  girara_completion_group_t* group = girara_completion_group_create(session, NULL);
+  g_autoptr(girara_completion_t) completion  = girara_completion_init();
+  g_autoptr(girara_completion_group_t) group = girara_completion_group_create(_("Bookmarks"));
 
   if (completion == NULL || group == NULL) {
-    goto error_free;
+    return NULL;
   }
 
   const size_t input_length = strlen(input);
@@ -261,20 +238,8 @@ girara_completion_t* cc_bookmarks(girara_session_t* session, const char* input) 
     }
   }
 
-  girara_completion_add_group(completion, group);
-
-  return completion;
-
-error_free:
-  if (completion != NULL) {
-    girara_completion_free(completion);
-  }
-
-  if (group != NULL) {
-    girara_completion_group_free(group);
-  }
-
-  return NULL;
+  girara_completion_add_group(completion, g_steal_pointer(&group));
+  return g_steal_pointer(&completion);
 }
 
 girara_completion_t* cc_export(girara_session_t* session, const char* input) {
@@ -287,27 +252,22 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
     return NULL;
   }
 
-  girara_completion_t* completion             = NULL;
-  girara_completion_group_t* attachment_group = NULL;
-  girara_completion_group_t* image_group      = NULL;
-  g_autoptr(girara_list_t) attachments        = NULL;
-
-  completion = girara_completion_init();
+  g_autoptr(girara_completion_t) completion = girara_completion_init();
   if (completion == NULL) {
     return NULL;
   }
 
-  attachment_group = girara_completion_group_create(session, _("Attachments"));
-  if (attachment_group == NULL) {
-    goto error_free;
-  }
-
   /* add attachments */
-  const size_t input_length        = strlen(input);
-  zathura_error_t attachment_error = ZATHURA_ERROR_OK;
-  attachments                      = zathura_document_attachments_get(document, &attachment_error);
-  bool added_attachment            = false;
+  const size_t input_length            = strlen(input);
+  zathura_error_t attachment_error     = ZATHURA_ERROR_OK;
+  bool added_attachment                = false;
+  g_autoptr(girara_list_t) attachments = zathura_document_attachments_get(document, &attachment_error);
   if (attachments != NULL) {
+    g_autoptr(girara_completion_group_t) attachment_group = girara_completion_group_create(_("Attachments"));
+    if (attachment_group == NULL) {
+      return NULL;
+    }
+
     for (size_t idx = 0; idx != girara_list_size(attachments); ++idx) {
       const char* attachment = girara_list_nth(attachments, idx);
       if (input_length <= strlen(attachment) && !strncmp(input, attachment, input_length)) {
@@ -317,18 +277,13 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
       }
     }
 
-    if (added_attachment == true) {
-      girara_completion_add_group(completion, attachment_group);
-    } else {
-      girara_completion_group_free(attachment_group);
-      attachment_group = NULL;
-    }
+    girara_completion_add_group(completion, g_steal_pointer(&attachment_group));
   }
 
   /* add images */
-  image_group = girara_completion_group_create(session, _("Images"));
+  g_autoptr(girara_completion_group_t) image_group = girara_completion_group_create(_("Images"));
   if (image_group == NULL) {
-    goto error_free;
+    return NULL;
   }
 
   bool added_image                   = false;
@@ -342,13 +297,11 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
 
     g_autoptr(girara_list_t) images = zathura_page_images_get(page, &image_error);
     if (images != NULL) {
-      unsigned int image_number = 1;
       for (size_t idx = 0; idx != girara_list_size(images); ++idx) {
-        g_autofree char* image_string = g_strdup_printf("image-p%d-%d", page_id + 1, image_number);
+        g_autofree char* image_string = g_strdup_printf("image-p%d-%zu", page_id + 1, idx + 1);
         girara_completion_group_add_element(image_group, image_string, NULL);
 
         added_image = true;
-        image_number++;
       }
     } else if (image_error == ZATHURA_ERROR_NOT_IMPLEMENTED) {
       break;
@@ -357,34 +310,16 @@ girara_completion_t* cc_export(girara_session_t* session, const char* input) {
 
   if (attachment_error == ZATHURA_ERROR_NOT_IMPLEMENTED && image_error == ZATHURA_ERROR_NOT_IMPLEMENTED) {
     girara_notify(session, GIRARA_WARNING, _("Plugin does not support exporting attachments and images."));
-    goto error_free;
+    return NULL;
   }
 
   if (added_image == true) {
-    girara_completion_add_group(completion, image_group);
-  } else {
-    girara_completion_group_free(image_group);
-    image_group = NULL;
+    girara_completion_add_group(completion, g_steal_pointer(&image_group));
   }
 
   if (added_image == false && added_attachment == false) {
     girara_notify(session, GIRARA_INFO, _("Document contains no images or attachments"));
   }
 
-  return completion;
-
-error_free:
-  if (completion != NULL) {
-    girara_completion_free(completion);
-  }
-
-  if (attachment_group != NULL) {
-    girara_completion_group_free(attachment_group);
-  }
-
-  if (image_group != NULL) {
-    girara_completion_group_free(image_group);
-  }
-
-  return NULL;
+  return g_steal_pointer(&completion);
 }

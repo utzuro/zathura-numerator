@@ -1,11 +1,12 @@
 /* SPDX-License-Identifier: Zlib */
 
 #include "adjustment.h"
+
+#include <math.h>
+
 #include "document-widget.h"
 #include "page.h"
 #include "zathura.h"
-
-#include <math.h>
 
 double page_calc_height_width(zathura_document_t* document, zathura_page_t* page, unsigned int* page_height,
                               unsigned int* page_width, bool rotate) {
@@ -60,9 +61,9 @@ unsigned int position_to_page_number(zathura_t* zathura, double pos_x, double po
   unsigned int doc_width, doc_height;
   zathura_document_widget_get_document_size(doc_widget, &doc_height, &doc_width);
 
-  unsigned int c0   = zathura_document_get_first_page_column(document);
+  unsigned int c0   = zathura_document_widget_get_first_page_column(doc_widget);
   unsigned int npag = zathura_document_get_number_of_pages(document);
-  unsigned int ncol = zathura_document_get_pages_per_row(document);
+  unsigned int ncol = zathura_document_widget_get_pages_per_row(doc_widget);
   unsigned int nrow = (npag + c0 - 1 + ncol - 1) / ncol;
 
   // This could be done using binary search if linear is too slow
@@ -172,23 +173,36 @@ gdouble zathura_adjustment_get_ratio(GtkAdjustment* adjustment) {
   return (value - lower + page_size / 2.0) / (upper - lower);
 }
 
-void zathura_adjustment_set_value(GtkAdjustment* adjustment, gdouble value) {
-  const gdouble lower        = gtk_adjustment_get_lower(adjustment);
-  const gdouble upper_m_size = gtk_adjustment_get_upper(adjustment) - gtk_adjustment_get_page_size(adjustment);
+/* keep the value inside the scrollable range */
+static gdouble clamp_to_range(GtkAdjustment* adjustment, gdouble value) {
+  const gdouble lower = gtk_adjustment_get_lower(adjustment);
+  /* the page can be wider than the content, keep the upper bound at or above the lower one */
+  const gdouble upper_m_size =
+      MAX(lower, gtk_adjustment_get_upper(adjustment) - gtk_adjustment_get_page_size(adjustment));
 
-  gtk_adjustment_set_value(adjustment, MAX(lower, MIN(upper_m_size, value)));
+  return CLAMP(value, lower, upper_m_size);
+}
+
+/* the ratio marks the middle of the view */
+static gdouble value_for_ratio(GtkAdjustment* adjustment, gdouble ratio) {
+  const gdouble lower     = gtk_adjustment_get_lower(adjustment);
+  const gdouble upper     = gtk_adjustment_get_upper(adjustment);
+  const gdouble page_size = gtk_adjustment_get_page_size(adjustment);
+
+  return (upper - lower) * ratio + lower - page_size / 2.0;
+}
+
+void zathura_adjustment_set_value(GtkAdjustment* adjustment, gdouble value) {
+  gtk_adjustment_set_value(adjustment, clamp_to_range(adjustment, value));
 }
 
 void zathura_adjustment_set_value_from_ratio(GtkAdjustment* adjustment, gdouble ratio) {
-  if (ratio == 0.0) {
-    return;
-  }
+  zathura_adjustment_set_value(adjustment, value_for_ratio(adjustment, ratio));
+}
 
-  gdouble lower     = gtk_adjustment_get_lower(adjustment);
-  gdouble upper     = gtk_adjustment_get_upper(adjustment);
-  gdouble page_size = gtk_adjustment_get_page_size(adjustment);
+bool zathura_adjustment_value_matches_ratio(GtkAdjustment* adjustment, gdouble ratio) {
+  const gdouble expected = clamp_to_range(adjustment, value_for_ratio(adjustment, ratio));
 
-  gdouble value = (upper - lower) * ratio + lower - page_size / 2.0;
-
-  zathura_adjustment_set_value(adjustment, value);
+  /* the value is rounded, so compare within a pixel */
+  return fabs(gtk_adjustment_get_value(adjustment) - expected) < 1.0;
 }

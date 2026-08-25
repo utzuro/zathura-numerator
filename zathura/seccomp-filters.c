@@ -13,9 +13,12 @@
 #include <linux/sched.h> /* for clone filter */
 #include <unistd.h>      /* for fstat */
 #include <sys/mman.h>    /* for mmap/mprotect arguments */
+#include <sys/ioctl.h>   /* for TIOCSTI */
+#include <termios.h>
 
+#include <gtk/gtk.h>
 #ifdef GDK_WINDOWING_X11
-#include <gtk/gtkx.h>
+#include <gdk/x11/gdkx.h>
 #endif
 
 #define ADD_RULE(str_action, action, call, ...)                                                                        \
@@ -23,7 +26,7 @@
     girara_debug("adding rule " str_action " to " G_STRINGIFY(call));                                                  \
     const int err = seccomp_rule_add(ctx, action, SCMP_SYS(call), __VA_ARGS__);                                        \
     if (err < 0) {                                                                                                     \
-      girara_error("failed: %s", g_strerror(-err));                                                                    \
+      girara_error("seccomp_rule_add for " G_STRINGIFY(call) " failed: %s", g_strerror(-err));                         \
       goto out;                                                                                                        \
     }                                                                                                                  \
   } while (0)
@@ -35,13 +38,13 @@
 int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* prevent child processes from getting more priv e.g. via setuid, capabilities, ... */
   if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
-    girara_error("prctl SET_NO_NEW_PRIVS");
+    girara_error("prctl SET_NO_NEW_PRIVS: %s", g_strerror(errno));
     return -1;
   }
 
   /* prevent escape via ptrace */
   if (prctl(PR_SET_DUMPABLE, 0, 0, 0, 0)) {
-    girara_error("prctl PR_SET_DUMPABLE");
+    girara_error("prctl PR_SET_DUMPABLE: %s", g_strerror(errno));
     return -1;
   }
 
@@ -72,7 +75,8 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(exit_group);
   /* ALLOW_RULE(epoll_create); outdated, to be removed */
   /* ALLOW_RULE(fadvise64); */
-  ALLOW_RULE(faccessat); /* AArch64 requirement */
+  ALLOW_RULE(faccessat);
+  ALLOW_RULE(faccessat2);
   ALLOW_RULE(fallocate);
   ALLOW_RULE(fcntl); /* TODO: build detailed filter */
 #ifdef __NR_fstat
@@ -104,6 +108,10 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(inotify_rm_watch);  /* used by filemonitor */
   /* ALLOW_RULE (ioctl); specified below  */
   ALLOW_RULE(lseek);
+#if defined(__NR_lsm_get_self_attr) && defined(__SNR_lsm_get_self_attr)
+  ALLOW_RULE(lsm_get_self_attr);
+  ALLOW_RULE(lsm_list_modules);
+#endif
   /* ALLOW_RULE(lstat); unused? */
   ALLOW_RULE(madvise);
   ALLOW_RULE(memfd_create);
@@ -162,7 +170,7 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ALLOW_RULE(writev);
 #endif
   /*  ALLOW_RULE(writev); X11 only */
-  /*  ALLOW_RULE(wait4); unused? */
+  ALLOW_RULE(wait4); /* used by SIGSTOP signal */
 
   /* required for testing only */
   ALLOW_RULE(timer_create);
@@ -177,8 +185,7 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
 
   if (GDK_IS_X11_DISPLAY(display)) {
     girara_debug("On X11, supporting X11 syscalls");
-    girara_warning("Running strict sandbox mode on X11 provides only \
-        incomplete process isolation.");
+    girara_warning("Running strict sandbox mode on X11 provides only incomplete process isolation.");
 
     /* permit the socket syscall for local UNIX domain sockets (required by X11) */
     ADD_RULE("allow", SCMP_ACT_ALLOW, socket, 1, SCMP_CMP(0, SCMP_CMP_EQ, AF_UNIX));
@@ -188,6 +195,8 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
     ALLOW_RULE(getsockopt);
     ALLOW_RULE(getsockname);
     ALLOW_RULE(connect);
+    ALLOW_RULE(fchmod);
+    ALLOW_RULE(sendto);
     ALLOW_RULE(umask);
     ALLOW_RULE(uname);
     ALLOW_RULE(shmat);
@@ -222,6 +231,15 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* trigger fallback to clone */
   ERRNO_RULE(clone3);
 
+  /* allowed for glycin runtime #928 */
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), clone, 1, SCMP_CMP(0, SCMP_CMP_MASKED_EQ, CLONE_THREAD, 0));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), kill, 0);
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), tgkill, 0);
+  ALLOW_RULE(timerfd_create);
+  ALLOW_RULE(timerfd_settime);
+  ALLOW_RULE(timerfd_gettime);
+  ALLOW_RULE(epoll_pwait);
+
   /* fcntl filter - not yet working */
   /*ADD_RULE("allow", SCMP_ACT_ALLOW, fcntl, 1, SCMP_CMP(0, SCMP_CMP_EQ, \
               F_GETFL | \
@@ -234,6 +252,8 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
               FD_CLOEXEC )); */
 
   /* Special requirements for ioctl, allowed on stdout/stderr */
+  /* deny TIOCSTI to prevent keystroke injection into the controlling TTY */
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EPERM), ioctl, 1, SCMP_CMP(1, SCMP_CMP_EQ, (scmp_datum_t)TIOCSTI));
   ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, 1));
   ADD_RULE("allow", SCMP_ACT_ALLOW, ioctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, 2));
 
@@ -242,21 +262,20 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   ADD_RULE("allow", SCMP_ACT_ALLOW, prctl, 1, SCMP_CMP(0, SCMP_CMP_EQ, PR_SET_PDEATHSIG));
 
   /* This wont work yet, because PROT_EXEC is used after seccomp is called - fix by second filter? */
-  /* Prevent the creation of executeable memory */
+  /* Prevent the creation of executable memory */
   /* ADD_RULE("allow", SCMP_ACT_ALLOW, mmap, 1,  SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE |
               PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE)); */
 
-  /* Prevent the creation of executeable memory - required by some files */
+  /* Prevent the creation of executable memory - required by some files */
   /*ADD_RULE("allow", SCMP_ACT_ALLOW, mprotect, 1,
    *         SCMP_CMP(2, SCMP_CMP_MASKED_EQ, PROT_READ | PROT_WRITE | PROT_NONE, PROT_READ | PROT_WRITE | PROT_NONE));
    */
 
-  /* open syscall to be removed? openat is used instead */
+  /* open syscall still used by musl sometimes */
   /* special restrictions for open, prevent opening files for writing */
-  /*  ADD_RULE("allow", SCMP_ACT_ALLOW,         open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
-   * ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY));
-   * ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR));
-   */
+  ADD_RULE("allow", SCMP_ACT_ALLOW, open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_WRONLY, O_WRONLY));
+  ADD_RULE("errno", SCMP_ACT_ERRNO(EACCES), open, 1, SCMP_CMP(1, SCMP_CMP_MASKED_EQ, O_RDWR, O_RDWR));
 
   /* special restrictions for openat, prevent opening files for writing */
   ADD_RULE("allow", SCMP_ACT_ALLOW, openat, 1, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, 0));
@@ -266,15 +285,11 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* Gracefully fail syscalls that may be used by dependencies in the future
      These rules will still block the syscalls but since there usually is fallback code
      for new syscalls, it will not shut down zathura and give us more time to
-     analyse the newly required syscall before potentionally allowing it.
+     analyse the newly required syscall before potentially allowing it.
   */
 
   ERRNO_RULE(openat2);
-  /* ERRNO_RULE(faccessat2); permitted above for AArch64 */
   ERRNO_RULE(pwritev2);
-#if defined(__NR_readfile) && defined(__SNR_readfile)
-  ERRNO_RULE(readfile);
-#endif
 #if defined(__NR_fchmodat2) && defined(__SNR_fchmodat2)
   ERRNO_RULE(fchmodat2);
 #endif
@@ -283,6 +298,33 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
 #endif
 #if defined(__NR_mseal) && defined(__SNR_mseal)
   ERRNO_RULE(mseal);
+#endif
+  ERRNO_RULE(close_range);
+  ERRNO_RULE(epoll_pwait2);
+#if defined(__NR_futex_wait) && defined(__SNR_futex_wait)
+  ERRNO_RULE(futex_wait);
+  ERRNO_RULE(futex_wake);
+  ERRNO_RULE(futex_requeue);
+#endif
+#if defined(__NR_cachestat) && defined(__SNR_cachestat)
+  ERRNO_RULE(cachestat);
+#endif
+#if defined(__NR_statmount) && defined(__SNR_statmount)
+  ERRNO_RULE(statmount);
+  ERRNO_RULE(listmount);
+#endif
+#if defined(__NR_getxattrat) && defined(__SNR_getxattrat)
+  ERRNO_RULE(getxattrat);
+  ERRNO_RULE(setxattrat);
+  ERRNO_RULE(listxattrat);
+  ERRNO_RULE(removexattrat);
+#endif
+#if defined(__NR_file_getattr) && defined(__SNR_file_getattr)
+  ERRNO_RULE(file_getattr);
+  ERRNO_RULE(file_setattr);
+#endif
+#if defined(__NR_rseq_slice_yield) && defined(__SNR_rseq_slice_yield)
+  ERRNO_RULE(rseq_slice_yield);
 #endif
 
   /* Sandbox Status Notes:
@@ -306,7 +348,7 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
    * Apply second filter after the file has been opened but before it is parsed
    * This may allow the removal of additional syscalls
    * Additional restrictions of commands such as open may be required since it won't allow opening new files
-   * Note: during rendering zathura still openes fonts, which makes this infeasible
+   * Note: during rendering zathura still opens fonts, which makes this infeasible
    * - a second landlock filter would be an alternative solution to restrict read access to /usr/share/fonts only.
    *
    * Alternative sandbox approach:
@@ -321,11 +363,22 @@ int seccomp_enable_strict_filter(zathura_t* zathura) {
   /* otherwise it will try to connect to X11 using inet socket protocol */
 
   /* applying filter... */
-  if (seccomp_load(ctx) >= 0) {
-    /* free ctx after the filter has been loaded into the kernel */
-    seccomp_release(ctx);
-    return 0;
+  /* synchronize the filter across all threads of the process; without this
+   * the filter would only apply to the calling thread, leaving worker
+   * threads created during zathura_init (e.g. the renderer pool) unsandboxed */
+  const int tsync_err = seccomp_attr_set(ctx, SCMP_FLTATR_CTL_TSYNC, 1);
+  if (tsync_err < 0) {
+    girara_error("seccomp_attr_set(TSYNC) failed: %s", g_strerror(-tsync_err));
+    goto out;
   }
+  const int load_err = seccomp_load(ctx);
+  if (load_err < 0) {
+    girara_error("seccomp_load failed: %s", g_strerror(-load_err));
+    goto out;
+  }
+  /* free ctx after the filter has been loaded into the kernel */
+  seccomp_release(ctx);
+  return 0;
 
 out:
   /* something went wrong */

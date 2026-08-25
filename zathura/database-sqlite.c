@@ -1,5 +1,7 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "database-sqlite.h"
+
 #include <sqlite3.h>
 #include <girara/utils.h>
 #include <girara/datastructures.h>
@@ -7,11 +9,12 @@
 #include <string.h>
 #include <strings.h>
 
-#include "database-sqlite.h"
 #include "utils.h"
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(sqlite3_stmt, sqlite3_finalize)
+
 /* version of the database layout */
-#define DATABASE_VERSION 3
+#define DATABASE_VERSION 4
 
 static char* sqlite3_column_text_dup(sqlite3_stmt* stmt, int col) {
   return g_strdup((const char*)sqlite3_column_text(stmt, col));
@@ -63,24 +66,22 @@ static sqlite3_stmt* prepare_statement(sqlite3* session, const char* statement) 
     return NULL;
   }
 
-  const char* pz_tail   = NULL;
-  sqlite3_stmt* pp_stmt = NULL;
+  const char* pz_tail             = NULL;
+  g_autoptr(sqlite3_stmt) pp_stmt = NULL;
 
   if (sqlite3_prepare_v2(session, statement, -1, &pp_stmt, &pz_tail) != SQLITE_OK) {
     girara_error("Failed to prepare query: %s - %s", statement, sqlite3_errmsg(session));
-    sqlite3_finalize(pp_stmt);
     return NULL;
   } else if (pz_tail && *pz_tail != '\0') {
     girara_error("Unused portion of statement: %s", pz_tail);
-    sqlite3_finalize(pp_stmt);
     return NULL;
   }
 
-  return pp_stmt;
+  return g_steal_pointer(&pp_stmt);
 }
 
 static int sqlite_get_user_version(sqlite3* session) {
-  sqlite3_stmt* stmt = prepare_statement(session, "PRAGMA user_version;");
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(session, "PRAGMA user_version;");
   if (stmt == NULL) {
     return -1;
   }
@@ -89,7 +90,6 @@ static int sqlite_get_user_version(sqlite3* session) {
   if (sqlite3_step(stmt) == SQLITE_ROW) {
     version = sqlite3_column_int(stmt, 0);
   }
-  sqlite3_finalize(stmt);
   return version;
 }
 
@@ -101,15 +101,16 @@ static bool check_column(sqlite3* session, const char* table, const char* col, b
     return false;
   }
 
-  sqlite3_stmt* stmt = prepare_statement(session, query);
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(session, query);
   if (stmt == NULL) {
+    sqlite3_free(query);
     return false;
   }
 
   *res = false;
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
-    if (strcmp((const char*)sqlite3_column_text(stmt, 1), col) == 0) {
+    if (g_strcmp0((const char*)sqlite3_column_text(stmt, 1), col) == 0) {
       *res = true;
       break;
     }
@@ -119,7 +120,6 @@ static bool check_column(sqlite3* session, const char* table, const char* col, b
     girara_debug("Column '%s' in table '%s' NOT found.", col, table);
   }
 
-  sqlite3_finalize(stmt);
   sqlite3_free(query);
 
   return true;
@@ -133,16 +133,17 @@ static bool check_column_type(sqlite3* session, const char* table, const char* c
     return false;
   }
 
-  sqlite3_stmt* stmt = prepare_statement(session, query);
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(session, query);
   if (stmt == NULL) {
+    sqlite3_free(query);
     return false;
   }
 
   *res = false;
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
-    if (strcmp((const char*)sqlite3_column_text(stmt, 1), col) == 0 &&
-        strcmp((const char*)sqlite3_column_text(stmt, 2), type) == 0) {
+    if (g_strcmp0((const char*)sqlite3_column_text(stmt, 1), col) == 0 &&
+        g_strcmp0((const char*)sqlite3_column_text(stmt, 2), type) == 0) {
       *res = true;
       break;
     }
@@ -152,7 +153,6 @@ static bool check_column_type(sqlite3* session, const char* table, const char* c
     girara_debug("Column '%s' in table '%s' has wrong type.", col, table);
   }
 
-  sqlite3_finalize(stmt);
   sqlite3_free(query);
 
   return true;
@@ -190,7 +190,7 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
                                           "position_y FLOAT,"
                                           "time TIMESTAMP,"
                                           "page_right_to_left INTEGER,"
-                                          "sha256 BLOB,"
+                                          "hash BLOB,"
                                           "adjust_mode INTEGER"
                                           ");";
 
@@ -225,7 +225,11 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
   static const char SQL_FILEINFO_ALTER5[] = "ALTER TABLE fileinfo ADD COLUMN page_right_to_left INTEGER;";
 
   /* update fileinfo table (part 6) */
-  static const char SQL_FILEINFO_ALTER6[] = "ALTER TABLE fileinfo ADD COLUMN sha256 BLOB;";
+  static const char SQL_FILEINFO_ALTER6[] = "ALTER TABLE fileinfo ADD COLUMN hash BLOB;";
+
+  /* update fileinfo table (part 7) */
+  static const char SQL_FILEINFO_ALTER7[] = "ALTER TABLE fileinfo DROP COLUMN sha256;"
+                                            "ALTER TABLE fileinfo ADD COLUMN hash BLOB;";
 
   /* update bookmark table */
   static const char SQL_BOOKMARK_ALTER[] = "ALTER TABLE bookmarks ADD COLUMN hadj_ratio FLOAT;"
@@ -260,7 +264,8 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
 
     if (ret1 == true && res1 == false) {
       if (sqlite3_exec(session, SQL_FILEINFO_ALTER, NULL, 0, NULL) != SQLITE_OK) {
-        girara_warning("failed to update database table layout: pages_per_row, position_x, position_y");
+        girara_warning("failed to update database table layout (version %d): pages_per_row, position_x, position_y",
+                       database_version);
         all_updates_ok = false;
       }
     }
@@ -269,7 +274,7 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
 
     if (ret1 == true && res1 == false) {
       if (sqlite3_exec(session, SQL_FILEINFO_ALTER2, NULL, 0, NULL) != SQLITE_OK) {
-        girara_warning("failed to update database table layout: first_page_column");
+        girara_warning("failed to update database table layout (version %d): first_page_column", database_version);
         all_updates_ok = false;
       }
     }
@@ -278,7 +283,7 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
 
     if (ret1 == true && res1 == false) {
       if (sqlite3_exec(session, SQL_FILEINFO_ALTER3, NULL, 0, NULL) != SQLITE_OK) {
-        girara_warning("failed to update database table layout: time");
+        girara_warning("failed to update database table layout (version %d): time", database_version);
         all_updates_ok = false;
       }
     }
@@ -287,7 +292,7 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
 
     if (ret1 == true && res1 == false) {
       if (sqlite3_exec(session, SQL_FILEINFO_ALTER4, NULL, 0, NULL) != SQLITE_OK) {
-        girara_warning("failed to update database table layout: zoom");
+        girara_warning("failed to update database table layout (version %d): zoom", database_version);
         all_updates_ok = false;
       }
     }
@@ -296,7 +301,7 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
 
     if (ret1 == true && res1 == false) {
       if (sqlite3_exec(session, SQL_FILEINFO_ALTER5, NULL, 0, NULL) != SQLITE_OK) {
-        girara_warning("failed to update database table layout: pages_right_to_left");
+        girara_warning("failed to update database table layout (version %d): pages_right_to_left", database_version);
         all_updates_ok = false;
       }
     }
@@ -305,7 +310,7 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
 
     if (ret1 == true && res1 == false) {
       if (sqlite3_exec(session, SQL_BOOKMARK_ALTER, NULL, 0, NULL) != SQLITE_OK) {
-        girara_warning("failed to update database table layout: hadj_ration, vadj_ratio");
+        girara_warning("failed to update database table layout (version %d): hadj_ratio, vadj_ratio", database_version);
         all_updates_ok = false;
       }
     }
@@ -328,14 +333,20 @@ static void sqlite_db_check_layout(sqlite3* session, const int database_version,
       g_strlcat(transaction, tx_end, sizeof(transaction));
 
       if (sqlite3_exec(session, transaction, NULL, 0, NULL) != SQLITE_OK) {
-        girara_warning("failed to update database table layout: first_page_column");
+        girara_warning("failed to update database table layout (version %d): first_page_column", database_version);
         all_updates_ok = false;
       }
     }
   }
   if (database_version < 2) {
     if (sqlite3_exec(session, SQL_FILEINFO_ALTER6, NULL, 0, NULL) != SQLITE_OK) {
-      girara_warning("failed to update database table layout: sha256");
+      girara_warning("failed to update database table layout (version %d): hash", database_version);
+      all_updates_ok = false;
+    }
+  }
+  if (database_version < 4 && database_version >= 2) {
+    if (sqlite3_exec(session, SQL_FILEINFO_ALTER7, NULL, 0, NULL) != SQLITE_OK) {
+      girara_warning("failed to update database table layout (version %d): hash", database_version);
       all_updates_ok = false;
     }
   }
@@ -396,7 +407,7 @@ static bool sqlite_add_bookmark(zathura_database_t* db, const char* file, zathur
   static const char SQL_BOOKMARK_ADD[] =
       "REPLACE INTO bookmarks (file, id, page, hadj_ratio, vadj_ratio) VALUES (?, ?, ?, ?, ?);";
 
-  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_BOOKMARK_ADD);
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(priv->session, SQL_BOOKMARK_ADD);
   if (stmt == NULL) {
     return false;
   }
@@ -406,15 +417,11 @@ static bool sqlite_add_bookmark(zathura_database_t* db, const char* file, zathur
       sqlite3_bind_int(stmt, 3, bookmark->page) != SQLITE_OK ||
       sqlite3_bind_double(stmt, 4, bookmark->x) != SQLITE_OK ||
       sqlite3_bind_double(stmt, 5, bookmark->y) != SQLITE_OK) {
-    sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
     return false;
   }
 
-  int res = sqlite3_step(stmt);
-  sqlite3_finalize(stmt);
-
-  return (res == SQLITE_DONE) ? true : false;
+  return (sqlite3_step(stmt) == SQLITE_DONE) ? true : false;
 }
 
 static bool sqlite_remove_bookmark(zathura_database_t* db, const char* file, const char* id) {
@@ -423,57 +430,34 @@ static bool sqlite_remove_bookmark(zathura_database_t* db, const char* file, con
 
   static const char SQL_BOOKMARK_ADD[] = "DELETE FROM bookmarks WHERE file = ? AND id = ?;";
 
-  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_BOOKMARK_ADD);
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(priv->session, SQL_BOOKMARK_ADD);
   if (stmt == NULL) {
     return false;
   }
 
   if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK ||
       sqlite3_bind_text(stmt, 2, id, -1, NULL) != SQLITE_OK) {
-    sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
     return false;
   }
 
-  int res = sqlite3_step(stmt);
-  sqlite3_finalize(stmt);
-
-  return (res == SQLITE_DONE) ? true : false;
+  return (sqlite3_step(stmt) == SQLITE_DONE) ? true : false;
 }
 
-static int bookmarks_compare(const void* l, const void* r) {
-  const zathura_bookmark_t* lhs = l;
-  const zathura_bookmark_t* rhs = r;
-
-  return zathura_bookmarks_compare(lhs, rhs);
-}
-
-static void bookmarks_free(void* p) {
-  zathura_bookmark_t* bookmark = p;
-  zathura_bookmark_free(bookmark);
-}
-
-static girara_list_t* sqlite_load_bookmarks(zathura_database_t* db, const char* file) {
+static bool sqlite_load_bookmarks(zathura_database_t* db, const char* file, girara_list_t* target_list) {
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
   static const char SQL_BOOKMARK_SELECT[] = "SELECT id, page, hadj_ratio, vadj_ratio FROM bookmarks WHERE file = ?;";
 
-  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_BOOKMARK_SELECT);
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(priv->session, SQL_BOOKMARK_SELECT);
   if (stmt == NULL) {
-    return NULL;
+    return false;
   }
 
   if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK) {
-    sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
-    return NULL;
-  }
-
-  girara_list_t* result = girara_sorted_list_new_with_free(bookmarks_compare, bookmarks_free);
-  if (result == NULL) {
-    sqlite3_finalize(stmt);
-    return NULL;
+    return false;
   }
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
@@ -489,12 +473,10 @@ static girara_list_t* sqlite_load_bookmarks(zathura_database_t* db, const char* 
     bookmark->x    = MAX(DBL_MIN, bookmark->x);
     bookmark->y    = MAX(DBL_MIN, bookmark->y);
 
-    girara_list_append(result, bookmark);
+    girara_list_append(target_list, bookmark);
   }
 
-  sqlite3_finalize(stmt);
-
-  return result;
+  return true;
 }
 
 static bool sqlite_save_jumplist(zathura_database_t* db, const char* file, girara_list_t* jumplist) {
@@ -507,14 +489,11 @@ static bool sqlite_save_jumplist(zathura_database_t* db, const char* file, girar
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
-  sqlite3_stmt* stmt = NULL;
-  int res            = 0;
-
   if (sqlite3_exec(priv->session, "BEGIN;", NULL, 0, NULL) != SQLITE_OK) {
     return false;
   }
 
-  stmt = prepare_statement(priv->session, SQL_REMOVE_JUMPLIST);
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(priv->session, SQL_REMOVE_JUMPLIST);
 
   if (stmt == NULL) {
     sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
@@ -522,16 +501,12 @@ static bool sqlite_save_jumplist(zathura_database_t* db, const char* file, girar
   }
 
   if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK) {
-    sqlite3_finalize(stmt);
     sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
     girara_error("Failed to bind arguments.");
     return false;
   }
 
-  res = sqlite3_step(stmt);
-  sqlite3_finalize(stmt);
-
-  if (res != SQLITE_DONE) {
+  if (sqlite3_step(stmt) != SQLITE_DONE) {
     sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
     return false;
   }
@@ -543,25 +518,23 @@ static bool sqlite_save_jumplist(zathura_database_t* db, const char* file, girar
 
   bool status = true;
   for (size_t idx = 0; idx != girara_list_size(jumplist) && status; ++idx) {
-    zathura_jump_t* jump = girara_list_nth(jumplist, idx);
-    stmt                 = prepare_statement(priv->session, SQL_INSERT_JUMP);
-    if (stmt == NULL) {
+    zathura_jump_t* jump               = girara_list_nth(jumplist, idx);
+    g_autoptr(sqlite3_stmt) inner_stmt = prepare_statement(priv->session, SQL_INSERT_JUMP);
+    if (inner_stmt == NULL) {
       status = false;
       break;
     }
 
-    if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK || sqlite3_bind_int(stmt, 2, jump->page) != SQLITE_OK ||
-        sqlite3_bind_double(stmt, 3, jump->x) != SQLITE_OK || sqlite3_bind_double(stmt, 4, jump->y) != SQLITE_OK) {
-      sqlite3_finalize(stmt);
+    if (sqlite3_bind_text(inner_stmt, 1, file, -1, NULL) != SQLITE_OK ||
+        sqlite3_bind_int(inner_stmt, 2, jump->page) != SQLITE_OK ||
+        sqlite3_bind_double(inner_stmt, 3, jump->x) != SQLITE_OK ||
+        sqlite3_bind_double(inner_stmt, 4, jump->y) != SQLITE_OK) {
       girara_error("Failed to bind arguments.");
       status = false;
       break;
     }
 
-    res = sqlite3_step(stmt);
-    sqlite3_finalize(stmt);
-
-    if (res != SQLITE_DONE) {
+    if (sqlite3_step(inner_stmt) != SQLITE_DONE) {
       status = false;
     }
   }
@@ -584,13 +557,12 @@ static girara_list_t* sqlite_load_jumplist(zathura_database_t* db, const char* f
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
-  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_GET_JUMPLIST);
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(priv->session, SQL_GET_JUMPLIST);
   if (stmt == NULL) {
     return NULL;
   }
 
   if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK) {
-    sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
 
     return NULL;
@@ -598,7 +570,6 @@ static girara_list_t* sqlite_load_jumplist(zathura_database_t* db, const char* f
 
   girara_list_t* jumplist = girara_list_new_with_free(g_free);
   if (jumplist == NULL) {
-    sqlite3_finalize(stmt);
     return NULL;
   }
 
@@ -614,8 +585,6 @@ static girara_list_t* sqlite_load_jumplist(zathura_database_t* db, const char* f
     jump->page = sqlite3_column_int(stmt, 2);
     girara_list_append(jumplist, jump);
   }
-
-  sqlite3_finalize(stmt);
 
   if (res != SQLITE_DONE) {
     girara_list_free(jumplist);
@@ -636,31 +605,23 @@ static bool sqlite_save_quickmarks(zathura_database_t* db, const char* file, gir
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
-  sqlite3_stmt* stmt = NULL;
-  int res            = 0;
-
   if (sqlite3_exec(priv->session, "BEGIN;", NULL, 0, NULL) != SQLITE_OK) {
     return false;
   }
 
-  stmt = prepare_statement(priv->session, SQL_REMOVE_QUICKMARKS);
-
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(priv->session, SQL_REMOVE_QUICKMARKS);
   if (stmt == NULL) {
     sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
     return false;
   }
 
   if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK) {
-    sqlite3_finalize(stmt);
     sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
     girara_error("Failed to bind arguments.");
     return false;
   }
 
-  res = sqlite3_step(stmt);
-  sqlite3_finalize(stmt);
-
-  if (res != SQLITE_DONE) {
+  if (sqlite3_step(stmt) != SQLITE_DONE) {
     sqlite3_exec(priv->session, "ROLLBACK;", NULL, 0, NULL);
     return false;
   }
@@ -672,27 +633,25 @@ static bool sqlite_save_quickmarks(zathura_database_t* db, const char* file, gir
 
   bool status = true;
   for (size_t idx = 0; idx != girara_list_size(quickmarks) && status; ++idx) {
-    zathura_mark_t* mark = girara_list_nth(quickmarks, idx);
-    stmt                 = prepare_statement(priv->session, SQL_INSERT_MARK);
-    if (stmt == NULL) {
+    zathura_mark_t* mark               = girara_list_nth(quickmarks, idx);
+    g_autoptr(sqlite3_stmt) inner_stmt = prepare_statement(priv->session, SQL_INSERT_MARK);
+    if (inner_stmt == NULL) {
       status = false;
       break;
     }
 
-    if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK || sqlite3_bind_int(stmt, 2, mark->key) != SQLITE_OK ||
-        sqlite3_bind_double(stmt, 3, mark->position_x) != SQLITE_OK ||
-        sqlite3_bind_double(stmt, 4, mark->position_y) != SQLITE_OK ||
-        sqlite3_bind_int(stmt, 5, mark->page) != SQLITE_OK || sqlite3_bind_double(stmt, 6, mark->zoom) != SQLITE_OK) {
-      sqlite3_finalize(stmt);
+    if (sqlite3_bind_text(inner_stmt, 1, file, -1, NULL) != SQLITE_OK ||
+        sqlite3_bind_int(inner_stmt, 2, mark->key) != SQLITE_OK ||
+        sqlite3_bind_double(inner_stmt, 3, mark->position_x) != SQLITE_OK ||
+        sqlite3_bind_double(inner_stmt, 4, mark->position_y) != SQLITE_OK ||
+        sqlite3_bind_int(inner_stmt, 5, mark->page) != SQLITE_OK ||
+        sqlite3_bind_double(inner_stmt, 6, mark->zoom) != SQLITE_OK) {
       girara_error("Failed to bind arguments.");
       status = false;
       break;
     }
 
-    res = sqlite3_step(stmt);
-    sqlite3_finalize(stmt);
-
-    if (res != SQLITE_DONE) {
+    if (sqlite3_step(inner_stmt) != SQLITE_DONE) {
       status = false;
     }
   }
@@ -714,13 +673,12 @@ static girara_list_t* sqlite_load_quickmarks(zathura_database_t* db, const char*
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
-  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_GET_QUICKMARKS);
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(priv->session, SQL_GET_QUICKMARKS);
   if (stmt == NULL) {
     return NULL;
   }
 
   if (sqlite3_bind_text(stmt, 1, file, -1, NULL) != SQLITE_OK) {
-    sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
 
     return NULL;
@@ -728,7 +686,6 @@ static girara_list_t* sqlite_load_quickmarks(zathura_database_t* db, const char*
 
   girara_list_t* quickmarks = girara_list_new_with_free(g_free);
   if (quickmarks == NULL) {
-    sqlite3_finalize(stmt);
     return NULL;
   }
 
@@ -747,8 +704,6 @@ static girara_list_t* sqlite_load_quickmarks(zathura_database_t* db, const char*
     girara_list_append(quickmarks, mark);
   }
 
-  sqlite3_finalize(stmt);
-
   if (res != SQLITE_DONE) {
     girara_list_free(quickmarks);
 
@@ -758,20 +713,18 @@ static girara_list_t* sqlite_load_quickmarks(zathura_database_t* db, const char*
   return quickmarks;
 }
 
-static bool sqlite_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
+static bool sqlite_set_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash,
                                 zathura_fileinfo_t* file_info) {
-  if (db == NULL || file == NULL || hash_sha256 == NULL || file_info == NULL) {
-    return false;
-  }
+  g_return_val_if_fail(hash != NULL, false);
 
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
   static const char SQL_FILEINFO_SET[] =
       "REPLACE INTO fileinfo (file, page, offset, zoom, rotation, pages_per_row, first_page_column, position_x, "
-      "position_y, time, page_right_to_left, sha256) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, DATETIME('now'), ?, ?);";
+      "position_y, time, page_right_to_left, hash) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, DATETIME('now'), ?, ?);";
 
-  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_FILEINFO_SET);
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(priv->session, SQL_FILEINFO_SET);
   if (stmt == NULL) {
     return false;
   }
@@ -786,45 +739,37 @@ static bool sqlite_set_fileinfo(zathura_database_t* db, const char* file, const 
       sqlite3_bind_double(stmt, 8, file_info->position_x) != SQLITE_OK ||
       sqlite3_bind_double(stmt, 9, file_info->position_y) != SQLITE_OK ||
       sqlite3_bind_int(stmt, 10, file_info->page_right_to_left) != SQLITE_OK ||
-      sqlite3_bind_blob(stmt, 11, hash_sha256, 32, SQLITE_STATIC) != SQLITE_OK) {
-    sqlite3_finalize(stmt);
+      sqlite3_bind_blob(stmt, 11, hash, DOCUMENT_DIGEST_SIZE, SQLITE_STATIC) != SQLITE_OK) {
     girara_error("Failed to bind arguments.");
     return false;
   }
 
-  int res = sqlite3_step(stmt);
-  sqlite3_finalize(stmt);
-
-  return (res == SQLITE_DONE) ? true : false;
+  return (sqlite3_step(stmt) == SQLITE_DONE) ? true : false;
 }
 
-static bool sqlite_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash_sha256,
+static bool sqlite_get_fileinfo(zathura_database_t* db, const char* file, const uint8_t* hash,
                                 zathura_fileinfo_t* file_info) {
-  if (db == NULL || file == NULL || hash_sha256 == NULL || file_info == NULL) {
-    return false;
-  }
+  g_return_val_if_fail(hash != NULL, false);
 
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
   static const char SQL_FILEINFO_GET[] =
       "SELECT page, offset, zoom, rotation, pages_per_row, first_page_column, position_x, position_y, "
-      "page_right_to_left FROM fileinfo WHERE file = ? OR sha256 = ? ORDER BY time DESC LIMIT 1;";
+      "page_right_to_left FROM fileinfo WHERE file = ? OR hash = ? ORDER BY time DESC LIMIT 1;";
 
-  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_FILEINFO_GET);
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(priv->session, SQL_FILEINFO_GET);
   if (stmt == NULL) {
     return false;
   }
 
   if (sqlite3_bind_text(stmt, 1, file, -1, SQLITE_STATIC) != SQLITE_OK ||
-      sqlite3_bind_blob(stmt, 2, hash_sha256, 32, SQLITE_STATIC) != SQLITE_OK) {
-    sqlite3_finalize(stmt);
+      sqlite3_bind_blob(stmt, 2, hash, DOCUMENT_DIGEST_SIZE, SQLITE_STATIC) != SQLITE_OK) {
     girara_error("Failed to bind arguments.");
     return false;
   }
 
   if (sqlite3_step(stmt) != SQLITE_ROW) {
-    sqlite3_finalize(stmt);
     girara_debug("No info for file %s available.", file);
     return false;
   }
@@ -839,8 +784,6 @@ static bool sqlite_get_fileinfo(zathura_database_t* db, const char* file, const 
   file_info->position_y             = sqlite3_column_double(stmt, 7);
   file_info->page_right_to_left     = sqlite3_column_int(stmt, 8) != 0;
 
-  sqlite3_finalize(stmt);
-
   return true;
 }
 
@@ -850,19 +793,17 @@ static void sqlite_io_append(GiraraInputHistoryIO* db, const char* input) {
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
-  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_HISTORY_SET);
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(priv->session, SQL_HISTORY_SET);
   if (stmt == NULL) {
     return;
   }
 
   if (sqlite3_bind_text(stmt, 1, input, -1, NULL) != SQLITE_OK) {
-    sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
     return;
   }
 
   sqlite3_step(stmt);
-  sqlite3_finalize(stmt);
 }
 
 static girara_list_t* sqlite_io_read(GiraraInputHistoryIO* db) {
@@ -871,14 +812,13 @@ static girara_list_t* sqlite_io_read(GiraraInputHistoryIO* db) {
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
-  sqlite3_stmt* stmt = prepare_statement(priv->session, SQL_HISTORY_GET);
+  g_autoptr(sqlite3_stmt) stmt = prepare_statement(priv->session, SQL_HISTORY_GET);
   if (stmt == NULL) {
     return NULL;
   }
 
   girara_list_t* list = girara_list_new_with_free(g_free);
   if (list == NULL) {
-    sqlite3_finalize(stmt);
     return NULL;
   }
 
@@ -886,7 +826,6 @@ static girara_list_t* sqlite_io_read(GiraraInputHistoryIO* db) {
     girara_list_append(list, sqlite3_column_text_dup(stmt, 0));
   }
 
-  sqlite3_finalize(stmt);
   return list;
 }
 
@@ -898,7 +837,7 @@ static girara_list_t* sqlite_get_recent_files(zathura_database_t* db, int max, c
   ZathuraSQLDatabase* sqldb       = ZATHURA_SQLDATABASE(db);
   ZathuraSQLDatabasePrivate* priv = zathura_sqldatabase_get_instance_private(sqldb);
 
-  sqlite3_stmt* stmt =
+  g_autoptr(sqlite3_stmt) stmt =
       prepare_statement(priv->session, basepath == NULL ? SQL_HISTORY_GET : SQL_HISTORY_GET_WITH_BASEPATH);
   if (stmt == NULL) {
     return NULL;
@@ -916,14 +855,12 @@ static girara_list_t* sqlite_get_recent_files(zathura_database_t* db, int max, c
   }
 
   if (failed == true) {
-    sqlite3_finalize(stmt);
     girara_error("Failed to bind arguments.");
-    return false;
+    return NULL;
   }
 
   girara_list_t* list = girara_list_new_with_free(g_free);
   if (list == NULL) {
-    sqlite3_finalize(stmt);
     return NULL;
   }
 
@@ -931,22 +868,26 @@ static girara_list_t* sqlite_get_recent_files(zathura_database_t* db, int max, c
     girara_list_append(list, sqlite3_column_text_dup(stmt, 0));
   }
 
-  sqlite3_finalize(stmt);
   return list;
+}
+
+static bool supports_hash_queries(zathura_database_t* GIRARA_UNUSED(db)) {
+  return true;
 }
 
 static void zathura_database_interface_init(ZathuraDatabaseInterface* iface) {
   /* initialize interface */
-  iface->add_bookmark     = sqlite_add_bookmark;
-  iface->remove_bookmark  = sqlite_remove_bookmark;
-  iface->load_bookmarks   = sqlite_load_bookmarks;
-  iface->load_jumplist    = sqlite_load_jumplist;
-  iface->save_jumplist    = sqlite_save_jumplist;
-  iface->set_fileinfo     = sqlite_set_fileinfo;
-  iface->get_fileinfo     = sqlite_get_fileinfo;
-  iface->get_recent_files = sqlite_get_recent_files;
-  iface->load_quickmarks  = sqlite_load_quickmarks;
-  iface->save_quickmarks  = sqlite_save_quickmarks;
+  iface->add_bookmark          = sqlite_add_bookmark;
+  iface->remove_bookmark       = sqlite_remove_bookmark;
+  iface->load_bookmarks        = sqlite_load_bookmarks;
+  iface->load_jumplist         = sqlite_load_jumplist;
+  iface->save_jumplist         = sqlite_save_jumplist;
+  iface->set_fileinfo          = sqlite_set_fileinfo;
+  iface->get_fileinfo          = sqlite_get_fileinfo;
+  iface->get_recent_files      = sqlite_get_recent_files;
+  iface->load_quickmarks       = sqlite_load_quickmarks;
+  iface->save_quickmarks       = sqlite_save_quickmarks;
+  iface->supports_hash_queries = supports_hash_queries;
 }
 
 static void io_interface_init(GiraraInputHistoryIOInterface* iface) {

@@ -10,28 +10,29 @@
  * The document view widget.
  */
 struct zathura_document_widget_s {
-  GtkContainer parent;
+  GtkWidget parent;
 };
 
 struct zathura_document_widget_class_s {
-  GtkContainerClass parent_class;
+  GtkWidgetClass parent_class;
 };
 
-#define ZATHURA_TYPE_DOCUMENT (zathura_document_widget_get_type())
-#define ZATHURA_DOCUMENT_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_DOCUMENT, ZathuraDocumentWidget))
+#define ZATHURA_TYPE_DOCUMENT_WIDGET (zathura_document_widget_get_type())
+#define ZATHURA_DOCUMENT_WIDGET(obj)                                                                                   \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj), ZATHURA_TYPE_DOCUMENT_WIDGET, ZathuraDocumentWidget))
 #define ZATHURA_DOCUMENT_WIDGET_CLASS(obj)                                                                             \
-  (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_DOCUMENT, ZathuraDocumentWidgetClass))
-#define ZATHURA_IS_DOCUMENT_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_DOCUMENT))
-#define ZATHURA_IS_DOCUMENT_WIDGET_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_DOCUMENT))
+  (G_TYPE_CHECK_CLASS_CAST((obj), ZATHURA_TYPE_DOCUMENT_WIDGET, ZathuraDocumentWidgetClass))
+#define ZATHURA_IS_DOCUMENT_WIDGET(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), ZATHURA_TYPE_DOCUMENT_WIDGET))
+#define ZATHURA_IS_DOCUMENT_WIDGET_CLASS(obj) (G_TYPE_CHECK_CLASS_TYPE((obj), ZATHURA_TYPE_DOCUMENT_WIDGET))
 #define ZATHURA_DOCUMENT_WIDGET_GET_CLASS(obj)                                                                         \
-  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_DOCUMENT, ZathuraDocumentWidgetClass))
+  (G_TYPE_INSTANCE_GET_CLASS((obj), ZATHURA_TYPE_DOCUMENT_WIDGET, ZathuraDocumentWidgetClass))
 
 /**
  * Returns the type of the document view widget.
  *
  * @return the type
  */
-GType zathura_document_widget_get_type(void) G_GNUC_CONST;
+GType zathura_document_widget_get_type(void);
 
 /**
  * Create a document view widget.
@@ -48,6 +49,8 @@ GtkWidget* zathura_document_widget_new(zathura_t* zathura);
  * @param document ZathuraDocumentWidget
  */
 void zathura_document_widget_refresh_layout(ZathuraDocumentWidget* document);
+
+void zathura_document_widget_update_mode(ZathuraDocumentWidget* document);
 
 /**
  * Calculate the position of each grid cell.
@@ -125,5 +128,66 @@ void zathura_document_widget_get_document_size(ZathuraDocumentWidget* document, 
  * @param document ZathuraDocumentWidget
  */
 void zathura_document_widget_clear_pages(ZathuraDocumentWidget* document);
+
+/**
+ * Clear all thumbnails.
+ *
+ * @param document ZathuraDocumentWidget
+ */
+void zathura_document_widget_clear_thumbnails(ZathuraDocumentWidget* document);
+
+/**
+ * This function is used to unmark all pages as not rendered. This should
+ * be used if all pages should be rendered again (e.g.: the zoom level or the
+ * colors have changed)
+ *
+ * @param zathura Zathura object
+ */
+void zathura_document_widget_render_all(ZathuraDocumentWidget* document);
+
+/**
+ * Sets the layout of the pages in the document
+ *
+ * @param[in]  document          The document instance
+ * @param[in]  page_v_padding      pixels of vertical padding between pages
+ * @param[in]  page_h_padding      pixels of horizontal padding between pages
+ * @param[in]  pages_per_row     number of pages per row
+ * @param[in]  first_page_column column of the first page (first column is 1)
+ */
+void zathura_document_widget_set_page_layout(ZathuraDocumentWidget* document, unsigned int page_v_padding,
+                                             unsigned int page_h_padding, unsigned int pages_per_row,
+                                             unsigned int first_page_column);
+
+/**
+ * Returns the vertical padding in pixels between pages
+ *
+ * @param document The document
+ * @return The padding in pixels between pages
+ */
+unsigned int zathura_document_widget_get_page_v_padding(ZathuraDocumentWidget* document);
+
+/**
+ * Returns the horizontal padding in pixels between pages
+ *
+ * @param document The document
+ * @return The padding in pixels between pages
+ */
+unsigned int zathura_document_widget_get_page_h_padding(ZathuraDocumentWidget* document);
+
+/**
+ * Returns the number of pages per row
+ *
+ * @param document The document
+ * @return The number of pages per row
+ */
+unsigned int zathura_document_widget_get_pages_per_row(ZathuraDocumentWidget* document);
+
+/**
+ * Returns the column for the first page (first column = 1)
+ *
+ * @param document The document
+ * @return The column for the first page
+ */
+unsigned int zathura_document_widget_get_first_page_column(ZathuraDocumentWidget* document);
 
 #endif // DOCUMENT_WIDGET_H

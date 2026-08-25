@@ -4,7 +4,7 @@ Manpage
 Synopsis
 --------
 
-zathura [-e XID] [-c PATH] [-d PATH] [-p PATH] [-w PASSWORD] [-P NUMBER]
+zathura [-c PATH] [-d PATH] [-p PATH] [-w PASSWORD] [-P NUMBER]
 [--fork] [-l LEVEL] [-s] [-x CMD] [--synctex-forward INPUT] [--synctex-pid PID]
 [-find STRING]
 <files>
@@ -12,15 +12,16 @@ zathura [-e XID] [-c PATH] [-d PATH] [-p PATH] [-w PASSWORD] [-P NUMBER]
 Description
 -----------
 
+**zathura** is a highly customizable and functional document viewer. It provides
+a minimalistic and space saving interface as well as an easy usage that mainly
+focuses on keyboard interaction.
+
 **zathura** displays the given files. If a single hyphen-minus (-) is given as
 file name, the content will be read from the standard input. If no files are
 given, an empty **zathura** instance launches.
 
 Options
 -------
-
--e, --reparent=xid
-  Reparents to window specified by xid
 
 -c, --config-dir=path
   Path to the config directory
@@ -48,7 +49,7 @@ Options
   Set log level (debug, info, warning, error)
 
 -x, --synctex-editor-command=command
-  Set the synctex editor command. Overrides the synctex-editor-command setting.
+  Set the SyncTeX editor command. Overrides the synctex-editor-command setting.
 
 --synctex-forward=input
   Jump to the given position. The switch expects the same format as specified
@@ -152,6 +153,8 @@ General
     Goto quickmark saved at letter or number X
   q
     Quit
+  w
+    Toggle single-page mode
 
 
 Fullscreen mode
@@ -313,11 +316,11 @@ The default appearance and behaviour of zathura can be overwritten by modifying
 the *zathurarc* file (default path: ~/.config/zathura/zathurarc). For a detailed
 description please consult zathurarc(5).
 
-Synctex support
+SyncTeX support
 ---------------
 
-Both synctex forward and backwards synchronization are supported by zathura, To
-enable synctex forward synchronization, please look at the *--synctex-forward*
+Both SyncTeX forward and backwards synchronization are supported by zathura, To
+enable SyncTeX forward synchronization, please look at the *--synctex-forward*
 and *--synctex-editor* options. zathura will also emit a signal via the D-Bus
 interface. To support synctex backwards synchronization, zathura provides a
 D-Bus interface that can be called by the editor. For convince zathura also
@@ -359,15 +362,15 @@ ZATHURA_PLUGINS_PATH
 Sandbox
 -------
 
-The **zathura-sandbox** binary runs *zathura* with a seccomp and/or landlock
+The **zathura-sandbox** binary runs zathura with a seccomp and/or landlock
 based sandbox enabled. Some features are disabled when using sandbox mode:
 
 * saving/writing files
 * use of input methods like ibus
 * printing
 * bookmarks and history
-* dbus integration
-* synctex support
+* D-Bus integration
+* SyncTeX support
 
 The sandbox mode is still experimental with some libc implementations. The
 current supported and tested libc implementations is glibc.

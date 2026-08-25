@@ -5,8 +5,6 @@
 
 #include "types.h"
 
-#include <gtk/gtk.h>
-
 /**
  * Creates a new zathura link
  *
@@ -48,30 +46,5 @@ ZATHURA_PLUGIN_API zathura_rectangle_t zathura_link_get_position(zathura_link_t*
  * @return Returns the target of the link (depends on the link type)
  */
 ZATHURA_PLUGIN_API zathura_link_target_t zathura_link_get_target(zathura_link_t* link);
-
-/**
- * Evaluate link
- *
- * @param zathura Zathura instance
- * @param link The link
- */
-void zathura_link_evaluate(zathura_t* zathura, zathura_link_t* link);
-
-/**
- * Display a link using girara_notify
- *
- * @param zathura Zathura instance
- * @param link The link
- */
-void zathura_link_display(zathura_t* zathura, zathura_link_t* link);
-
-/**
- * Copy a link into the clipboard using and display it using girara_notify
- *
- * @param zathura Zathura instance
- * @param link The link
- * @param selection target clipboard
- */
-void zathura_link_copy(zathura_t* zathura, zathura_link_t* link, GdkAtom* selection);
 
 #endif // LINK_H

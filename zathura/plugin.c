@@ -4,7 +4,6 @@
 
 #include <stdlib.h>
 #include <glib/gi18n.h>
-
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 #include <girara-gtk/statusbar.h>
@@ -65,11 +64,10 @@ static void set_plugin_dir(zathura_plugin_manager_t* plugin_manager, const char*
     return;
   }
 
-  char** paths = g_strsplit(dir, ":", 0);
+  g_auto(GStrv) paths = g_strsplit(dir, ":", 0);
   for (size_t i = 0; paths[i] != NULL; ++i) {
     girara_list_append(plugin_manager->path, g_strdup(paths[i]));
   }
-  g_strfreev(paths);
 }
 
 static void set_default_dirs(zathura_plugin_manager_t* plugin_manager) {
@@ -114,11 +112,11 @@ void zathura_plugin_manager_set_dir(zathura_plugin_manager_t* plugin_manager, co
 
 static bool check_suffix(const char* path) {
 #ifdef __APPLE__
-  if (g_str_has_suffix(path, ".dylib") == TRUE) {
+  if (g_str_has_suffix(path, ".dylib")) {
     return true;
   }
 #else
-  if (g_str_has_suffix(path, ".so") == TRUE) {
+  if (g_str_has_suffix(path, ".so")) {
     return true;
   }
 #endif
@@ -209,7 +207,7 @@ static void load_plugin(zathura_plugin_manager_t* plugin_manager, const char* pl
 
   /* resolve symbols and check API and ABI version*/
   const zathura_plugin_definition_t* plugin_definition = NULL;
-  if (g_module_symbol(handle, G_STRINGIFY(ZATHURA_PLUGIN_DEFINITION_SYMBOL), (void**)&plugin_definition) == FALSE ||
+  if (!g_module_symbol(handle, G_STRINGIFY(ZATHURA_PLUGIN_DEFINITION_SYMBOL), (void**)&plugin_definition) ||
       plugin_definition == NULL) {
     girara_error("Could not find '%s' in plugin %s - is not a plugin or needs to be rebuilt.",
                  G_STRINGIFY(ZATHURA_PLUGIN_DEFINITION_SYMBOL), path);
@@ -226,7 +224,7 @@ static void load_plugin(zathura_plugin_manager_t* plugin_manager, const char* pl
 
   /* check mime type */
   if (plugin_definition->mime_types == NULL || plugin_definition->mime_types_size == 0) {
-    girara_error("Plugin does not handly any mime types.");
+    girara_error("Plugin does not handle any mime types.");
     g_module_close(handle);
     return;
   }
@@ -266,8 +264,7 @@ static void load_plugin(zathura_plugin_manager_t* plugin_manager, const char* pl
     zathura_plugin_free(plugin);
   } else {
     girara_debug("Successfully loaded plugin from '%s'.", plugin->path);
-    girara_debug("plugin %s: version %u.%u.%u", plugin_definition->name, plugin_definition->version.major,
-                 plugin_definition->version.minor, plugin_definition->version.rev);
+    girara_debug("plugin %s: version %s", plugin_definition->name, plugin_definition->version);
   }
 }
 
@@ -364,11 +361,10 @@ const char* zathura_plugin_get_path(const zathura_plugin_t* plugin) {
   }
 }
 
-zathura_plugin_version_t zathura_plugin_get_version(const zathura_plugin_t* plugin) {
-  if (plugin != NULL && plugin->definition != NULL) {
+const char* zathura_plugin_get_version(const zathura_plugin_t* plugin) {
+  if (plugin && plugin->definition && plugin->definition->version) {
     return plugin->definition->version;
   }
 
-  zathura_plugin_version_t version = {0, 0, 0};
-  return version;
+  return "unknown";
 }

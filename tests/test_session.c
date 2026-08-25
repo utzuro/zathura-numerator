@@ -20,7 +20,7 @@ static void test_girara_init(void) {
 
   girara_session_t* session = girara_session_create();
   g_assert_nonnull(session);
-  g_assert_true(girara_session_init(session, NULL));
+  g_assert_true(girara_session_init(session, "test"));
   girara_session_destroy(session);
 }
 
@@ -39,7 +39,7 @@ static void test_create(void) {
 int main(int argc, char* argv[]) {
   setup_logger();
 
-  gtk_init(NULL, NULL);
+  gtk_init();
   g_test_init(&argc, &argv, NULL);
   g_test_add_func("/girara/session/create", test_girara_create);
   g_test_add_func("/girara/session/init", test_girara_init);

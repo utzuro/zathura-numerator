@@ -22,6 +22,6 @@ struct zathura_noopfilemonitor_class_s {
   ZathuraFileMonitorClass parent_class;
 };
 
-GType zathura_noopfilemonitor_get_type(void) G_GNUC_CONST;
+GType zathura_noopfilemonitor_get_type(void);
 
 #endif

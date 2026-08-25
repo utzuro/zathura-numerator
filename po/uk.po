@@ -1,0 +1,1867 @@
+# zathura - language file (Ukrainian)
+# SPDX-License-Identifier: Zlib
+#
+# Translators:
+# Ivan Kovnatsky <inactive+sevenfourk@transifex.com>, 2012
+# sevenfourk <sevenfourk@gmail.com>, 2012
+msgid ""
+msgstr ""
+"Project-Id-Version: zathura\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-17 19:40+0200\n"
+"PO-Revision-Date: 2012-03-26 16:47+0000\n"
+"Last-Translator: sevenfourk <sevenfourk@gmail.com>, 2012\n"
+"Language-Team: Ukrainian (http://app.transifex.com/pwmt/zathura/language/"
+"uk/)\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
+"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
+"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
+"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+
+msgid "Zathura"
+msgstr ""
+
+msgid "Minimalistic document viewer"
+msgstr "Простий переглядач документів"
+
+#. Translators: Search terms to find this application. Do not translate or
+#. localize the semicolons. The list must also end with a semicolon.
+msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
+msgstr "PDF;PS;PostScript;DjVU;документ;презентація;переглядач;"
+
+msgid ""
+"Zathura is a highly customizable and functional document viewer. It provides "
+"a minimalistic and space saving interface as well as an easy usage that "
+"mainly focuses on keyboard interaction. Zathura makes it possible to "
+"completely view and navigate through documents without using a mouse."
+msgstr ""
+"Zathura - це дуже гнучкий та функціональний переглядач документів. Він "
+"забезпечує простий та компактний інтерфейс, а також просте використання, яке "
+"в основному фокусується на взаємодії з клавіатурою. Zathura дає можливість "
+"повністю переглядати та переміщатися по документах без використання миші."
+
+msgid ""
+"Zathura can be extended to support multiple document formats using plugins. "
+"Other features include:"
+msgstr ""
+"Zathura може бути розширений для підтримки декількох форматів документів за "
+"допомогою плаґінів. Інші можливості включають:"
+
+msgid "SyncTeX forward and backward synchronization support."
+msgstr "Підтримка SyncTeX синхронізації вперед та назад ."
+
+msgid "Quickmarks and bookmarks."
+msgstr "Швидкі закладки та закладки."
+
+msgid "Automatic document reloading."
+msgstr "Автоматичне перезавантаження документів."
+
+msgid "Reading a PDF file"
+msgstr "Читання PDF-файлу"
+
+msgid "Opening a file with the `open` command"
+msgstr "Відкриття файлу командою `open`"
+
+msgid "Following links"
+msgstr "Перехід за посиланнями"
+
+msgid "Listing and selecting bookmarks"
+msgstr "Список і вибір закладок"
+
+msgid "Add page-mode setting"
+msgstr ""
+
+msgid "Fix reloading of files (#969)"
+msgstr ""
+
+msgid "Fix CSS handling (#970)"
+msgstr ""
+
+msgid "Replace test feature with test-x11 and test-wayland features"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr "Різні виправлення та покращення"
+
+msgid ""
+"Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
+"embedding is no longer supported (#216, #432). Also, the setting 'window-"
+"icon-document' has been removed."
+msgstr ""
+
+msgid "Fix issues with forking on macOS (#907)"
+msgstr ""
+
+msgid "Fix first-page-column handling regression (#948)"
+msgstr ""
+
+msgid "Support SIGSTOP in sandbox (#945)"
+msgstr ""
+
+msgid "Add setting to open documents in single-page mode"
+msgstr ""
+
+msgid "Bind toggle-single-page to w (#966)"
+msgstr ""
+
+msgid "Make link confirmation optional"
+msgstr ""
+
+msgid "Replace use of SHA256 with XXH3-128 for faster file hashing"
+msgstr ""
+
+msgid "Fix sandbox on X11 (#928)"
+msgstr ""
+
+msgid "Fix crashes on document reload (#164, #462, #729, #993)"
+msgstr ""
+
+msgid "Add option to keep selection highlights (#693)"
+msgstr ""
+
+msgid "Add user feedback to copy_filepath"
+msgstr ""
+
+msgid "Handle unsigned integer values in set command"
+msgstr ""
+
+msgid "Handle key press events for notification area (#897)"
+msgstr ""
+
+msgid "Fix documentation of mouse buttons (#912)"
+msgstr ""
+
+msgid "Make shortcuts available as commands (#225)"
+msgstr ""
+
+msgid "Fix more cases of flickering when rendering pages (#864)"
+msgstr ""
+
+msgid "Add search result counter (#450)"
+msgstr ""
+
+msgid "Fix search result cycling in documents with one page (#902)"
+msgstr ""
+
+msgid "Fix some page rendering regressions (#876, #877, #879, #886)"
+msgstr ""
+
+msgid "Fix warning when using 'null' database (#881)"
+msgstr ""
+
+msgid "Include manpages in tarballs (#674)"
+msgstr ""
+
+msgid "Update translations"
+msgstr "Оновити переклади"
+
+msgid ""
+"Implement single page layout and equal height/width modes (#706, #724, #447, "
+"#289)"
+msgstr ""
+"Реалізувати односторінковий макет і режими однакової висоти/ширини (#706, "
+"#724, #447, #289)"
+
+msgid "Use single page layout for presentation mode (#686, #666)"
+msgstr ""
+"Використовувати односторінковий макет для режиму презентації (#686, #666)"
+
+msgid "Fix blurry rendering and repeated loading messages (#864, #860)"
+msgstr ""
+"Виправити розмите відображення та повторні повідомлення завантаження (#864, "
+"#860)"
+
+msgid "Allow to disable copying to clipboard (#835)"
+msgstr "Дозволити вимкнення копіювання до буфера обміну (#835)"
+
+msgid "Fix smooth scrolling using Ctrl and arrow keys (#872)"
+msgstr "Виправити плавну прокрутку за допомогою Ctrl і стрілок (#872)"
+
+msgid ""
+"Fork to background if opening with multiple files only if --fork is "
+"specified (#855)"
+msgstr ""
+"Переходити у фон при відкритті кількох файлів лише якщо вказано --fork (#855)"
+
+msgid "Fix handling of PageUp and PageDown (#861)"
+msgstr "Виправити обробку PageUp і PageDown (#861)"
+
+msgid "Fix handling of mappings with special keys (#862)"
+msgstr "Виправити обробку прив'язок зі спеціальними клавішами (#862)"
+
+msgid "Integrate Gtk+-specific parts of girara"
+msgstr "Інтегрувати Gtk+-специфічні частини girara"
+
+msgid "Switch to date-based version numbers"
+msgstr "Перейти на версії на основі дат"
+
+msgid "Fix warnings from CSS generation (#824)"
+msgstr "Виправити попередження під час генерації CSS (#824)"
+
+msgid "Apply correct scaling when recoloring (#836)"
+msgstr "Застосовувати правильне масштабування під час перефарбування (#836)"
+
+msgid "Make sure jumplist stays valid after close (#835)"
+msgstr ""
+"Переконатися, що список переходів лишається дійсним після закриття (#835)"
+
+msgid "Disable message in incremental search (#227, #847)"
+msgstr "Вимкнути повідомлення в інкрементальному пошуку (#227, #847)"
+
+msgid "Fix seccomp rules with musl (#843)"
+msgstr "Виправити правила seccomp з musl (#843)"
+
+msgid ""
+"Implement custom drawing for document widget (#580, #657, #736, #785, #795, "
+"#797, #826)"
+msgstr ""
+"Реалізувати власне малювання для віджета документа (#580, #657, #736, #785, "
+"#795, #797, #826)"
+
+msgid "Switch default database to sqlite and drop plain database"
+msgstr "Перемкнути типову базу даних на sqlite і прибрати просту базу даних"
+
+msgid "Notify users if no attachments and images are available to export"
+msgstr "Повідомляти користувачів, якщо немає вкладень і зображень для експорту"
+
+msgid "Make index-* configurable after init (#799)"
+msgstr "Зробити index-* налаштовуваним після init (#799)"
+
+msgid "Support numeric keypad mappings"
+msgstr "Підтримка прив'язок цифрової клавіатури"
+
+msgid "Provide correct number of pages (#814)"
+msgstr "Надавати правильну кількість сторінок (#814)"
+
+msgid "Undo size-allocate callback changes"
+msgstr "Скасувати зміни callback size-allocate"
+
+msgid "Fix temporary file names for better content-type detection"
+msgstr "Виправити назви тимчасових файлів для кращого визначення типу вмісту"
+
+msgid "Validate appstream files with appstreamcli"
+msgstr "Перевіряти файли appstream через appstreamcli"
+
+msgid "Split page-padding into page-h-padding and page-v-padding"
+msgstr "Розділити відступи сторінки на page-h-padding і page-v-padding"
+
+msgid "Fix memory leak and callback type error (#767)"
+msgstr "Виправити витік пам'яті та помилку типу callback (#767)"
+
+msgid "Warn if plugins do not support exporting images or attachments (#334)"
+msgstr ""
+"Попереджати, якщо плагіни не підтримують експорт зображень або вкладень "
+"(#334)"
+
+msgid "Add shortcut to open files via file chooser dialog"
+msgstr "Додати скорочення для відкриття файлів через діалог вибору файлу"
+
+msgid "Refactor rendering of pages"
+msgstr "Рефакторинг рендерингу сторінок"
+
+msgid "Add lightness adjustment for recoloring"
+msgstr "Додати регулювання яскравості для перефарбування"
+
+msgid "Initial support for OpenBSD sandbox"
+msgstr "Початкова підтримка sandbox OpenBSD"
+
+msgid "Fix closing of documents"
+msgstr "Виправити закриття документів"
+
+msgid "Fix crash when opening documents"
+msgstr "Виправити падіння під час відкриття документів"
+
+msgid "Fix build on macOS"
+msgstr "Виправити збирання на macOS"
+
+msgid "Hide page label if the same as page number"
+msgstr "Ховати мітку сторінки, якщо вона збігається з номером сторінки"
+
+msgid "Cache SyncTeX parser for faster operation"
+msgstr "Кешувати парсер SyncTeX для швидшої роботи"
+
+msgid "Revert changes for documents with multiple page sizes"
+msgstr "Скасувати зміни для документів із кількома розмірами сторінок"
+
+msgid "Bump plugin ABI"
+msgstr "Підвищити ABI плагіна"
+
+msgid "Split sandbox functionality into separate zathura-sandbox binary"
+msgstr ""
+"Винести функціональність sandbox в окремий бінарний файл zathura-sandbox"
+
+msgid "Split off new command bjump from blist"
+msgstr "Виділити нову команду bjump з blist"
+
+msgid "Add initial landlock support to sandbox"
+msgstr "Додати початкову підтримку landlock до sandbox"
+
+msgid "Fix repeated search"
+msgstr "Виправити повторний пошук"
+
+msgid "Implement jumplist command"
+msgstr "Реалізувати команду jumplist"
+
+msgid "Fix issues with document with multiple page sizes"
+msgstr "Виправити проблеми з документом, що має кілька розмірів сторінок"
+
+msgid "Move to Github"
+msgstr "Перейти на GitHub"
+
+msgid "Reduce minimum glib version"
+msgstr "Зменшити мінімальну версію glib"
+
+msgid "Remove normal sandbox mode"
+msgstr "Вилучити звичайний режим sandbox"
+
+msgid "Compatibility with girara 0.4.3"
+msgstr "Сумісність з girara 0.4.3"
+
+msgid ""
+"Remove highlight-transparency setting. Set the alpha component of highlight-"
+"color, highlight-active-color and highlight-fg instead."
+msgstr ""
+"Вилучити параметр highlight-transparency. Натомість задайте альфа-складову "
+"для highlight-color, highlight-active-color і highlight-fg."
+
+msgid "Remove smooth-reload setting. Smooth reloading is now always enabled."
+msgstr ""
+"Вилучити параметр smooth-reload. Плавне перезавантаження тепер завжди "
+"увімкнено."
+
+msgid ""
+"Remove plain database backend. The sqlite database backend imports the data "
+"from the plain database the first time. sqlite is now a hard dependency."
+msgstr ""
+"Вилучити простий бекенд бази даних. Бекенд sqlite під час першого запуску "
+"імпортує дані з простої бази даних. sqlite тепер є обов'язковою залежністю."
+
+msgid "Fix a segfault if dbus is not enabled."
+msgstr "Виправити segfault, якщо dbus не увімкнено."
+
+msgid "Add support to display signatures"
+msgstr "Додати підтримку відображення підписів"
+
+msgid "Fix clearing of highlighted links"
+msgstr "Виправити очищення підсвічених посилань"
+
+msgid "Make some key modifiers configurable"
+msgstr "Зробити деякі модифікатори клавіш налаштовуваними"
+
+msgid "Fix text selection on rotated pages"
+msgstr "Виправити виділення тексту на повернутих сторінках"
+
+msgid "Fix gap between pages"
+msgstr "Виправити проміжок між сторінками"
+
+msgid "Improve text selection"
+msgstr "Покращити виділення тексту"
+
+msgid "`seccomp`: Make glibc fallback to clone instead of using clone3"
+msgstr ""
+"`seccomp`: змусити glibc використовувати fallback на clone замість clone3"
+
+msgid "`magic` is now a required dependency"
+msgstr "`magic` тепер обов'язкова залежність"
+
+msgid "Add '$f' and '$p' expansions to 'exec' shortcut function"
+msgstr "Додати розширення '$f' і '$p' до функції скорочення 'exec'"
+
+msgid "Fix build with meson 0.60"
+msgstr "Виправити збирання з meson 0.60"
+
+msgid "Add :source command"
+msgstr "Додати команду :source"
+
+msgid "Account for page padding in full scroll"
+msgstr "Враховувати відступи сторінки під час повної прокрутки"
+
+msgid "Add foreground color for links"
+msgstr "Додати колір переднього плану для посилань"
+
+msgid "Add :save and :save! aliases for :write and :write!"
+msgstr "Додати псевдоніми :save і :save! для :write і :write!"
+
+msgid "Fix invalid zoom when opening document with 'adjust-open width' option"
+msgstr ""
+"Виправити некоректний масштаб під час відкриття документа з опцією 'adjust-"
+"open width'"
+
+msgid "Add --find option to the CLI"
+msgstr "Додати опцію --find до CLI"
+
+msgid "Support recolor with transparency"
+msgstr "Підтримка перефарбування з прозорістю"
+
+msgid "Fix step size for mouse wheel scrolling"
+msgstr "Виправити розмір кроку прокрутки коліщатком миші"
+
+msgid "Lookup fileinfo from database by hash as fallback"
+msgstr "Шукати fileinfo в базі даних за хешем як резервний варіант"
+
+msgid "Fix expansion of ~ and ~user when opening files"
+msgstr "Виправити розгортання ~ і ~user під час відкриття файлів"
+
+msgid "Add fish completion"
+msgstr "Додати автодоповнення для fish"
+
+msgid "Drop support for old libsynctex"
+msgstr "Прибрати підтримку старої libsynctex"
+
+msgid "Add bash and zsh completions"
+msgstr "Додати автодоповнення для bash і zsh"
+
+msgid "Add RTL layout of pages"
+msgstr "Додати RTL-макет сторінок"
+
+msgid "Port to newer libsynctex"
+msgstr "Портувати на новішу libsynctex"
+
+msgid "Improved HiDPI support"
+msgstr "Покращена підтримка HiDPI"
+
+msgid "Display page labels"
+msgstr "Показувати мітки сторінок"
+
+msgid "Add experimental seccomp filters"
+msgstr "Додати експериментальні фільтри seccomp"
+
+msgid "Replace build system with meson"
+msgstr "Замінити систему збирання на meson"
+
+msgid "Fix memory leaks"
+msgstr "Виправити витоки пам'яті"
+
+msgid "Rework plugin initialization"
+msgstr "Переробити ініціалізацію плагінів"
+
+msgid "Improved logging"
+msgstr "Покращене журналювання"
+
+msgid "Improve page mode toggling"
+msgstr "Покращити перемикання режимів сторінок"
+
+msgid "Parallel build of manpages"
+msgstr "Паралельне збирання man-сторінок"
+
+msgid "Build even without SyncTex"
+msgstr "Збирати навіть без SyncTex"
+
+msgid "Children should not fork"
+msgstr "Дочірні процеси не мають виконувати fork"
+
+msgid "Recent files support"
+msgstr "Підтримка нещодавніх файлів"
+
+msgid "Substitute home with tilde"
+msgstr "Замінювати home тильдою"
+
+msgid "Open URLs"
+msgstr "Відкривати URL"
+
+msgid "Store tmp files in only one location"
+msgstr "Зберігати tmp-файли лише в одному місці"
+
+msgid "Print target selection"
+msgstr "Друкувати вибір цілі"
+
+msgid "Allow .dylib plugins on Mac OS X"
+msgstr "Дозволити .dylib-плагіни на Mac OS X"
+
+msgid "Fix dual page render breakage of adjust_window"
+msgstr "Виправити поломку рендерингу двох сторінок у adjust_window"
+
+msgid "Resolve memory leak while reloading file"
+msgstr "Усунути витік пам'яті під час перезавантаження файлу"
+
+msgid "Prevent segmentation fault when smooth zooming with mouse"
+msgstr "Запобігти segmentation fault під час плавного масштабування мишею"
+
+msgid "Cache thumbnails to support smooth zooming"
+msgstr "Кешувати ескізи для підтримки плавного масштабування"
+
+msgid "Check scale value correctness"
+msgstr "Перевіряти правильність значення масштабу"
+
+msgid "Fix segmentation fault caused by bidirectional scrolling"
+msgstr "Виправити segmentation fault, спричинений двонапрямною прокруткою"
+
+msgid "Add SyntaxView"
+msgstr "Додати SyntaxView"
+
+msgid "Print debug information to D-Bus"
+msgstr "Виводити налагоджувальну інформацію в D-Bus"
+
+msgid "Fix scroll down/up in dual-page mode"
+msgstr "Виправити прокрутку вниз/вгору в режимі двох сторінок"
+
+msgid "Option to hide notification after selection"
+msgstr "Опція ховати сповіщення після вибору"
+
+msgid "Introduce cache directory"
+msgstr "Запровадити каталог кешу"
+
+msgid "Introduce smooth-scroll and smooth-zoom"
+msgstr "Запровадити smooth-scroll і smooth-zoom"
+
+msgid "Add vim style exec"
+msgstr "Додати exec у стилі vim"
+
+msgid "Option to ignore images while recoloring"
+msgstr "Опція ігнорувати зображення під час перефарбування"
+
+msgid "Take advantage of shared or system SyncTex parser library"
+msgstr "Використовувати спільну або системну бібліотеку парсера SyncTex"
+
+msgid "Update dependency version of girara"
+msgstr "Оновити версію залежності girara"
+
+msgid "Better SyncTex support"
+msgstr "Краща підтримка SyncTex"
+
+msgid "Change cursor if mouse is over link"
+msgstr "Змінювати курсор, якщо миша над посиланням"
+
+msgid "Colored build output"
+msgstr "Кольоровий вивід збирання"
+
+msgid "Sphinx documentation"
+msgstr "Документація Sphinx"
+
+msgid "Full SyncTex support"
+msgstr "Повна підтримка SyncTex"
+
+msgid "D-Bus interface"
+msgstr "Інтерфейс D-Bus"
+
+msgid "Simple vim plugin for SyncTex support"
+msgstr "Простий vim-плагін для підтримки SyncTex"
+
+msgid "Add shortcuts for ^C and Esc in all modes"
+msgstr "Додати скорочення для ^C і Esc у всіх режимах"
+
+msgid "Use the actual mode in mode toggle calls"
+msgstr "Використовувати фактичний режим у викликах перемикання режиму"
+
+msgid "Only copy selected text in normal and fullscreen mode"
+msgstr "Копіювати лише виділений текст у звичайному та повноекранному режимі"
+
+msgid "Translate error messages"
+msgstr "Перекласти повідомлення про помилки"
+
+msgid "Correctly safe print setting state"
+msgstr "Коректно зберігати стан налаштувань друку"
+
+msgid "Add --mode option"
+msgstr "Додати параметр --mode"
+
+msgid "Expose more properties via D-Bus"
+msgstr "Експортувати більше властивостей через D-Bus"
+
+msgid "Center pages"
+msgstr "Центрувати сторінки"
+
+msgid "Replace glib memory functions with try version"
+msgstr "Замінити функції пам'яті glib на try-версії"
+
+msgid "Align highlighted rectangles correctly"
+msgstr "Коректно вирівнювати підсвічені прямокутники"
+
+msgid "Implement G and gg for index mode"
+msgstr "Реалізувати G і gg для режиму індексу"
+
+msgid "Implement TOGGLE for sc_navigate_index"
+msgstr "Реалізувати TOGGLE для sc_navigate_index"
+
+msgid "Preserve horizontal position when scrolling to PAGE_TOP/BOTTOM"
+msgstr "Зберігати горизонтальну позицію під час прокрутки до PAGE_TOP/BOTTOM"
+
+msgid "Implement shortcuts for scrolling to page top/bottom"
+msgstr "Реалізувати скорочення для прокрутки до верху/низу сторінки"
+
+msgid "Set position on document load only if no page was specified"
+msgstr ""
+"Встановлювати позицію під час завантаження документа, лише якщо сторінку не "
+"задано"
+
+msgid "Bail out early if we get TOP or BOTTOM"
+msgstr "Завчасно виходити, якщо отримано TOP або BOTTOM"
+
+msgid "Replace fullscreen mode with presentation mode"
+msgstr "Замінити повноекранний режим на режим презентації"
+
+msgid "Remove GTK+2 support"
+msgstr "Вилучити підтримку GTK+2"
+
+msgid "Update documentation"
+msgstr "Оновити документацію"
+
+msgid "Resolve layout problems"
+msgstr "Усунути проблеми макета"
+
+msgid "Use GTK+3 by default"
+msgstr "Використовувати GTK+3 типово"
+
+msgid "Rewritten render logic"
+msgstr "Переписана логіка рендерингу"
+
+msgid "Fixed page refresh in certain situations"
+msgstr "Виправлено оновлення сторінки в певних ситуаціях"
+
+msgid "Make the X clipboard buffer"
+msgstr "Використовувати буфер обміну X"
+
+msgid "Allow number in quickmarks"
+msgstr "Дозволити числа в quickmarks"
+
+msgid "Workaround for print quality issues"
+msgstr "Обхідне рішення для проблем якості друку"
+
+msgid "Resolve memory leak"
+msgstr "Усунути витік пам'яті"
+
+msgid "Report missing plugin or unsupported file types"
+msgstr "Повідомляти про відсутній плагін або непідтримувані типи файлів"
+
+msgid "More vim-like search behaviour"
+msgstr "Поведінка пошуку, ближча до vim"
+
+msgid "Introduced show-{h,v}-scrollbar settings"
+msgstr "Додано налаштування show-{h,v}-scrollbar"
+
+msgid "Enhancement of the jumplist mechanism"
+msgstr "Покращення механізму списку переходів"
+
+msgid "Use jumplists with marks"
+msgstr "Використовувати списки переходів із позначками"
+
+msgid "More vim-like jump behaviour"
+msgstr "Поведінка переходів, ближча до vim"
+
+msgid "Improved bisect"
+msgstr "Покращений bisect"
+
+msgid "Update page number on mouse scroll"
+msgstr "Оновлювати номер сторінки під час прокрутки мишею"
+
+msgid "Introduced window-title-page option"
+msgstr "Додано опцію window-title-page"
+
+msgid "LRU caching algorithm"
+msgstr "Алгоритм кешування LRU"
+
+msgid "Bisect functionality"
+msgstr "Функціональність bisect"
+
+msgid "Allow negative offsets"
+msgstr "Дозволити від'ємні зсуви"
+
+msgid "Option --page to open at the specified page"
+msgstr "Опція --page для відкриття на вказаній сторінці"
+
+msgid "Scale vertical/horizontal scrolling in respect to the buffer"
+msgstr "Масштабувати вертикальну/горизонтальну прокрутку відносно буфера"
+
+msgid "Add statusbar-basename option"
+msgstr "Додати опцію statusbar-basename"
+
+msgid "Implement colors for 'Loading...'-text"
+msgstr "Реалізувати кольори для тексту 'Loading...'"
+
+msgid "Don't render same page multiple times"
+msgstr "Не рендерити ту саму сторінку кілька разів"
+
+msgid "Use libmagic if available"
+msgstr "Використовувати libmagic, якщо доступна"
+
+msgid "Implemented jumplist (^o, ^i)"
+msgstr "Реалізовано список переходів (^o, ^i)"
+
+msgid "Update current page when following links"
+msgstr "Оновлювати поточну сторінку при переході за посиланнями"
+
+msgid "Scroll horizontally with shift and mouse wheel"
+msgstr "Прокручувати горизонтально за допомогою Shift і коліщатка миші"
+
+msgid "Page aware scrolling"
+msgstr "Прокрутка по сторінкам"
+
+msgid "SyncTeX forward synchronisation"
+msgstr "Пряма синхронізація SyncTeX"
+
+msgid "Update shortcuts"
+msgstr "Оновити скорочення"
+
+msgid "SyncTeX backwards synchronisation"
+msgstr "Зворотна синхронізація SyncTeX"
+
+msgid "Fix request-page-setup"
+msgstr "Виправити request-page-setup"
+
+msgid "Fix window adustment"
+msgstr "Виправити налаштування вікна"
+
+msgid "Update GTK3 support"
+msgstr "Оновити підтримку GTK3"
+
+msgid "Added first-page-colum setting"
+msgstr "Додано параметр first-page-colum"
+
+msgid "Added recolor-keephue setting"
+msgstr "Додано параметр recolor-keephue"
+
+msgid "Better print support"
+msgstr "Краща підтримка друку"
+
+msgid "Improve document links"
+msgstr "Покращити посилання документа"
+
+msgid "Render last-viewed pages with a higher priority"
+msgstr "Рендерити останні переглянуті сторінки з вищим пріоритетом"
+
+msgid "Export images and attachments"
+msgstr "Експортувати зображення та вкладення"
+
+msgid "Open multiple documents"
+msgstr "Відкрити кілька документів"
+
+msgid "Plugin manager"
+msgstr "Менеджер плагінів"
+
+msgid "Add 'open-first-page' setting"
+msgstr "Додати параметр 'open-first-page'"
+
+msgid "Free invisible pages after specific time"
+msgstr "Вивільняти невидимі сторінки через певний час"
+
+msgid "Set log level via command line"
+msgstr "Встановити рівень журналювання через командний рядок"
+
+msgid "Completion for :write command"
+msgstr "Автодоповнення для команди :write"
+
+msgid "Simplified plugin loading"
+msgstr "Спрощене завантаження плагінів"
+
+msgid "Allow counter-clockwise rotation"
+msgstr "Дозволити обертання проти годинникової стрілки"
+
+msgid "Changeable page-padding"
+msgstr "Змінний відступ сторінки"
+
+msgid "Introduced girara version check"
+msgstr "Додано перевірку версії girara"
+
+msgid "Detect sqlite automatically"
+msgstr "Автоматично визначати sqlite"
+
+msgid "Update window title"
+msgstr "Оновити заголовок вікна"
+
+msgid "Macro to register plugins"
+msgstr "Макрос для реєстрації плагінів"
+
+msgid "Fix issues with the display of the current page number"
+msgstr "Виправити проблеми з відображенням поточного номера сторінки"
+
+msgid "Ability to scroll to the full left or full right border"
+msgstr "Можливість прокручувати до крайньої лівої або правої межі"
+
+msgid "Reimplement the render thread with GThreadPool"
+msgstr "Пере реалізувати потік рендерингу з GThreadPool"
+
+msgid "Use the correct color to highlight results"
+msgstr "Використовувати правильний колір для підсвічування результатів"
+
+msgid "Support to use both database backends"
+msgstr "Підтримка використання обох бекендів бази даних"
+
+msgid "Additional notifications on errors"
+msgstr "Додаткові сповіщення про помилки"
+
+msgid "Option to hide hidden directories"
+msgstr "Опція ховати приховані каталоги"
+
+msgid "Do not overwrite existing files with :write"
+msgstr "Не перезаписувати наявні файли через :write"
+
+msgid "Fix flicker in text selection"
+msgstr "Виправити мерехтіння під час виділення тексту"
+
+msgid "Fixed several memory leaks"
+msgstr "Виправлено кілька витоків пам'яті"
+
+msgid "Complete rewrite of zathura"
+msgstr "Повне переписування zathura"
+
+msgid "Uses the girara interface library"
+msgstr "Використовує бібліотеку інтерфейсу girara"
+
+msgid "Plugin system for different document types"
+msgstr "Система плагінів для різних типів документів"
+
+msgid "Better configuration"
+msgstr "Краща конфігурація"
+
+msgid "Quickmarks"
+msgstr "Швидкі позначки"
+
+msgid "Ignoring MOD5 which is used on some keyboards"
+msgstr "Ігнорування MOD5, що використовується на деяких клавіатурах"
+
+msgid "Fix scroll_wrap (#52)"
+msgstr "Виправити scroll_wrap (#52)"
+
+msgid "Don't invert y coordinates (#42)"
+msgstr "Не інвертувати координати y (#42)"
+
+msgid "Certain memory leaks and other small issues"
+msgstr "Певні витоки пам'яті та інші дрібні проблеми"
+
+msgid "Fixed bookmark handling"
+msgstr "Виправлено обробку закладок"
+
+msgid "Support :digits"
+msgstr "Підтримка :digits"
+
+msgid "Save zoom level per file"
+msgstr "Зберігати рівень масштабу для кожного файлу"
+
+msgid "Fix backwards searching"
+msgstr "Виправити зворотний пошук"
+
+msgid "Fix blinking while switching pages"
+msgstr "Виправити мерехтіння під час перемикання сторінок"
+
+msgid "Fix input issues in fullscreen mode"
+msgstr "Виправити проблеми введення в повноекранному режимі"
+
+msgid "Update text searching"
+msgstr "Оновити пошук тексту"
+
+msgid "Support for poppler >= 0.15"
+msgstr "Підтримка poppler >= 0.15"
+
+msgid "Fixed print command with multiple arguments"
+msgstr "Виправлено команду друку з кількома аргументами"
+
+msgid "Fixed GOptionEntries"
+msgstr "Виправлено GOptionEntries"
+
+msgid "Fixed segmentation faults"
+msgstr "Виправлено segmentation fault"
+
+msgid "Wrap around scrolling"
+msgstr "Циклічна прокрутка"
+
+msgid "Display scroll percentage in statusbar"
+msgstr "Показувати відсоток прокрутки в рядку стану"
+
+msgid "More familiar zoom key bindings"
+msgstr "Звичніші клавіші масштабу"
+
+msgid "Support reading files from stdin"
+msgstr "Підтримка читання файлів зі stdin"
+
+msgid "Open command with appended current file path"
+msgstr "Команда open з доданим поточним шляхом до файлу"
+
+msgid "Following XDG specification"
+msgstr "Дотримання специфікації XDG"
+
+msgid "Colored window and view port"
+msgstr "Кольорове вікно та область перегляду"
+
+msgid "File reloading fix"
+msgstr "Виправлення перезавантаження файлу"
+
+msgid "Update manpage"
+msgstr "Оновити man-сторінку"
+
+msgid "Fixed critical usability bug"
+msgstr "Виправлено критичну помилку зручності використання"
+
+msgid "Improved and fixed completion"
+msgstr "Покращене та виправлене автодоповнення"
+
+msgid "Optional parameters for the print command"
+msgstr "Необов'язкові параметри для команди друку"
+
+msgid "Escape filenames"
+msgstr "Екранувати імена файлів"
+
+msgid "Resolved some memory leaks"
+msgstr "Усунуто деякі витоки пам'яті"
+
+msgid "Global configuration file"
+msgstr "Глобальний файл конфігурації"
+
+msgid "Specify configuration directory"
+msgstr "Вказати каталог конфігурації"
+
+msgid "Configureable modes"
+msgstr "Налаштовувані режими"
+
+msgid "Smooth scrolling"
+msgstr "Плавна прокрутка"
+
+msgid "Extended statusbar string manipulation"
+msgstr "Розширена обробка рядка стану"
+
+msgid "`function`"
+msgstr "`function`"
+
+msgid "Strip executable"
+msgstr "Очищати виконуваний файл"
+
+msgid "Change window title to filename"
+msgstr "Змінювати заголовок вікна на ім'я файлу"
+
+msgid "Fixation of the URI command"
+msgstr "Виправлення команди URI"
+
+msgid "Update the behaviour of sc_scroll"
+msgstr "Оновити поведінку sc_scroll"
+
+msgid "Half/Full-page scrolling"
+msgstr "Прокрутка на пів/повну сторінку"
+
+msgid "Check document health in sc_reload"
+msgstr "Перевіряти стан документа в sc_reload"
+
+msgid "`tabbed` support"
+msgstr "Підтримка `tabbed`"
+
+msgid "Define look with the set function"
+msgstr "Визначати вигляд за допомогою функції set"
+
+msgid "Implemented map function"
+msgstr "Реалізовано функцію map"
+
+msgid "`zathurarc` file"
+msgstr "Файл `zathurarc`"
+
+msgid "Prevent buffer overflow in realpath"
+msgstr "Запобігти переповненню буфера в realpath"
+
+msgid "Key evaluation when buffer is not empty"
+msgstr "Обробка клавіш, коли буфер не порожній"
+
+msgid "Use GFileMonitor instead of inotify"
+msgstr "Використовувати GFileMonitor замість inotify"
+
+msgid "Added document reload shortcut"
+msgstr "Додано скорочення для перезавантаження документа"
+
+msgid "Fixed toggle index"
+msgstr "Виправлено перемикання індексу"
+
+msgid "Fixed print command"
+msgstr "Виправлено команду друку"
+
+msgid "Fullscreen mode"
+msgstr "Повноекранний режим"
+
+msgid "Correct search result highlighting"
+msgstr "Коректне підсвічування результатів пошуку"
+
+msgid "Document password dialog"
+msgstr "Діалог пароля документа"
+
+msgid "Mouse support (Scroll, Mark and copy text to clipboard)"
+msgstr "Підтримка миші (прокрутка, позначення та копіювання тексту в буфер)"
+
+msgid "Keyboard navigation in the index view"
+msgstr "Клавіатурна навігація у поданні індексу"
+
+msgid "Different goto modes"
+msgstr "Різні режими goto"
+
+msgid "Auto adjustment when opening a document"
+msgstr "Автоматичне налаштування під час відкриття документа"
+
+msgid "Reload modified document automatically"
+msgstr "Автоматично перезавантажувати змінений документ"
+
+msgid "Recolor the page instead of inverting the colors"
+msgstr "Перефарбовувати сторінку замість інвертування кольорів"
+
+msgid "Working search function"
+msgstr "Працююча функція пошуку"
+
+msgid "Show and hide document information"
+msgstr "Показувати і ховати інформацію про документ"
+
+msgid "Follow internal links or open URI in a predefined browser"
+msgstr ""
+"Переходити за внутрішніми посиланнями або відкривати URI у визначеному "
+"браузері"
+
+msgid "Save the document"
+msgstr "Зберегти документ"
+
+msgid "Complete new, re-written interface"
+msgstr "Повністю новий, переписаний інтерфейс"
+
+msgid "Multiple printer support"
+msgstr "Підтримка кількох принтерів"
+
+msgid "Command history"
+msgstr "Історія команд"
+
+msgid "Show document index"
+msgstr "Показати індекс документа"
+
+msgid "Centered view"
+msgstr "Центроване подання"
+
+msgid "Add, save and open bookmarks"
+msgstr "Додати, зберегти і відкрити закладки"
+
+msgid "Marker support"
+msgstr "Підтримка маркерів"
+
+msgid "Highlight search results"
+msgstr "Виділяти результати пошуку"
+
+msgid "Buffered commands"
+msgstr "Буферизовані команди"
+
+msgid "`set` Function"
+msgstr "Функція `set`"
+
+msgid "Revert video function"
+msgstr "Повернути відеофункцію"
+
+msgid "Command completion"
+msgstr "Автодоповнення команд"
+
+msgid "Initial release"
+msgstr "Перший випуск"
+
+#, c-format
+msgid "Invalid number of arguments passed: %zu instead of at least %u"
+msgstr "Неправильна кількість переданих аргументів: %zu замість принаймні %u"
+
+#, c-format
+msgid "Unregistered mode specified: %s"
+msgstr "Вказано незареєстрований режим: %s"
+
+msgid "Invalid number of arguments passed"
+msgstr "Неправильна кількість переданих аргументів"
+
+#, c-format
+msgid "Invalid modifier in %s"
+msgstr "Недійсний модифікатор у %s"
+
+#, c-format
+msgid "Invalid special key value for %s"
+msgstr "Недійсне спеціальне значення клавіші для %s"
+
+#, c-format
+msgid "Invalid special key value or mode %s"
+msgstr "Недійсне значення спеціальної клавіші або режиму %s"
+
+#, c-format
+msgid "Not a valid shortcut function: %s"
+msgstr "Неправильна функція скорочення: %s"
+
+msgid "Not enough arguments."
+msgstr "Аргументів недостатньо."
+
+msgid "Too many arguments."
+msgstr "Занадто багато аргументів."
+
+#, c-format
+msgid "Unknown option: %s"
+msgstr "Невідомий параметр: %s"
+
+msgid "true"
+msgstr "правда"
+
+msgid "false"
+msgstr "неправда"
+
+#, c-format
+msgid "No value defined for option: %s"
+msgstr "Не визначено значення для параметра: %s"
+
+#, c-format
+msgid "Unknown value for option: %s"
+msgstr "Невідоме значення для параметра: %s"
+
+#, c-format
+msgid "Invalid value for option: %s"
+msgstr ""
+
+#. unhandled command
+#, c-format
+msgid "Not a valid command: %s"
+msgstr "Неправильна команда: %s"
+
+#, c-format
+msgid "Invalid number of arguments passed: %zu instead of 1"
+msgstr "Неправильна кількість переданих аргументів: %zu замість 1"
+
+#, c-format
+msgid "Failed to write JSON: %s"
+msgstr "Не вдалося записати JSON: %s"
+
+#, c-format
+msgid "'%s' must not be 0. Set to 1."
+msgstr "'%s' не має дорівнювати 0. Встановити значення 1."
+
+#, c-format
+msgid "Invalid input '%s' given."
+msgstr "Введено неправильні дані '%s'."
+
+#, c-format
+msgid "Invalid index '%s' given."
+msgstr "Вказано невірний покажчик %s."
+
+msgid "Enter password:"
+msgstr "Введіть пароль:"
+
+#, c-format
+msgid "Copied selected text to selection %s: %s"
+msgstr "Скопійовано вибраний текст у вибірку %s: %s"
+
+#, c-format
+msgid "Copied selected image to selection %s"
+msgstr "Скопійовано вибране зображення у вибірку %s"
+
+msgid "No document opened."
+msgstr "Жодного документа не відкрито."
+
+msgid "Invalid number of arguments given."
+msgstr "Неправильна кількість наведених аргументів."
+
+#, c-format
+msgid "Could not update bookmark: %s"
+msgstr "Не вдалося оновити закладку: %s"
+
+#, c-format
+msgid "Could not create bookmark: %s"
+msgstr "Не вдалося створити закладку: %s"
+
+#, c-format
+msgid "Bookmark successfully updated: %s"
+msgstr "Закладка успішно оновлена: %s"
+
+#, c-format
+msgid "Bookmark successfully created: %s"
+msgstr "Закладка успішно створена: %s"
+
+#, c-format
+msgid "Removed bookmark: %s"
+msgstr "Закладку вилучено: %s"
+
+#, c-format
+msgid "Failed to remove bookmark: %s"
+msgstr "Не вдалося вилучити закладку: %s"
+
+msgid "No bookmarks available."
+msgstr "Закладки не доступні."
+
+#, c-format
+msgid "No such bookmark: %s"
+msgstr "Такої закладки немає: %s"
+
+msgid "Argument must be a nonzero number."
+msgstr "Аргумент має бути ненульовим числом."
+
+#, c-format
+msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
+msgstr "[%d]: сторінка=<b>%2d</b>, x=%f, y=%f %s\n"
+
+msgid "(current)"
+msgstr "(поточний)"
+
+msgid "No jumplist available."
+msgstr "Список переходів недоступний."
+
+msgid "Title"
+msgstr "Заголовок"
+
+msgid "Subject"
+msgstr "Тема"
+
+msgid "Keywords"
+msgstr "Ключові слова"
+
+msgid "Author"
+msgstr "Автор"
+
+msgid "Creator"
+msgstr "Творець"
+
+msgid "Producer"
+msgstr "Виробник"
+
+msgid "Creation date"
+msgstr "Дата створення"
+
+msgid "Modification date"
+msgstr "Дата зміни"
+
+msgid "Format"
+msgstr "Формат"
+
+msgid "Other"
+msgstr "Інше"
+
+msgid "No information available."
+msgstr "Інформація відсутня."
+
+msgid ""
+"Please check the man pages zathura(1) and zathurarc(5) for more information."
+msgstr ""
+"Перегляньте man-сторінки zathura(1) і zathurarc(5) для докладнішої "
+"інформації."
+
+msgid "No arguments given."
+msgstr "Жодного аргументу не наведено."
+
+msgid "Printing is not permitted in strict sandbox mode"
+msgstr "Друк заборонено в режимі суворої пісочниці"
+
+msgid "Saving is not permitted in strict sandbox mode"
+msgstr "Збереження не дозволене в суворому режимі sandbox"
+
+msgid "Invalid number of arguments."
+msgstr "Неправильна кількість аргументів."
+
+msgid "Exporting attachments is not permitted in strict sandbox mode"
+msgstr "Експорт вкладень не дозволений у суворому режимі sandbox"
+
+#, c-format
+msgid "Couldn't write attachment '%s' to '%s'."
+msgstr "Неможливо записати вкладення '%s' у '%s'."
+
+#, c-format
+msgid "Wrote attachment '%s' to '%s'."
+msgstr "Записано вкладення %s у %s."
+
+#, c-format
+msgid "Wrote image '%s' to '%s'."
+msgstr "Зображення записано '% s' до '% s'."
+
+#, c-format
+msgid "Couldn't write image '%s' to '%s'."
+msgstr "Не вдалося записати зображення \"%s\" у \"%s\"."
+
+#, c-format
+msgid "Unknown image '%s'."
+msgstr "Невідоме зображення '%s'."
+
+#, c-format
+msgid "Unknown attachment or image '%s'."
+msgstr "Невідоме вкладення або зображення \"%s\"."
+
+#, c-format
+msgid "Failed to execute command: %s"
+msgstr "Не вдалося виконати команду: %s"
+
+msgid "Exec is not permitted in strict sandbox mode"
+msgstr "Запуск у суворому режимі пісочниці заборонено"
+
+msgid "Argument must be a number."
+msgstr "Аргумент повинен бути числом."
+
+msgid "Files"
+msgstr ""
+
+msgid "Recent files"
+msgstr ""
+
+#, c-format
+msgid "Page %d"
+msgstr "Сторінка  %d"
+
+msgid "Attachments"
+msgstr "Вкладення"
+
+#. add images
+msgid "Images"
+msgstr "Зображення"
+
+msgid "Plugin does not support exporting attachments and images."
+msgstr "Плагін не підтримує експорт вкладень і зображень."
+
+msgid "Document contains no images or attachments"
+msgstr "Документ не містить зображень або вкладень"
+
+#. clang-format off
+#. settings
+msgid "Font"
+msgstr "Шрифт"
+
+#. colors affecting the CSS
+msgid "Default foreground color"
+msgstr "Типовий колір тексту"
+
+msgid "Default background color"
+msgstr "Типовий колір тла"
+
+msgid "Inputbar foreground color"
+msgstr "Колір тексту панелі введення"
+
+msgid "Inputbar background color"
+msgstr "Колір тла панелі введення"
+
+msgid "Statusbar foreground color"
+msgstr "Колір тексту панелі стану"
+
+msgid "Statsubar background color"
+msgstr "Колір тла панелі стану"
+
+msgid "Completion foreground color"
+msgstr "Колір тексту автодоповнення"
+
+msgid "Completion background color"
+msgstr "Колір тла автодоповнення"
+
+msgid "Completion group foreground color"
+msgstr "Колір тексту групи автодоповнення"
+
+msgid "Completion group background color"
+msgstr "Колір тла групи автодоповнення"
+
+msgid "Completion highlight foreground color"
+msgstr "Колір тексту виділення в автодоповненні"
+
+msgid "Completion highlight background color"
+msgstr "Колір тла виділення в автодоповненні"
+
+msgid "Error notification foreground color"
+msgstr "Колір тексту сповіщення про помилку"
+
+msgid "Error notification background color"
+msgstr "Колір тла сповіщення про помилку"
+
+msgid "Warning notification foreground color"
+msgstr "Колір тексту у сповіщеннях-попередженнях"
+
+msgid "Warning notifaction background color"
+msgstr "Колір тла у сповіщеннях-попередженнях"
+
+msgid "Notification foreground color"
+msgstr "Колір тексту сповіщень"
+
+msgid "Notification background color"
+msgstr "Колір тла сповіщень"
+
+msgid "Index mode foreground color"
+msgstr "Колір переднього плану в режимі покажчика"
+
+msgid "Index mode background color"
+msgstr "Колір тла у режимі покажчика"
+
+msgid "Index mode foreground color (active element)"
+msgstr "Колір переднього плану в режимі покажчика (активний елемент)"
+
+msgid "Index mode background color (active element)"
+msgstr "Колір тла у режимі покажчика (активний елемент)"
+
+msgid "Scrollbar foreground color"
+msgstr "Колір переднього плану смуги прокрутки"
+
+msgid "Scrollbar background color"
+msgstr "Колір фону смуги прокрутки"
+
+msgid "Initial window width"
+msgstr "Початкова ширина вікна"
+
+msgid "Initial window height"
+msgstr "Початкова висота вікна"
+
+msgid "Horizontal padding for the status, input, and notification bars"
+msgstr "Горизонтальні проміжки для панелей стану, вводу та сповіщення"
+
+msgid "Vertical padding for the status, input, and notification bars"
+msgstr "Вертикальні проміжки для панелей стану, вводу та сповіщення"
+
+msgid "Number of completion items"
+msgstr "Кількість елементів автодоповнення"
+
+msgid "Command to execute in :exec"
+msgstr "Команда для виконання у :exec"
+
+msgid "Show or hide certain GUI elements"
+msgstr "Показати або приховати певні елементи графічного інтерфейсу"
+
+msgid "Database backend"
+msgstr "Бекенд бази даних"
+
+msgid "File monitor backend"
+msgstr "Бекенд файлового монітора"
+
+msgid "Zoom step"
+msgstr "Крок масштабування"
+
+msgid "Horizontal padding between pages"
+msgstr "Горизонтальні відступи між сторінками"
+
+msgid "Vertical padding between pages"
+msgstr "Вертикальні відступи між сторінками"
+
+msgid "Number of pages per row"
+msgstr "Кількість сторінок у рядку"
+
+msgid "Column of the first page"
+msgstr "Колонка першої сторінки"
+
+msgid "Render pages from right to left"
+msgstr "Відображати сторінки справа наліво"
+
+msgid "Scroll step"
+msgstr "Крок прокрутки"
+
+msgid "Horizontal scroll step"
+msgstr "Крок горизонтальної прокрутки"
+
+msgid "Full page scroll overlap"
+msgstr "Перекривання сторінки при прокрутці"
+
+msgid "Zoom minimum"
+msgstr "Мінімальний масштаб"
+
+msgid "Zoom maximum"
+msgstr "Максимальний масштаб"
+
+msgid "Maximum number of pages to keep in the cache"
+msgstr "Максимальна кількість сторінок, що зберігаються в кеші"
+
+msgid "Maximum size in pixels of thumbnails to keep in the cache"
+msgstr "Максимальний розмір у пікселях ескізів, що зберігаються в кеші"
+
+msgid "Number of positions to remember in the jumplist"
+msgstr "Довжина історії переходів"
+
+msgid "Recoloring (dark color)"
+msgstr "Перефарбування (темний колір)"
+
+msgid "Recoloring (light color)"
+msgstr "Перефарбування (світлий колір)"
+
+msgid "Color for highlighting"
+msgstr "Колір для виділення"
+
+msgid "Foreground color for highlighting"
+msgstr "Колір переднього плану для підсвічування"
+
+msgid "Color for highlighting (active)"
+msgstr "Колір для виділення (активний)"
+
+msgid "'Loading ...' background color"
+msgstr "'Завантаження ...' колір тла"
+
+msgid "'Loading ...' foreground color"
+msgstr "'Завантаження ...' колір переднього плану"
+
+msgid "Color used to highlight valid signatures"
+msgstr "Колір для підсвічування дійсних підписів"
+
+msgid "Color used to highlight signatures with warnings"
+msgstr "Колір для підсвічування підписів із попередженнями"
+
+msgid "Color used to highlight invalid signatures"
+msgstr "Колір для підсвічування недійсних підписів"
+
+msgid "Recolor pages"
+msgstr "Перефарбувати сторінки"
+
+msgid "When recoloring keep original hue and adjust lightness only"
+msgstr ""
+"Під час перефарбовування зберігати початковий відтінок і регулювати лише "
+"освітленість"
+
+msgid "When recoloring keep original image colors"
+msgstr "Під час перефарбовування зберігати початкові кольори зображення"
+
+msgid "When recoloring adjust lightness"
+msgstr "Під час перефарбування регулювати яскравість"
+
+msgid "Wrap scrolling"
+msgstr "Плавна прокрутка"
+
+msgid "Advance number of pages per row"
+msgstr "Збільшити кількість сторінок на рядок"
+
+msgid "Horizontally centered zoom"
+msgstr "Горизонтально вирівняний масштаб"
+
+msgid "Vertically center pages"
+msgstr "Вертикально вирівнювати сторінки"
+
+msgid "Align link target to the left"
+msgstr "Вирівнювати ціль посилання ліворуч"
+
+msgid "Let zoom be changed when following links"
+msgstr "Нехай масштабується при переході за посиланнями"
+
+msgid "Center result horizontally"
+msgstr "Вирівнювати результат по горизонталі"
+
+msgid "Render 'Loading ...'"
+msgstr "Візуалізація 'Завантаження ...'"
+
+msgid "Adjust to when opening file"
+msgstr "Підлаштовуватись при відкритті файлу"
+
+msgid "Default page mode (none, equal_width, equal_height)"
+msgstr ""
+
+msgid "Show hidden files and directories"
+msgstr "Показати приховані файли та каталоги"
+
+msgid "Show directories"
+msgstr "Показати каталоги"
+
+msgid "Show recent files"
+msgstr "Показати нещодавні файли"
+
+msgid "Always open on first page"
+msgstr "Завжди відкривати на першій сторінці"
+
+msgid "Disable highlighting of search results"
+msgstr "Вимкнути підсвічування результатів пошуку"
+
+msgid "Double click to follow links"
+msgstr "Подвійний клік для переходу за посиланнями"
+
+msgid "Enable incremental search"
+msgstr "Увімкнути поступовий пошук"
+
+msgid "Clear search results on abort"
+msgstr "Очистити результати пошуку при скасуванні"
+
+msgid "Use basename of the file in the window title"
+msgstr "Використовувати базове ім'я файлу у заголовку вікна"
+
+msgid "Use ~ instead of $HOME in the filename in the window title"
+msgstr "Використовати ~ замість $HOME у назві файла у заголовку вікна"
+
+msgid "Display the page number in the window title"
+msgstr "Відображати номер сторінки у назві вікна"
+
+msgid "Use basename of the file in the statusbar"
+msgstr "Використовувати базове ім'я файлу на панелі стану"
+
+msgid "Use ~ instead of $HOME in the filename in the statusbar"
+msgstr "Використовувати ~ замість $HOME у назві файлу на панелі стану"
+
+msgid "Display (current page / total pages) as a percent in the statusbar"
+msgstr ""
+"Показувати (поточна сторінка / загальна кількість сторінок) як відсоток у "
+"рядку стану"
+
+msgid "Enable SyncTeX support"
+msgstr "Увімкнути підтримку SyncTeX"
+
+msgid "SyncTeX editor command"
+msgstr "Команда редактора SyncTeX"
+
+msgid "SyncTeX edit modifier"
+msgstr "Модифікатор редагування SyncTeX"
+
+msgid "Highlighter modifier"
+msgstr "Модифікатор підсвічування"
+
+msgid "Enable D-Bus service"
+msgstr "Увімкнути службу D-Bus"
+
+msgid "Raise window on certain D-Bus commands"
+msgstr "Підіймати вікно для певних команд D-Bus"
+
+msgid "Save history at each page change"
+msgstr "Зберігати історію при кожній зміні сторінки"
+
+msgid "The clipboard into which mouse-selected data will be written"
+msgstr "Буфер обміну, в який будуть записані дані, вибрані мишею"
+
+msgid "Enable notification after selecting text"
+msgstr "Увімкніть сповіщення після вибору тексту"
+
+msgid "Keep selection highlighted after mouse release"
+msgstr ""
+
+msgid "Disable additional information for signatures embedded in the document."
+msgstr "Вимкнути додаткову інформацію для підписів, вбудованих у документ."
+
+msgid "Enable prompt to confirm when opening links"
+msgstr ""
+
+msgid "Open documents in single-page mode"
+msgstr ""
+
+#. define default inputbar commands
+msgid "Map a key sequence"
+msgstr "Створити комбінацію клавіш"
+
+msgid "Set an option"
+msgstr "Задати параметр"
+
+msgid "Run a shortcut"
+msgstr ""
+
+msgid "Unmap a key sequence"
+msgstr "Вилучити комбінацію клавіш"
+
+msgid "Dump settings to a file"
+msgstr "Зберегти налаштування у файл"
+
+msgid "Add a bookmark"
+msgstr "Додати закладку"
+
+msgid "Delete a bookmark"
+msgstr "Вилучити закладку"
+
+msgid "List all bookmarks"
+msgstr "Список усіх закладок"
+
+msgid "Jump to bookmark"
+msgstr "Перейти до закладки"
+
+msgid "Show recent jumps in jumplist"
+msgstr "Показати останні переходи в списку переходів"
+
+msgid "Close current file"
+msgstr "Закрити поточний файл"
+
+msgid "Show file information"
+msgstr "Показати інформацію про файл"
+
+msgid "Execute a command"
+msgstr "Виконати команду"
+
+#. like vim
+msgid "Show help"
+msgstr "Покажіть довідку"
+
+msgid "Open document"
+msgstr "Відкрити документ"
+
+msgid "Close zathura"
+msgstr "Закрити zathura"
+
+msgid "Print document"
+msgstr "Надрукувати документ"
+
+msgid "Save document"
+msgstr "Зберегти документ"
+
+msgid "Save document (and force overwriting)"
+msgstr "Зберегти документ (і примусово перезаписати)"
+
+msgid "Save attachments"
+msgstr "Зберегти вкладення"
+
+msgid "Set page offset"
+msgstr "Встановити зміщення сторінки"
+
+msgid "Mark current location within the document"
+msgstr "Позначити поточне розташування в документі"
+
+msgid "Delete the specified marks"
+msgstr "Вилучити зазначені позначки"
+
+msgid "Remove highlights of current search results"
+msgstr "Прибрати підсвічування поточних результатів пошуку"
+
+msgid "Highlight current search results"
+msgstr "Виділити поточні результати пошуку"
+
+msgid "Show version information"
+msgstr "Показати інформацію про версію"
+
+msgid "Source config file"
+msgstr "Підвантажити файл конфігурації"
+
+msgid "Failed to run xdg-open."
+msgstr "Не вдалося запустити xdg-open."
+
+msgid "y"
+msgstr ""
+
+msgid "Y"
+msgstr ""
+
+msgid "Cancelled."
+msgstr ""
+
+#, c-format
+msgid "Open external link <b>%s</b>? [Y/n]"
+msgstr ""
+
+msgid "Opening external applications in strict sandbox mode is not permitted"
+msgstr "Відкривати зовнішні програми в режимі суворої пісочниці не дозволено"
+
+#, c-format
+msgid "Link: page %d"
+msgstr "Посилання: сторінка %d"
+
+#, c-format
+msgid "Link: %s"
+msgstr "Посилання: %s"
+
+msgid "Link: Invalid"
+msgstr "Посилання: Недійсне"
+
+#, c-format
+msgid "Copied page number: %d"
+msgstr "Скопійований номер сторінки: %d"
+
+#, c-format
+msgid "Copied link: %s"
+msgstr "Скопійоване посилання: %s"
+
+msgid "Path to the config directory"
+msgstr "Шлях до каталогу конфігурації"
+
+msgid "Path to the data directory"
+msgstr "Шлях до каталогу з даними"
+
+msgid "Path to the cache directory"
+msgstr "Шлях до каталогу кеша"
+
+msgid "Path to the directories containing plugins"
+msgstr "Шлях до каталогів, які містять плаґіни"
+
+msgid "Fork into the background"
+msgstr "Запустити у фоні"
+
+msgid "Document password"
+msgstr "Пароль документа"
+
+msgid "Page number to go to"
+msgstr "Номер сторінки, на який потрібно перейти"
+
+msgid "Log level (debug, info, warning, error)"
+msgstr "Рівень журналювання (налагодження, інформація, попередження, помилка)"
+
+msgid "Print version information"
+msgstr "Інформація про версію для друку"
+
+msgid "SyncTeX editor (forwarded to the synctex command)"
+msgstr "Редактор SyncTeX (перенаправляється до команди Synctex)"
+
+msgid "Move to given SyncTeX position"
+msgstr "Перейдіть до заданої позиції SyncTeX"
+
+msgid "Highlight given position in the given process"
+msgstr "Виділити задану позицію в даному процесі"
+
+msgid "Start in a non-default mode"
+msgstr "Запуск в режимі, що не використовується за замовчуванням"
+
+msgid "Bookmark to go to"
+msgstr "Закладка для переходу"
+
+msgid "Search for the given phrase and display results"
+msgstr "Шукати задану фразу і показувати результати"
+
+#, c-format
+msgid ""
+"Signature is valid.\n"
+"This document is signed by\n"
+"  %s\n"
+"on %s."
+msgstr ""
+"Підпис дійсний.\n"
+"Цей документ підписано\n"
+"  %s\n"
+"%s."
+
+msgid "Signature certificate is expired."
+msgstr "Сертифікат підпису прострочений."
+
+msgid "Signature certificate is revoked."
+msgstr "Сертифікат підпису відкликано."
+
+msgid "Signature certificate is not trusted."
+msgstr "Сертифікату підпису не довіряють."
+
+msgid "Signature certificate is invalid."
+msgstr "Сертифікат підпису недійсний."
+
+msgid "Signature is invalid."
+msgstr "Підпис недійсний."
+
+msgid "Loading..."
+msgstr "Завантаження..."
+
+msgid "Copy image"
+msgstr "Скопіювати зображення"
+
+msgid "Save image as"
+msgstr "Зберегти зображення як"
+
+#. Update statusbar.
+#, c-format
+msgid "Printing page %d ..."
+msgstr "Друк сторінки %d..."
+
+#, c-format
+msgid "Printing failed: %s"
+msgstr "Не вдалося надрукувати: %s"
+
+#, c-format
+msgid "Invalid adjust mode: %d"
+msgstr "Недійсний режим коригування: %d"
+
+#, c-format
+msgid "Copied file path to selection %s: %s"
+msgstr ""
+
+msgid "This document does not contain any index"
+msgstr "Цей документ не містить покажчика"
+
+msgid "Could not get path from file."
+msgstr ""
+
+msgid "Open file"
+msgstr "Відкрити файл"
+
+msgid "Supported documents"
+msgstr ""
+
+msgid "All files"
+msgstr ""
+
+#, c-format
+msgid "[Search %d/%d]"
+msgstr ""
+
+#, c-format
+msgid "Pattern not found: %s"
+msgstr "Шаблон не знайдено: %s"
+
+msgid "[No name]"
+msgstr "[Без імені]"
+
+msgid "Could not read file from stdin and write it to a temporary file."
+msgstr "Не вдалося прочитати файл із stdin та записати його у тимчасовий файл."
+
+msgid "Could not read file from GIO and copy it to a temporary file."
+msgstr "Не вдалося прочитати файл із GIO та скопіювати його у тимчасовий файл."
+
+msgid "Unsupported file type. Please install the necessary plugin."
+msgstr "Непідтримуваний тип файлу. Установіть необхідне розширення."
+
+msgid "Document does not contain any pages"
+msgstr "Документ не містить жодної сторінки"
+
+#, c-format
+msgid "File already exists: %s. Use :write! to overwrite it."
+msgstr "Файл уже існує: %s. Використайте :write! для перезапису."
+
+msgid "Failed to save document."
+msgstr "Не вдалося зберегти документ."
+
+msgid "Document saved."
+msgstr "Документ збережено."

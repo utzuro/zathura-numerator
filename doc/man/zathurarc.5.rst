@@ -208,8 +208,8 @@ the *zathurarc* file to make those changes permanent:
     Identifier Description
 
     Button1    Mouse button 1 (left)
-    Button2    Mouse button 2 (right)
-    Button3    Mouse button 3 (middle)
+    Button2    Mouse button 2 (middle)
+    Button3    Mouse button 3 (right)
     Button4    Mouse button 4
     Button5    Mouse button 5
 
@@ -243,6 +243,14 @@ They can also be combined with modifiers:
   * ``change_mode``
 
     Change current mode. Pass the desired mode as argument.
+
+  * ``copy_filepath``
+
+    Copy the full path of the currently opened document to the clipboard
+
+  * ``copy_link``
+
+    Copy a link target to the clipboard.
 
   * ``cycle_first_column``
 
@@ -294,8 +302,8 @@ They can also be combined with modifiers:
 
   * ``page_mode``
 
-    Set the page sizing mode. Default is ``equal_none``, which doesn't resize 
-    individual pages. ``equal_width`` and ``equal_height`` resizes each page to 
+    Set the page sizing mode. Default is ``equal_none``, which doesn't resize
+    individual pages. ``equal_width`` and ``equal_height`` resizes each page to
     have the same width and height respectively.
 
   * ``quit``
@@ -443,11 +451,8 @@ section of this document
 OPTIONS
 =======
 
-This section describes settings concerning the behaviour of girara and
-zathura. The settings described here can be changed with ``set``.
-
-girara
-------
+This section describes settings concerning the behaviour of zathura.
+The settings described here can be changed with ``set``.
 
 *n-completion-items*
   Defines the maximum number of displayed completion entries.
@@ -603,12 +608,6 @@ girara
   * Value type: Integer
   * Default value: 2
 
-*window-icon*
-  Defines the path for a icon to be used as window icon.
-
-  * Value type: String
-  * Default value:
-
 *window-height*
   Defines the window height on startup
 
@@ -620,11 +619,6 @@ girara
 
   * Value type: Integer
   * Default value: 800
-
-zathura
--------
-
-  This section describes settings concerning the behaviour of zathura.
 
 *abort-clear-search*
   Defines if the search results should be cleared on abort.
@@ -638,6 +632,15 @@ zathura
 
   * Value type: String
   * Default value: best-fit
+
+*page-mode*
+  Defines the default page sizing mode when opening a document. Possible options
+  are "none", "equal_width", and "equal_height". When set to "equal_width", all
+  pages are scaled to match the width of the current page. When set to
+  "equal_height", all pages are scaled to match the height of the current page.
+
+  * Value type: String
+  * Default value: none
 
 *advance-pages-per-row*
   Defines if the number of pages per row should be honored when advancing a page.
@@ -767,6 +770,13 @@ zathura
   * Value type: Integer
   * Default value: 2000
 
+*numbers-file*
+  Path to the coordinates file that receives double-click or double-tap
+  markers. Set this to an empty string to disable exporting markers to disk.
+
+  * Value type: String
+  * Default value: numbers.txt
+
 *link-hadjust*
   En/Disables aligning to the left internal link targets, for example from the
   index.
@@ -792,6 +802,12 @@ zathura
 
   * Value type: Boolean
   * Default value: false
+
+*open-link-confirm*
+  Show a confirmation dialog when opening external links.
+
+  * Value type: Boolean
+  * Default value: true
 
 *page-cache-size*
   Defines the maximum number of pages that could be kept in the page cache. When
@@ -967,6 +983,12 @@ zathura
   * Value type: String
   * Default value: rgba(100%,84%,0%,0.9)
 
+*single-page-mode*
+  Defines if documents should be opened in single-page view mode.
+
+  * Value type: Boolean
+  * Default value: false
+
 *show-directories*
   Defines if the directories should be displayed in completion.
 
@@ -981,7 +1003,7 @@ zathura
 
 *show-recent*
   Defines the number of recent files that should be displayed in completion.
-  If the value is negative, no upper bounds are applied. If the value is 0, no
+  If the value is negative, all recent files are shown. If the value is 0, no
   recent files are shown.
 
   * Value type: Integer
@@ -1034,13 +1056,6 @@ zathura
 
 *vertical-center*
   Center the screen at the vertical midpoint of the page by default.
-
-  * Value type: Boolean
-  * Default value: false
-
-*window-icon-document*
-  Defines whether the window document should be updated based on the first page of
-  a dcument.
 
   * Value type: Boolean
   * Default value: false

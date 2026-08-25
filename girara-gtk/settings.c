@@ -1,5 +1,8 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "settings.h"
+
+#include <assert.h>
 #include <stdlib.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
@@ -8,7 +11,6 @@
 #include <girara/datastructures.h>
 #include <girara/utils.h>
 
-#include "settings.h"
 #include "completion.h"
 #include "session.h"
 #include "internal.h"
@@ -37,6 +39,9 @@ void girara_setting_set_value(girara_session_t* session, girara_setting_t* setti
     break;
   case INT:
     g_value_set_int(&setting->value, *((const int*)value));
+    break;
+  case UINT:
+    g_value_set_uint(&setting->value, *((const unsigned int*)value));
     break;
   case STRING:
     if (value) {
@@ -103,18 +108,23 @@ bool girara_setting_get_value(girara_setting_t* setting, void* dest) {
 
   switch (G_VALUE_TYPE(&setting->value)) {
   case BOOLEAN: {
-    bool* bvalue = (bool*)dest;
+    bool* bvalue = dest;
     *bvalue      = g_value_get_boolean(&setting->value);
     break;
   }
   case FLOAT: {
-    float* fvalue = (float*)dest;
+    float* fvalue = dest;
     *fvalue       = g_value_get_float(&setting->value);
     break;
   }
   case INT: {
-    int* ivalue = (int*)dest;
+    int* ivalue = dest;
     *ivalue     = g_value_get_int(&setting->value);
+    break;
+  }
+  case UINT: {
+    unsigned int* ivalue = dest;
+    *ivalue              = g_value_get_uint(&setting->value);
     break;
   }
   case STRING: {
@@ -178,28 +188,32 @@ girara_completion_t* girara_cc_set(girara_session_t* session, const char* input)
     return NULL;
   }
 
-  girara_completion_t* completion = girara_completion_init();
+  g_autoptr(girara_completion_t) completion = girara_completion_init();
   if (completion == NULL) {
     return NULL;
   }
-  girara_completion_group_t* group = girara_completion_group_create(session, NULL);
+  g_autoptr(girara_completion_group_t) group = girara_completion_group_create(_("Settings"));
   if (group == NULL) {
-    girara_completion_free(completion);
     return NULL;
   }
-  girara_completion_add_group(completion, group);
 
-  unsigned int input_length = strlen(input);
-
+  const unsigned int input_length = strlen(input);
+  size_t added_settings           = 0;
   for (size_t idx = 0; idx != girara_list_size(session->private_data->settings); ++idx) {
     girara_setting_t* setting = girara_list_nth(session->private_data->settings, idx);
     if ((setting->init_only == false) && (input_length <= strlen(setting->name)) &&
         !strncmp(input, setting->name, input_length)) {
       girara_completion_group_add_element(group, setting->name, setting->description);
+      ++added_settings;
     }
   }
 
-  return completion;
+  if (!added_settings) {
+    return NULL;
+  }
+
+  girara_completion_add_group(completion, g_steal_pointer(&group));
+  return g_steal_pointer(&completion);
 }
 
 static void dump_setting(JsonBuilder* builder, const girara_setting_t* setting) {
@@ -219,6 +233,11 @@ static void dump_setting(JsonBuilder* builder, const girara_setting_t* setting) 
   case INT:
     json_builder_add_int_value(builder, g_value_get_int(&setting->value));
     type = "int";
+    break;
+  case UINT:
+    static_assert(sizeof(gint64) >= sizeof(unsigned int) && G_MAXINT64 >= UINT_MAX);
+    json_builder_add_int_value(builder, g_value_get_uint(&setting->value));
+    type = "uint";
     break;
   case STRING: {
     const char* tmp = g_value_get_string(&setting->value);

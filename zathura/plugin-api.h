@@ -216,15 +216,9 @@ struct zathura_plugin_functions_s {
   zathura_plugin_page_get_signatures page_get_signatures;
 };
 
-typedef struct zathura_plugin_version_s {
-  unsigned int major; /**< Major */
-  unsigned int minor; /**< Minor */
-  unsigned int rev;   /**< Revision */
-} zathura_plugin_version_t;
-
 typedef struct zathura_plugin_definition_s {
   const char* name;
-  const zathura_plugin_version_t version;
+  const char* version;
   zathura_plugin_functions_t functions;
   const size_t mime_types_size;
   const char** mime_types;
@@ -239,18 +233,16 @@ typedef struct zathura_plugin_definition_s {
  * Register a plugin.
  *
  * @param plugin_name the name of the plugin
- * @param major the plugin's major version
- * @param minor the plugin's minor version
- * @param rev the plugin's revision
+ * @param version the plugin's version
  * @param plugin_functions function to register the plugin's document functions
  * @param mimetypes a char array of mime types supported by the plugin
  */
-#define ZATHURA_PLUGIN_REGISTER_WITH_FUNCTIONS(plugin_name, major, minor, rev, plugin_functions, mimetypes)            \
+#define ZATHURA_PLUGIN_REGISTER_WITH_FUNCTIONS(plugin_name, plugin_version, plugin_functions, mimetypes)               \
   static const char* zathura_plugin_mime_types[] = mimetypes;                                                          \
                                                                                                                        \
   ZATHURA_PLUGIN_API const zathura_plugin_definition_t ZATHURA_PLUGIN_DEFINITION_SYMBOL = {                            \
       .name            = plugin_name,                                                                                  \
-      .version         = {major, minor, rev},                                                                          \
+      .version         = plugin_version,                                                                               \
       .functions       = plugin_functions,                                                                             \
       .mime_types_size = sizeof(zathura_plugin_mime_types) / sizeof(zathura_plugin_mime_types[0]),                     \
       .mime_types      = zathura_plugin_mime_types,                                                                    \

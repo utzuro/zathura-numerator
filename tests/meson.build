@@ -43,8 +43,8 @@ test('utils', utils,
   env: env
 )
 
-xvfb = find_program('xvfb-run', required: get_option('tests'))
-weston = find_program('weston', required: get_option('tests'))
+xvfb = find_program('xvfb-run', required: get_option('tests-x11'))
+weston = find_program('weston', required: get_option('tests-wayland'))
 if xvfb.found() or weston.found()
   session = executable('test_session', files('test_session.c'),
     dependencies: build_dependencies + test_dependencies,
@@ -81,8 +81,10 @@ if xvfb.found()
     protocol: 'tap',
     env: env + [
       'NO_AT_BRIDGE=1',
+      'GTK_A11Y=none',
       'MESA_LOG=null',
-      'LIBGL_DEBUG=quiet'
+      'LIBGL_DEBUG=quiet',
+      'EGL_LOG_LEVEL=fatal'
     ]
   )
   test('xvfb_config', xvfb,
@@ -92,8 +94,10 @@ if xvfb.found()
     protocol: 'tap',
     env: [
       'NO_AT_BRIDGE=1',
+      'GTK_A11Y=none',
       'MESA_LOG=null',
-      'LIBGL_DEBUG=quiet'
+      'LIBGL_DEBUG=quiet',
+      'EGL_LOG_LEVEL=fatal'
     ]
   )
   test('xvfb_setting', xvfb,
@@ -103,8 +107,10 @@ if xvfb.found()
     protocol: 'tap',
     env: [
       'NO_AT_BRIDGE=1',
+      'GTK_A11Y=none',
       'MESA_LOG=null',
-      'LIBGL_DEBUG=quiet'
+      'LIBGL_DEBUG=quiet',
+      'EGL_LOG_LEVEL=fatal'
     ]
   )
 endif
@@ -119,6 +125,7 @@ if weston.found()
     protocol: 'tap',
     env: env + [
       'NO_AT_BRIDGE=1',
+      'GTK_A11Y=none',
       'WAYLAND_DISPLAY=zathura-test-weston'
     ]
   )
@@ -128,6 +135,7 @@ if weston.found()
     protocol: 'tap',
     env: env + [
       'NO_AT_BRIDGE=1',
+      'GTK_A11Y=none',
       'WAYLAND_DISPLAY=zathura-test-weston'
     ]
   )
@@ -137,6 +145,7 @@ if weston.found()
     protocol: 'tap',
     env: env + [
       'NO_AT_BRIDGE=1',
+      'GTK_A11Y=none',
       'WAYLAND_DISPLAY=zathura-test-weston'
     ]
   )
@@ -156,6 +165,7 @@ if weston.found()
         'G_TEST_SRCDIR=@0@'.format(meson.current_source_dir()),
         'G_TEST_BUILDDIR=@0@'.format(meson.current_build_dir()),
         'NO_AT_BRIDGE=1',
+      'GTK_A11Y=none',
         'WAYLAND_DISPLAY=zathura-test-weston'
       ]
     )

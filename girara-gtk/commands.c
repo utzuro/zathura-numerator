@@ -2,16 +2,16 @@
 
 #include "commands.h"
 
+#include <girara/datastructures.h>
+#include <glib/gi18n-lib.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "internal.h"
 #include "session.h"
 #include "settings.h"
 #include "shortcuts.h"
-#include "utils.h"
-
-#include <girara/datastructures.h>
-#include <glib/gi18n-lib.h>
-#include <stdlib.h>
-#include <string.h>
 
 static void girara_cmd_display_shortcut(girara_session_t* session, const char* key_str, guint modifier, guint key,
                                         girara_mode_t mode) {
@@ -80,11 +80,10 @@ static void girara_cmd_display_shortcut(girara_session_t* session, const char* k
     }
   }
 
-  GStrv array              = g_strv_builder_end(builder);
+  g_auto(GStrv) array      = g_strv_builder_end(builder);
   g_autofree char* msg     = g_strjoinv("", array);
   g_autofree char* esc_msg = g_markup_escape_text(msg, -1);
   girara_notify(session, GIRARA_INFO, "%s", esc_msg);
-  g_strfreev(array);
 }
 
 static void girara_cmd_display_mouse_event(girara_session_t* session, const char* button_str, const char* event_str,
@@ -159,11 +158,10 @@ static void girara_cmd_display_mouse_event(girara_session_t* session, const char
     }
   }
 
-  GStrv array              = g_strv_builder_end(builder);
+  g_auto(GStrv) array      = g_strv_builder_end(builder);
   g_autofree char* msg     = g_strjoinv("", array);
   g_autofree char* esc_msg = g_markup_escape_text(msg, -1);
   girara_notify(session, GIRARA_INFO, "%s", esc_msg);
-  g_strfreev(array);
 }
 
 const gdk_keyboard_button_t gdk_keyboard_buttons[48] = {
@@ -327,7 +325,7 @@ static bool girara_cmd_map_unmap(girara_session_t* session, girara_list_t* argum
         break;
       case 'A':
       case 'M':
-        shortcut_mask = GDK_MOD1_MASK;
+        shortcut_mask = GDK_ALT_MASK;
         break;
       case 'C':
         shortcut_mask = GDK_CONTROL_MASK;
@@ -571,9 +569,9 @@ bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list) {
       /* for compatibility reasons: toogle the setting */
       bool value = false;
       girara_setting_get_value(setting, &value);
-      bool tmp = !value;
-      girara_setting_set_value(session, setting, &tmp);
-      girara_notify(session, GIRARA_INFO, "%s: %s", name, tmp ? _("true") : _("false"));
+      value = !value;
+      girara_setting_set_value(session, setting, &value);
+      girara_notify(session, GIRARA_INFO, "%s: %s", name, value ? _("true") : _("false"));
       break;
     }
     case FLOAT: {
@@ -586,6 +584,12 @@ bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list) {
       int value = 0;
       girara_setting_get_value(setting, &value);
       girara_notify(session, GIRARA_INFO, "%s: %i", name, value);
+      break;
+    }
+    case UINT: {
+      unsigned int value = 0;
+      girara_setting_get_value(setting, &value);
+      girara_notify(session, GIRARA_INFO, "%s: %u", name, value);
       break;
     }
     case STRING: {
@@ -625,8 +629,25 @@ bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list) {
       break;
     }
     case INT: {
-      int i = atoi(value);
-      girara_setting_set_value(session, setting, &i);
+      gint64 num;
+      if (g_ascii_string_to_signed(value, 10, INT_MIN, INT_MAX, &num, NULL)) {
+        int i = num;
+        girara_setting_set_value(session, setting, &i);
+      } else {
+        girara_warning("Invalid value for option: %s", name);
+        girara_notify(session, GIRARA_ERROR, _("Invalid value for option: %s"), name);
+      }
+      break;
+    }
+    case UINT: {
+      guint64 num;
+      if (g_ascii_string_to_unsigned(value, 10, 0, UINT_MAX, &num, NULL)) {
+        unsigned int i = num;
+        girara_setting_set_value(session, setting, &i);
+      } else {
+        girara_warning("Invalid value for option: %s", name);
+        girara_notify(session, GIRARA_ERROR, _("Invalid value for option: %s"), name);
+      }
       break;
     }
     case STRING:
@@ -638,6 +659,70 @@ bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list) {
   }
 
   return true;
+}
+
+bool girara_cmd_shortcut(girara_session_t* session, girara_list_t* argument_list) {
+  const size_t number_of_arguments = girara_list_size(argument_list);
+
+  unsigned int limit = 1;
+  if (number_of_arguments < limit) {
+    girara_warning("Invalid number of arguments passed: %zu instead of at least %u", number_of_arguments, limit);
+    girara_notify(session, GIRARA_ERROR, _("Invalid number of arguments passed: %zu instead of at least %u"),
+                  number_of_arguments, limit);
+    return false;
+  }
+
+  int shortcut_argument_n                      = 0;
+  g_autofree char* shortcut_buffer_command     = NULL;
+  girara_shortcut_function_t shortcut_function = NULL;
+
+  size_t current_command = 0;
+  char* tmp              = girara_list_nth(argument_list, current_command);
+
+  girara_session_private_t* session_private = session->private_data;
+
+  /* Check for passed shortcut command */
+  bool found_mapping = false;
+  for (size_t idx = 0; idx != girara_list_size(session_private->config.shortcut_mappings); ++idx) {
+    girara_shortcut_mapping_t* mapping = girara_list_nth(session_private->config.shortcut_mappings, idx);
+    if (!g_strcmp0(tmp, mapping->identifier)) {
+      shortcut_function = mapping->function;
+      found_mapping     = true;
+      break;
+    }
+  }
+
+  if (found_mapping == false) {
+    girara_warning("Not a valid shortcut function: %s", tmp);
+    girara_notify(session, GIRARA_ERROR, _("Not a valid shortcut function: %s"), tmp);
+    return false;
+  }
+
+  /* Check for passed argument */
+  char* shortcut_argument_data = NULL;
+  if (++current_command < number_of_arguments) {
+    tmp = girara_list_nth(argument_list, current_command);
+
+    for (size_t idx = 0; idx != girara_list_size(session_private->config.argument_mappings); ++idx) {
+      girara_argument_mapping_t* mapping = girara_list_nth(session_private->config.argument_mappings, idx);
+      if (!g_strcmp0(tmp, mapping->identifier)) {
+        shortcut_argument_n = mapping->value;
+        break;
+      }
+    }
+
+    /* If no known argument is passed we save it in the data field */
+    if (shortcut_argument_n == 0) {
+      shortcut_argument_data = tmp;
+      /* If a known argument is passed and there are still more arguments,
+       * we save the next one in the data field */
+    } else if (++current_command < number_of_arguments) {
+      shortcut_argument_data = girara_list_nth(argument_list, current_command);
+    }
+  }
+
+  girara_argument_t arg = {.data = shortcut_argument_data, .n = shortcut_argument_n};
+  return shortcut_function(session, &arg, NULL, 1);
 }
 
 bool girara_inputbar_command_add(girara_session_t* session, const char* command, const char* abbreviation,
@@ -718,10 +803,10 @@ void girara_command_free(girara_command_t* command) {
 
 bool girara_command_run(girara_session_t* session, const char* input) {
   /* parse input */
-  gchar** argv = NULL;
-  gint argc    = 0;
+  g_auto(GStrv) argv = NULL;
+  gint argc          = 0;
 
-  if (g_shell_parse_argv(input, &argc, &argv, NULL) == FALSE) {
+  if (!g_shell_parse_argv(input, &argc, &argv, NULL)) {
     girara_debug("Failed to parse argument.");
     return false;
   }
@@ -734,7 +819,6 @@ bool girara_command_run(girara_session_t* session, const char* input) {
     if ((g_strcmp0(cmd, binding_command->command) == 0) || (g_strcmp0(cmd, binding_command->abbr) == 0)) {
       g_autoptr(girara_list_t) argument_list = girara_list_new();
       if (argument_list == NULL) {
-        g_strfreev(argv);
         return false;
       }
 
@@ -744,14 +828,12 @@ bool girara_command_run(girara_session_t* session, const char* input) {
 
       binding_command->function(session, argument_list);
 
-      g_strfreev(argv);
-
       girara_isc_abort(session, NULL, NULL, 0);
 
       if (session->global.autohide_inputbar == true) {
-        gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar));
+        gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar), FALSE);
       }
-      gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar_dialog));
+      gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar_dialog), FALSE);
       return true;
     }
   }
@@ -759,13 +841,12 @@ bool girara_command_run(girara_session_t* session, const char* input) {
   /* check for unknown command event handler */
   if (session->events.unknown_command != NULL) {
     if (session->events.unknown_command(session, input) == true) {
-      g_strfreev(argv);
       girara_isc_abort(session, NULL, NULL, 0);
 
       if (session->global.autohide_inputbar == true) {
-        gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar));
+        gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar), FALSE);
       }
-      gtk_widget_hide(GTK_WIDGET(session->gtk.inputbar_dialog));
+      gtk_widget_set_visible(GTK_WIDGET(session->gtk.inputbar_dialog), FALSE);
 
       return true;
     }
@@ -773,7 +854,6 @@ bool girara_command_run(girara_session_t* session, const char* input) {
 
   /* unhandled command */
   girara_notify(session, GIRARA_ERROR, _("Not a valid command: %s"), cmd);
-  g_strfreev(argv);
   girara_isc_abort(session, NULL, NULL, 0);
 
   return false;

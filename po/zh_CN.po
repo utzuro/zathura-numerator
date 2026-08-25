@@ -1,0 +1,1828 @@
+# zathura - language file (Chinese (China))
+# SPDX-License-Identifier: Zlib
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: zathura\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-17 19:40+0200\n"
+"PO-Revision-Date: 2026-03-31 19:24+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Chinese (China) (http://app.transifex.com/pwmt/zathura/"
+"language/zh_CN/)\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Zathura"
+msgstr ""
+
+msgid "Minimalistic document viewer"
+msgstr "极简文档查看器"
+
+#. Translators: Search terms to find this application. Do not translate or
+#. localize the semicolons. The list must also end with a semicolon.
+msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
+msgstr "PDF;PS;PostScript;DjVU;文档;演示;查看器;"
+
+msgid ""
+"Zathura is a highly customizable and functional document viewer. It provides "
+"a minimalistic and space saving interface as well as an easy usage that "
+"mainly focuses on keyboard interaction. Zathura makes it possible to "
+"completely view and navigate through documents without using a mouse."
+msgstr ""
+"Zathura 是一款高度可定制且功能丰富的文档查看器。它提供极简且节省空间的界面，"
+"并且易于使用，主要专注于键盘交互。Zathura 让用户无需使用鼠标也能完整查看和浏"
+"览文档。"
+
+msgid ""
+"Zathura can be extended to support multiple document formats using plugins. "
+"Other features include:"
+msgstr "Zathura 可以通过插件扩展以支持多种文档格式。其他功能包括："
+
+msgid "SyncTeX forward and backward synchronization support."
+msgstr "支持 SyncTeX 正向和反向同步。"
+
+msgid "Quickmarks and bookmarks."
+msgstr "快速标记和书签。"
+
+msgid "Automatic document reloading."
+msgstr "自动重新加载文档。"
+
+msgid "Reading a PDF file"
+msgstr "阅读 PDF 文件"
+
+msgid "Opening a file with the `open` command"
+msgstr "使用 `open` 命令打开文件"
+
+msgid "Following links"
+msgstr "跟随链接"
+
+msgid "Listing and selecting bookmarks"
+msgstr "列出并选择书签"
+
+msgid "Add page-mode setting"
+msgstr ""
+
+msgid "Fix reloading of files (#969)"
+msgstr ""
+
+msgid "Fix CSS handling (#970)"
+msgstr ""
+
+msgid "Replace test feature with test-x11 and test-wayland features"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr ""
+
+msgid ""
+"Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
+"embedding is no longer supported (#216, #432). Also, the setting 'window-"
+"icon-document' has been removed."
+msgstr ""
+
+msgid "Fix issues with forking on macOS (#907)"
+msgstr ""
+
+msgid "Fix first-page-column handling regression (#948)"
+msgstr ""
+
+msgid "Support SIGSTOP in sandbox (#945)"
+msgstr ""
+
+msgid "Add setting to open documents in single-page mode"
+msgstr ""
+
+msgid "Bind toggle-single-page to w (#966)"
+msgstr ""
+
+msgid "Make link confirmation optional"
+msgstr ""
+
+msgid "Replace use of SHA256 with XXH3-128 for faster file hashing"
+msgstr ""
+
+msgid "Fix sandbox on X11 (#928)"
+msgstr ""
+
+msgid "Fix crashes on document reload (#164, #462, #729, #993)"
+msgstr ""
+
+msgid "Add option to keep selection highlights (#693)"
+msgstr ""
+
+msgid "Add user feedback to copy_filepath"
+msgstr ""
+
+msgid "Handle unsigned integer values in set command"
+msgstr ""
+
+msgid "Handle key press events for notification area (#897)"
+msgstr ""
+
+msgid "Fix documentation of mouse buttons (#912)"
+msgstr ""
+
+msgid "Make shortcuts available as commands (#225)"
+msgstr ""
+
+msgid "Fix more cases of flickering when rendering pages (#864)"
+msgstr ""
+
+msgid "Add search result counter (#450)"
+msgstr ""
+
+msgid "Fix search result cycling in documents with one page (#902)"
+msgstr ""
+
+msgid "Fix some page rendering regressions (#876, #877, #879, #886)"
+msgstr ""
+
+msgid "Fix warning when using 'null' database (#881)"
+msgstr ""
+
+msgid "Include manpages in tarballs (#674)"
+msgstr ""
+
+msgid "Update translations"
+msgstr ""
+
+msgid ""
+"Implement single page layout and equal height/width modes (#706, #724, #447, "
+"#289)"
+msgstr ""
+
+msgid "Use single page layout for presentation mode (#686, #666)"
+msgstr ""
+
+msgid "Fix blurry rendering and repeated loading messages (#864, #860)"
+msgstr ""
+
+msgid "Allow to disable copying to clipboard (#835)"
+msgstr ""
+
+msgid "Fix smooth scrolling using Ctrl and arrow keys (#872)"
+msgstr ""
+
+msgid ""
+"Fork to background if opening with multiple files only if --fork is "
+"specified (#855)"
+msgstr ""
+
+msgid "Fix handling of PageUp and PageDown (#861)"
+msgstr ""
+
+msgid "Fix handling of mappings with special keys (#862)"
+msgstr ""
+
+msgid "Integrate Gtk+-specific parts of girara"
+msgstr ""
+
+msgid "Switch to date-based version numbers"
+msgstr ""
+
+msgid "Fix warnings from CSS generation (#824)"
+msgstr ""
+
+msgid "Apply correct scaling when recoloring (#836)"
+msgstr ""
+
+msgid "Make sure jumplist stays valid after close (#835)"
+msgstr ""
+
+msgid "Disable message in incremental search (#227, #847)"
+msgstr ""
+
+msgid "Fix seccomp rules with musl (#843)"
+msgstr ""
+
+msgid ""
+"Implement custom drawing for document widget (#580, #657, #736, #785, #795, "
+"#797, #826)"
+msgstr ""
+
+msgid "Switch default database to sqlite and drop plain database"
+msgstr ""
+
+msgid "Notify users if no attachments and images are available to export"
+msgstr ""
+
+msgid "Make index-* configurable after init (#799)"
+msgstr ""
+
+msgid "Support numeric keypad mappings"
+msgstr ""
+
+msgid "Provide correct number of pages (#814)"
+msgstr ""
+
+msgid "Undo size-allocate callback changes"
+msgstr ""
+
+msgid "Fix temporary file names for better content-type detection"
+msgstr ""
+
+msgid "Validate appstream files with appstreamcli"
+msgstr ""
+
+msgid "Split page-padding into page-h-padding and page-v-padding"
+msgstr ""
+
+msgid "Fix memory leak and callback type error (#767)"
+msgstr ""
+
+msgid "Warn if plugins do not support exporting images or attachments (#334)"
+msgstr ""
+
+msgid "Add shortcut to open files via file chooser dialog"
+msgstr ""
+
+msgid "Refactor rendering of pages"
+msgstr ""
+
+msgid "Add lightness adjustment for recoloring"
+msgstr ""
+
+msgid "Initial support for OpenBSD sandbox"
+msgstr ""
+
+msgid "Fix closing of documents"
+msgstr ""
+
+msgid "Fix crash when opening documents"
+msgstr ""
+
+msgid "Fix build on macOS"
+msgstr ""
+
+msgid "Hide page label if the same as page number"
+msgstr ""
+
+msgid "Cache SyncTeX parser for faster operation"
+msgstr ""
+
+msgid "Revert changes for documents with multiple page sizes"
+msgstr ""
+
+msgid "Bump plugin ABI"
+msgstr ""
+
+msgid "Split sandbox functionality into separate zathura-sandbox binary"
+msgstr ""
+
+msgid "Split off new command bjump from blist"
+msgstr ""
+
+msgid "Add initial landlock support to sandbox"
+msgstr ""
+
+msgid "Fix repeated search"
+msgstr ""
+
+msgid "Implement jumplist command"
+msgstr ""
+
+msgid "Fix issues with document with multiple page sizes"
+msgstr ""
+
+msgid "Move to Github"
+msgstr ""
+
+msgid "Reduce minimum glib version"
+msgstr ""
+
+msgid "Remove normal sandbox mode"
+msgstr ""
+
+msgid "Compatibility with girara 0.4.3"
+msgstr ""
+
+msgid ""
+"Remove highlight-transparency setting. Set the alpha component of highlight-"
+"color, highlight-active-color and highlight-fg instead."
+msgstr ""
+
+msgid "Remove smooth-reload setting. Smooth reloading is now always enabled."
+msgstr ""
+
+msgid ""
+"Remove plain database backend. The sqlite database backend imports the data "
+"from the plain database the first time. sqlite is now a hard dependency."
+msgstr ""
+
+msgid "Fix a segfault if dbus is not enabled."
+msgstr ""
+
+msgid "Add support to display signatures"
+msgstr ""
+
+msgid "Fix clearing of highlighted links"
+msgstr ""
+
+msgid "Make some key modifiers configurable"
+msgstr ""
+
+msgid "Fix text selection on rotated pages"
+msgstr ""
+
+msgid "Fix gap between pages"
+msgstr ""
+
+msgid "Improve text selection"
+msgstr ""
+
+msgid "`seccomp`: Make glibc fallback to clone instead of using clone3"
+msgstr ""
+
+msgid "`magic` is now a required dependency"
+msgstr ""
+
+msgid "Add '$f' and '$p' expansions to 'exec' shortcut function"
+msgstr ""
+
+msgid "Fix build with meson 0.60"
+msgstr ""
+
+msgid "Add :source command"
+msgstr ""
+
+msgid "Account for page padding in full scroll"
+msgstr ""
+
+msgid "Add foreground color for links"
+msgstr ""
+
+msgid "Add :save and :save! aliases for :write and :write!"
+msgstr ""
+
+msgid "Fix invalid zoom when opening document with 'adjust-open width' option"
+msgstr ""
+
+msgid "Add --find option to the CLI"
+msgstr ""
+
+msgid "Support recolor with transparency"
+msgstr ""
+
+msgid "Fix step size for mouse wheel scrolling"
+msgstr ""
+
+msgid "Lookup fileinfo from database by hash as fallback"
+msgstr ""
+
+msgid "Fix expansion of ~ and ~user when opening files"
+msgstr ""
+
+msgid "Add fish completion"
+msgstr ""
+
+msgid "Drop support for old libsynctex"
+msgstr ""
+
+msgid "Add bash and zsh completions"
+msgstr ""
+
+msgid "Add RTL layout of pages"
+msgstr ""
+
+msgid "Port to newer libsynctex"
+msgstr ""
+
+msgid "Improved HiDPI support"
+msgstr ""
+
+msgid "Display page labels"
+msgstr ""
+
+msgid "Add experimental seccomp filters"
+msgstr ""
+
+msgid "Replace build system with meson"
+msgstr ""
+
+msgid "Fix memory leaks"
+msgstr ""
+
+msgid "Rework plugin initialization"
+msgstr ""
+
+msgid "Improved logging"
+msgstr ""
+
+msgid "Improve page mode toggling"
+msgstr ""
+
+msgid "Parallel build of manpages"
+msgstr ""
+
+msgid "Build even without SyncTex"
+msgstr ""
+
+msgid "Children should not fork"
+msgstr ""
+
+msgid "Recent files support"
+msgstr ""
+
+msgid "Substitute home with tilde"
+msgstr ""
+
+msgid "Open URLs"
+msgstr ""
+
+msgid "Store tmp files in only one location"
+msgstr ""
+
+msgid "Print target selection"
+msgstr ""
+
+msgid "Allow .dylib plugins on Mac OS X"
+msgstr ""
+
+msgid "Fix dual page render breakage of adjust_window"
+msgstr ""
+
+msgid "Resolve memory leak while reloading file"
+msgstr ""
+
+msgid "Prevent segmentation fault when smooth zooming with mouse"
+msgstr ""
+
+msgid "Cache thumbnails to support smooth zooming"
+msgstr ""
+
+msgid "Check scale value correctness"
+msgstr ""
+
+msgid "Fix segmentation fault caused by bidirectional scrolling"
+msgstr ""
+
+msgid "Add SyntaxView"
+msgstr ""
+
+msgid "Print debug information to D-Bus"
+msgstr ""
+
+msgid "Fix scroll down/up in dual-page mode"
+msgstr ""
+
+msgid "Option to hide notification after selection"
+msgstr ""
+
+msgid "Introduce cache directory"
+msgstr ""
+
+msgid "Introduce smooth-scroll and smooth-zoom"
+msgstr ""
+
+msgid "Add vim style exec"
+msgstr ""
+
+msgid "Option to ignore images while recoloring"
+msgstr ""
+
+msgid "Take advantage of shared or system SyncTex parser library"
+msgstr ""
+
+msgid "Update dependency version of girara"
+msgstr ""
+
+msgid "Better SyncTex support"
+msgstr ""
+
+msgid "Change cursor if mouse is over link"
+msgstr ""
+
+msgid "Colored build output"
+msgstr ""
+
+msgid "Sphinx documentation"
+msgstr ""
+
+msgid "Full SyncTex support"
+msgstr ""
+
+msgid "D-Bus interface"
+msgstr ""
+
+msgid "Simple vim plugin for SyncTex support"
+msgstr ""
+
+msgid "Add shortcuts for ^C and Esc in all modes"
+msgstr ""
+
+msgid "Use the actual mode in mode toggle calls"
+msgstr ""
+
+msgid "Only copy selected text in normal and fullscreen mode"
+msgstr ""
+
+msgid "Translate error messages"
+msgstr ""
+
+msgid "Correctly safe print setting state"
+msgstr ""
+
+msgid "Add --mode option"
+msgstr ""
+
+msgid "Expose more properties via D-Bus"
+msgstr ""
+
+msgid "Center pages"
+msgstr ""
+
+msgid "Replace glib memory functions with try version"
+msgstr ""
+
+msgid "Align highlighted rectangles correctly"
+msgstr ""
+
+msgid "Implement G and gg for index mode"
+msgstr ""
+
+msgid "Implement TOGGLE for sc_navigate_index"
+msgstr ""
+
+msgid "Preserve horizontal position when scrolling to PAGE_TOP/BOTTOM"
+msgstr ""
+
+msgid "Implement shortcuts for scrolling to page top/bottom"
+msgstr ""
+
+msgid "Set position on document load only if no page was specified"
+msgstr ""
+
+msgid "Bail out early if we get TOP or BOTTOM"
+msgstr ""
+
+msgid "Replace fullscreen mode with presentation mode"
+msgstr ""
+
+msgid "Remove GTK+2 support"
+msgstr ""
+
+msgid "Update documentation"
+msgstr ""
+
+msgid "Resolve layout problems"
+msgstr ""
+
+msgid "Use GTK+3 by default"
+msgstr ""
+
+msgid "Rewritten render logic"
+msgstr ""
+
+msgid "Fixed page refresh in certain situations"
+msgstr ""
+
+msgid "Make the X clipboard buffer"
+msgstr ""
+
+msgid "Allow number in quickmarks"
+msgstr ""
+
+msgid "Workaround for print quality issues"
+msgstr ""
+
+msgid "Resolve memory leak"
+msgstr ""
+
+msgid "Report missing plugin or unsupported file types"
+msgstr ""
+
+msgid "More vim-like search behaviour"
+msgstr ""
+
+msgid "Introduced show-{h,v}-scrollbar settings"
+msgstr ""
+
+msgid "Enhancement of the jumplist mechanism"
+msgstr ""
+
+msgid "Use jumplists with marks"
+msgstr ""
+
+msgid "More vim-like jump behaviour"
+msgstr ""
+
+msgid "Improved bisect"
+msgstr ""
+
+msgid "Update page number on mouse scroll"
+msgstr ""
+
+msgid "Introduced window-title-page option"
+msgstr ""
+
+msgid "LRU caching algorithm"
+msgstr ""
+
+msgid "Bisect functionality"
+msgstr ""
+
+msgid "Allow negative offsets"
+msgstr ""
+
+msgid "Option --page to open at the specified page"
+msgstr ""
+
+msgid "Scale vertical/horizontal scrolling in respect to the buffer"
+msgstr ""
+
+msgid "Add statusbar-basename option"
+msgstr ""
+
+msgid "Implement colors for 'Loading...'-text"
+msgstr ""
+
+msgid "Don't render same page multiple times"
+msgstr ""
+
+msgid "Use libmagic if available"
+msgstr ""
+
+msgid "Implemented jumplist (^o, ^i)"
+msgstr ""
+
+msgid "Update current page when following links"
+msgstr ""
+
+msgid "Scroll horizontally with shift and mouse wheel"
+msgstr ""
+
+msgid "Page aware scrolling"
+msgstr "感知页面的滚动"
+
+msgid "SyncTeX forward synchronisation"
+msgstr ""
+
+msgid "Update shortcuts"
+msgstr ""
+
+msgid "SyncTeX backwards synchronisation"
+msgstr ""
+
+msgid "Fix request-page-setup"
+msgstr ""
+
+msgid "Fix window adustment"
+msgstr ""
+
+msgid "Update GTK3 support"
+msgstr ""
+
+msgid "Added first-page-colum setting"
+msgstr ""
+
+msgid "Added recolor-keephue setting"
+msgstr ""
+
+msgid "Better print support"
+msgstr ""
+
+msgid "Improve document links"
+msgstr ""
+
+msgid "Render last-viewed pages with a higher priority"
+msgstr ""
+
+msgid "Export images and attachments"
+msgstr ""
+
+msgid "Open multiple documents"
+msgstr ""
+
+msgid "Plugin manager"
+msgstr ""
+
+msgid "Add 'open-first-page' setting"
+msgstr ""
+
+msgid "Free invisible pages after specific time"
+msgstr ""
+
+msgid "Set log level via command line"
+msgstr ""
+
+msgid "Completion for :write command"
+msgstr ""
+
+msgid "Simplified plugin loading"
+msgstr ""
+
+msgid "Allow counter-clockwise rotation"
+msgstr ""
+
+msgid "Changeable page-padding"
+msgstr ""
+
+msgid "Introduced girara version check"
+msgstr ""
+
+msgid "Detect sqlite automatically"
+msgstr ""
+
+msgid "Update window title"
+msgstr ""
+
+msgid "Macro to register plugins"
+msgstr ""
+
+msgid "Fix issues with the display of the current page number"
+msgstr ""
+
+msgid "Ability to scroll to the full left or full right border"
+msgstr ""
+
+msgid "Reimplement the render thread with GThreadPool"
+msgstr ""
+
+msgid "Use the correct color to highlight results"
+msgstr ""
+
+msgid "Support to use both database backends"
+msgstr ""
+
+msgid "Additional notifications on errors"
+msgstr ""
+
+msgid "Option to hide hidden directories"
+msgstr ""
+
+msgid "Do not overwrite existing files with :write"
+msgstr ""
+
+msgid "Fix flicker in text selection"
+msgstr ""
+
+msgid "Fixed several memory leaks"
+msgstr ""
+
+msgid "Complete rewrite of zathura"
+msgstr ""
+
+msgid "Uses the girara interface library"
+msgstr ""
+
+msgid "Plugin system for different document types"
+msgstr ""
+
+msgid "Better configuration"
+msgstr ""
+
+msgid "Quickmarks"
+msgstr ""
+
+msgid "Ignoring MOD5 which is used on some keyboards"
+msgstr ""
+
+msgid "Fix scroll_wrap (#52)"
+msgstr ""
+
+msgid "Don't invert y coordinates (#42)"
+msgstr ""
+
+msgid "Certain memory leaks and other small issues"
+msgstr ""
+
+msgid "Fixed bookmark handling"
+msgstr ""
+
+msgid "Support :digits"
+msgstr ""
+
+msgid "Save zoom level per file"
+msgstr ""
+
+msgid "Fix backwards searching"
+msgstr ""
+
+msgid "Fix blinking while switching pages"
+msgstr ""
+
+msgid "Fix input issues in fullscreen mode"
+msgstr ""
+
+msgid "Update text searching"
+msgstr ""
+
+msgid "Support for poppler >= 0.15"
+msgstr ""
+
+msgid "Fixed print command with multiple arguments"
+msgstr ""
+
+msgid "Fixed GOptionEntries"
+msgstr ""
+
+msgid "Fixed segmentation faults"
+msgstr ""
+
+msgid "Wrap around scrolling"
+msgstr ""
+
+msgid "Display scroll percentage in statusbar"
+msgstr ""
+
+msgid "More familiar zoom key bindings"
+msgstr ""
+
+msgid "Support reading files from stdin"
+msgstr ""
+
+msgid "Open command with appended current file path"
+msgstr ""
+
+msgid "Following XDG specification"
+msgstr ""
+
+msgid "Colored window and view port"
+msgstr ""
+
+msgid "File reloading fix"
+msgstr ""
+
+msgid "Update manpage"
+msgstr ""
+
+msgid "Fixed critical usability bug"
+msgstr ""
+
+msgid "Improved and fixed completion"
+msgstr ""
+
+msgid "Optional parameters for the print command"
+msgstr ""
+
+msgid "Escape filenames"
+msgstr ""
+
+msgid "Resolved some memory leaks"
+msgstr ""
+
+msgid "Global configuration file"
+msgstr ""
+
+msgid "Specify configuration directory"
+msgstr ""
+
+msgid "Configureable modes"
+msgstr ""
+
+msgid "Smooth scrolling"
+msgstr ""
+
+msgid "Extended statusbar string manipulation"
+msgstr ""
+
+msgid "`function`"
+msgstr ""
+
+msgid "Strip executable"
+msgstr ""
+
+msgid "Change window title to filename"
+msgstr ""
+
+msgid "Fixation of the URI command"
+msgstr ""
+
+msgid "Update the behaviour of sc_scroll"
+msgstr ""
+
+msgid "Half/Full-page scrolling"
+msgstr ""
+
+msgid "Check document health in sc_reload"
+msgstr ""
+
+msgid "`tabbed` support"
+msgstr ""
+
+msgid "Define look with the set function"
+msgstr ""
+
+msgid "Implemented map function"
+msgstr ""
+
+msgid "`zathurarc` file"
+msgstr ""
+
+msgid "Prevent buffer overflow in realpath"
+msgstr ""
+
+msgid "Key evaluation when buffer is not empty"
+msgstr ""
+
+msgid "Use GFileMonitor instead of inotify"
+msgstr ""
+
+msgid "Added document reload shortcut"
+msgstr ""
+
+msgid "Fixed toggle index"
+msgstr ""
+
+msgid "Fixed print command"
+msgstr ""
+
+msgid "Fullscreen mode"
+msgstr ""
+
+msgid "Correct search result highlighting"
+msgstr ""
+
+msgid "Document password dialog"
+msgstr ""
+
+msgid "Mouse support (Scroll, Mark and copy text to clipboard)"
+msgstr ""
+
+msgid "Keyboard navigation in the index view"
+msgstr ""
+
+msgid "Different goto modes"
+msgstr ""
+
+msgid "Auto adjustment when opening a document"
+msgstr ""
+
+msgid "Reload modified document automatically"
+msgstr ""
+
+msgid "Recolor the page instead of inverting the colors"
+msgstr ""
+
+msgid "Working search function"
+msgstr ""
+
+msgid "Show and hide document information"
+msgstr ""
+
+msgid "Follow internal links or open URI in a predefined browser"
+msgstr ""
+
+msgid "Save the document"
+msgstr ""
+
+msgid "Complete new, re-written interface"
+msgstr ""
+
+msgid "Multiple printer support"
+msgstr ""
+
+msgid "Command history"
+msgstr ""
+
+msgid "Show document index"
+msgstr ""
+
+msgid "Centered view"
+msgstr ""
+
+msgid "Add, save and open bookmarks"
+msgstr ""
+
+msgid "Marker support"
+msgstr ""
+
+msgid "Highlight search results"
+msgstr ""
+
+msgid "Buffered commands"
+msgstr ""
+
+msgid "`set` Function"
+msgstr ""
+
+msgid "Revert video function"
+msgstr ""
+
+msgid "Command completion"
+msgstr ""
+
+msgid "Initial release"
+msgstr ""
+
+#, c-format
+msgid "Invalid number of arguments passed: %zu instead of at least %u"
+msgstr "传入的参数数量无效：%zu，至少应为 %u"
+
+#, c-format
+msgid "Unregistered mode specified: %s"
+msgstr "指定了未注册的模式：%s"
+
+msgid "Invalid number of arguments passed"
+msgstr "传入的参数数量无效"
+
+#, c-format
+msgid "Invalid modifier in %s"
+msgstr "%s 中有无效修饰键"
+
+#, c-format
+msgid "Invalid special key value for %s"
+msgstr "%s 的特殊按键值无效"
+
+#, c-format
+msgid "Invalid special key value or mode %s"
+msgstr "特殊按键值或模式 %s 无效"
+
+#, c-format
+msgid "Not a valid shortcut function: %s"
+msgstr "不是有效的快捷键函数：%s"
+
+msgid "Not enough arguments."
+msgstr "参数不足。"
+
+msgid "Too many arguments."
+msgstr "参数过多。"
+
+#, c-format
+msgid "Unknown option: %s"
+msgstr "未知选项：%s"
+
+msgid "true"
+msgstr "真"
+
+msgid "false"
+msgstr "假"
+
+#, c-format
+msgid "No value defined for option: %s"
+msgstr "选项没有定义值：%s"
+
+#, c-format
+msgid "Unknown value for option: %s"
+msgstr "选项的值未知：%s"
+
+#, c-format
+msgid "Invalid value for option: %s"
+msgstr ""
+
+#. unhandled command
+#, c-format
+msgid "Not a valid command: %s"
+msgstr "不是有效命令：%s"
+
+#, c-format
+msgid "Invalid number of arguments passed: %zu instead of 1"
+msgstr "传入的参数数量无效：%zu，应为 1"
+
+#, c-format
+msgid "Failed to write JSON: %s"
+msgstr "写入 JSON 失败：%s"
+
+#, c-format
+msgid "'%s' must not be 0. Set to 1."
+msgstr "'%s' 不能为 0。已设为 1。"
+
+#, c-format
+msgid "Invalid input '%s' given."
+msgstr "给定了无效输入 '%s'。"
+
+#, c-format
+msgid "Invalid index '%s' given."
+msgstr "给定了无效索引 '%s'。"
+
+msgid "Enter password:"
+msgstr "输入密码："
+
+#, c-format
+msgid "Copied selected text to selection %s: %s"
+msgstr "已将选中的文本复制到选择区 %s：%s"
+
+#, c-format
+msgid "Copied selected image to selection %s"
+msgstr "已将选中的图像复制到选择区 %s"
+
+msgid "No document opened."
+msgstr "未打开文档。"
+
+msgid "Invalid number of arguments given."
+msgstr "给定的参数数量无效。"
+
+#, c-format
+msgid "Could not update bookmark: %s"
+msgstr "无法更新书签：%s"
+
+#, c-format
+msgid "Could not create bookmark: %s"
+msgstr "无法创建书签：%s"
+
+#, c-format
+msgid "Bookmark successfully updated: %s"
+msgstr "书签已成功更新：%s"
+
+#, c-format
+msgid "Bookmark successfully created: %s"
+msgstr "书签已成功创建：%s"
+
+#, c-format
+msgid "Removed bookmark: %s"
+msgstr "已删除书签：%s"
+
+#, c-format
+msgid "Failed to remove bookmark: %s"
+msgstr "删除书签失败：%s"
+
+msgid "No bookmarks available."
+msgstr "没有可用书签。"
+
+#, c-format
+msgid "No such bookmark: %s"
+msgstr "没有此书签：%s"
+
+msgid "Argument must be a nonzero number."
+msgstr "参数必须是非零数字。"
+
+#, c-format
+msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
+msgstr "[%d]：页面=<b>%2d</b>，x=%f，y=%f %s\n"
+
+msgid "(current)"
+msgstr "（当前）"
+
+msgid "No jumplist available."
+msgstr "没有可用跳转列表。"
+
+msgid "Title"
+msgstr "标题"
+
+msgid "Subject"
+msgstr "主题"
+
+msgid "Keywords"
+msgstr "关键词"
+
+msgid "Author"
+msgstr "作者"
+
+msgid "Creator"
+msgstr "创建者"
+
+msgid "Producer"
+msgstr "生成器"
+
+msgid "Creation date"
+msgstr "创建日期"
+
+msgid "Modification date"
+msgstr "修改日期"
+
+msgid "Format"
+msgstr "格式"
+
+msgid "Other"
+msgstr "其他"
+
+msgid "No information available."
+msgstr "没有可用信息。"
+
+msgid ""
+"Please check the man pages zathura(1) and zathurarc(5) for more information."
+msgstr "请查看手册页 zathura(1) 和 zathurarc(5) 获取更多信息。"
+
+msgid "No arguments given."
+msgstr "未给定参数。"
+
+msgid "Printing is not permitted in strict sandbox mode"
+msgstr "严格沙盒模式下不允许打印"
+
+msgid "Saving is not permitted in strict sandbox mode"
+msgstr "严格沙盒模式下不允许保存"
+
+msgid "Invalid number of arguments."
+msgstr "参数数量无效。"
+
+msgid "Exporting attachments is not permitted in strict sandbox mode"
+msgstr "严格沙盒模式下不允许导出附件"
+
+#, c-format
+msgid "Couldn't write attachment '%s' to '%s'."
+msgstr "无法将附件 '%s' 写入 '%s'。"
+
+#, c-format
+msgid "Wrote attachment '%s' to '%s'."
+msgstr "已将附件 '%s' 写入 '%s'。"
+
+#, c-format
+msgid "Wrote image '%s' to '%s'."
+msgstr "已将图像 '%s' 写入 '%s'。"
+
+#, c-format
+msgid "Couldn't write image '%s' to '%s'."
+msgstr "无法将图像 '%s' 写入 '%s'。"
+
+#, c-format
+msgid "Unknown image '%s'."
+msgstr "未知图像 '%s'。"
+
+#, c-format
+msgid "Unknown attachment or image '%s'."
+msgstr "未知附件或图像 '%s'。"
+
+#, c-format
+msgid "Failed to execute command: %s"
+msgstr "执行命令失败：%s"
+
+msgid "Exec is not permitted in strict sandbox mode"
+msgstr "严格沙盒模式下不允许执行外部命令"
+
+msgid "Argument must be a number."
+msgstr "参数必须是数字。"
+
+msgid "Files"
+msgstr ""
+
+msgid "Recent files"
+msgstr ""
+
+#, c-format
+msgid "Page %d"
+msgstr "第 %d 页"
+
+msgid "Attachments"
+msgstr "附件"
+
+#. add images
+msgid "Images"
+msgstr "图像"
+
+msgid "Plugin does not support exporting attachments and images."
+msgstr "插件不支持导出附件和图像。"
+
+msgid "Document contains no images or attachments"
+msgstr "文档不包含图像或附件"
+
+#. clang-format off
+#. settings
+msgid "Font"
+msgstr "字体"
+
+#. colors affecting the CSS
+msgid "Default foreground color"
+msgstr "默认前景色"
+
+msgid "Default background color"
+msgstr "默认背景色"
+
+msgid "Inputbar foreground color"
+msgstr "输入栏前景色"
+
+msgid "Inputbar background color"
+msgstr "输入栏背景色"
+
+msgid "Statusbar foreground color"
+msgstr "状态栏前景色"
+
+msgid "Statsubar background color"
+msgstr "状态栏背景色"
+
+msgid "Completion foreground color"
+msgstr "补全前景色"
+
+msgid "Completion background color"
+msgstr "补全背景色"
+
+msgid "Completion group foreground color"
+msgstr "补全分组前景色"
+
+msgid "Completion group background color"
+msgstr "补全分组背景色"
+
+msgid "Completion highlight foreground color"
+msgstr "补全高亮前景色"
+
+msgid "Completion highlight background color"
+msgstr "补全高亮背景色"
+
+msgid "Error notification foreground color"
+msgstr "错误通知前景色"
+
+msgid "Error notification background color"
+msgstr "错误通知背景色"
+
+msgid "Warning notification foreground color"
+msgstr "警告通知前景色"
+
+msgid "Warning notifaction background color"
+msgstr "警告通知背景色"
+
+msgid "Notification foreground color"
+msgstr "通知前景色"
+
+msgid "Notification background color"
+msgstr "通知背景色"
+
+msgid "Index mode foreground color"
+msgstr "索引模式前景色"
+
+msgid "Index mode background color"
+msgstr "索引模式背景色"
+
+msgid "Index mode foreground color (active element)"
+msgstr "索引模式前景色（活动元素）"
+
+msgid "Index mode background color (active element)"
+msgstr "索引模式背景色（活动元素）"
+
+msgid "Scrollbar foreground color"
+msgstr "滚动条前景色"
+
+msgid "Scrollbar background color"
+msgstr "滚动条背景色"
+
+msgid "Initial window width"
+msgstr "初始窗口宽度"
+
+msgid "Initial window height"
+msgstr "初始窗口高度"
+
+msgid "Horizontal padding for the status, input, and notification bars"
+msgstr "状态栏、输入栏和通知栏的水平内边距"
+
+msgid "Vertical padding for the status, input, and notification bars"
+msgstr "状态栏、输入栏和通知栏的垂直内边距"
+
+msgid "Number of completion items"
+msgstr "补全项数量"
+
+msgid "Command to execute in :exec"
+msgstr ":exec 中要执行的命令"
+
+msgid "Show or hide certain GUI elements"
+msgstr "显示或隐藏某些 GUI 元素"
+
+msgid "Database backend"
+msgstr "数据库后端"
+
+msgid "File monitor backend"
+msgstr "文件监视器后端"
+
+msgid "Zoom step"
+msgstr "缩放步进"
+
+msgid "Horizontal padding between pages"
+msgstr "页面之间的水平间距"
+
+msgid "Vertical padding between pages"
+msgstr "页面之间的垂直间距"
+
+msgid "Number of pages per row"
+msgstr "每行页数"
+
+msgid "Column of the first page"
+msgstr "第一页所在列"
+
+msgid "Render pages from right to left"
+msgstr "从右向左渲染页面"
+
+msgid "Scroll step"
+msgstr "滚动步进"
+
+msgid "Horizontal scroll step"
+msgstr "水平滚动步进"
+
+msgid "Full page scroll overlap"
+msgstr "整页滚动重叠量"
+
+msgid "Zoom minimum"
+msgstr "最小缩放比例"
+
+msgid "Zoom maximum"
+msgstr "最大缩放比例"
+
+msgid "Maximum number of pages to keep in the cache"
+msgstr "缓存中保留的最大页面数"
+
+msgid "Maximum size in pixels of thumbnails to keep in the cache"
+msgstr "缓存中保留缩略图的最大像素尺寸"
+
+msgid "Number of positions to remember in the jumplist"
+msgstr "跳转列表中记住的位置数量"
+
+msgid "Recoloring (dark color)"
+msgstr "重新着色（深色）"
+
+msgid "Recoloring (light color)"
+msgstr "重新着色（浅色）"
+
+msgid "Color for highlighting"
+msgstr "高亮颜色"
+
+msgid "Foreground color for highlighting"
+msgstr "高亮前景色"
+
+msgid "Color for highlighting (active)"
+msgstr "高亮颜色（当前）"
+
+msgid "'Loading ...' background color"
+msgstr "'正在加载 ...' 背景色"
+
+msgid "'Loading ...' foreground color"
+msgstr "'正在加载 ...' 前景色"
+
+msgid "Color used to highlight valid signatures"
+msgstr "用于高亮有效签名的颜色"
+
+msgid "Color used to highlight signatures with warnings"
+msgstr "用于高亮有警告签名的颜色"
+
+msgid "Color used to highlight invalid signatures"
+msgstr "用于高亮无效签名的颜色"
+
+msgid "Recolor pages"
+msgstr "重新着色页面"
+
+msgid "When recoloring keep original hue and adjust lightness only"
+msgstr "重新着色时保留原始色相，仅调整亮度"
+
+msgid "When recoloring keep original image colors"
+msgstr "重新着色时保留原始图像颜色"
+
+msgid "When recoloring adjust lightness"
+msgstr "重新着色时调整亮度"
+
+msgid "Wrap scrolling"
+msgstr "循环滚动"
+
+msgid "Advance number of pages per row"
+msgstr "按每行页数翻页"
+
+msgid "Horizontally centered zoom"
+msgstr "缩放时水平居中"
+
+msgid "Vertically center pages"
+msgstr "垂直居中页面"
+
+msgid "Align link target to the left"
+msgstr "将链接目标左对齐"
+
+msgid "Let zoom be changed when following links"
+msgstr "跟随链接时允许更改缩放"
+
+msgid "Center result horizontally"
+msgstr "水平居中结果"
+
+msgid "Render 'Loading ...'"
+msgstr "渲染 '正在加载 ...'"
+
+msgid "Adjust to when opening file"
+msgstr "打开文件时的适配方式"
+
+msgid "Default page mode (none, equal_width, equal_height)"
+msgstr ""
+
+msgid "Show hidden files and directories"
+msgstr "显示隐藏文件和目录"
+
+msgid "Show directories"
+msgstr "显示目录"
+
+msgid "Show recent files"
+msgstr "显示最近文件"
+
+msgid "Always open on first page"
+msgstr "始终从第一页打开"
+
+msgid "Disable highlighting of search results"
+msgstr "禁用搜索结果高亮"
+
+msgid "Double click to follow links"
+msgstr "双击跟随链接"
+
+msgid "Enable incremental search"
+msgstr "启用增量搜索"
+
+msgid "Clear search results on abort"
+msgstr "中止时清除搜索结果"
+
+msgid "Use basename of the file in the window title"
+msgstr "在窗口标题中使用文件的基名"
+
+msgid "Use ~ instead of $HOME in the filename in the window title"
+msgstr "在窗口标题的文件名中用 ~ 代替 $HOME"
+
+msgid "Display the page number in the window title"
+msgstr "在窗口标题中显示页码"
+
+msgid "Use basename of the file in the statusbar"
+msgstr "在状态栏中使用文件的基名"
+
+msgid "Use ~ instead of $HOME in the filename in the statusbar"
+msgstr "在状态栏的文件名中用 ~ 代替 $HOME"
+
+msgid "Display (current page / total pages) as a percent in the statusbar"
+msgstr "在状态栏中以百分比显示（当前页 / 总页数）"
+
+msgid "Enable SyncTeX support"
+msgstr "启用 SyncTeX 支持"
+
+msgid "SyncTeX editor command"
+msgstr "SyncTeX 编辑器命令"
+
+msgid "SyncTeX edit modifier"
+msgstr "SyncTeX 编辑修饰键"
+
+msgid "Highlighter modifier"
+msgstr "高亮工具修饰键"
+
+msgid "Enable D-Bus service"
+msgstr "启用 D-Bus 服务"
+
+msgid "Raise window on certain D-Bus commands"
+msgstr "收到某些 D-Bus 命令时提升窗口"
+
+msgid "Save history at each page change"
+msgstr "每次页面变化时保存历史记录"
+
+msgid "The clipboard into which mouse-selected data will be written"
+msgstr "鼠标选中数据要写入的剪贴板"
+
+msgid "Enable notification after selecting text"
+msgstr "选择文本后启用通知"
+
+msgid "Keep selection highlighted after mouse release"
+msgstr ""
+
+msgid "Disable additional information for signatures embedded in the document."
+msgstr "禁用文档内嵌签名的附加信息。"
+
+msgid "Enable prompt to confirm when opening links"
+msgstr ""
+
+msgid "Open documents in single-page mode"
+msgstr ""
+
+#. define default inputbar commands
+msgid "Map a key sequence"
+msgstr "映射按键序列"
+
+msgid "Set an option"
+msgstr "设置选项"
+
+msgid "Run a shortcut"
+msgstr ""
+
+msgid "Unmap a key sequence"
+msgstr "取消映射按键序列"
+
+msgid "Dump settings to a file"
+msgstr "将设置导出到文件"
+
+msgid "Add a bookmark"
+msgstr "添加书签"
+
+msgid "Delete a bookmark"
+msgstr "删除书签"
+
+msgid "List all bookmarks"
+msgstr "列出所有书签"
+
+msgid "Jump to bookmark"
+msgstr "跳转到书签"
+
+msgid "Show recent jumps in jumplist"
+msgstr "显示跳转列表中的最近跳转"
+
+msgid "Close current file"
+msgstr "关闭当前文件"
+
+msgid "Show file information"
+msgstr "显示文件信息"
+
+msgid "Execute a command"
+msgstr "执行命令"
+
+#. like vim
+msgid "Show help"
+msgstr "显示帮助"
+
+msgid "Open document"
+msgstr "打开文档"
+
+msgid "Close zathura"
+msgstr "关闭 zathura"
+
+msgid "Print document"
+msgstr "打印文档"
+
+msgid "Save document"
+msgstr "保存文档"
+
+msgid "Save document (and force overwriting)"
+msgstr "保存文档（并强制覆盖）"
+
+msgid "Save attachments"
+msgstr "保存附件"
+
+msgid "Set page offset"
+msgstr "设置页面偏移"
+
+msgid "Mark current location within the document"
+msgstr "标记文档中的当前位置"
+
+msgid "Delete the specified marks"
+msgstr "删除指定标记"
+
+msgid "Remove highlights of current search results"
+msgstr "移除当前搜索结果的高亮"
+
+msgid "Highlight current search results"
+msgstr "高亮当前搜索结果"
+
+msgid "Show version information"
+msgstr "显示版本信息"
+
+msgid "Source config file"
+msgstr "载入配置文件"
+
+msgid "Failed to run xdg-open."
+msgstr "运行 xdg-open 失败。"
+
+msgid "y"
+msgstr "y"
+
+msgid "Y"
+msgstr "Y"
+
+msgid "Cancelled."
+msgstr "已取消。"
+
+#, c-format
+msgid "Open external link <b>%s</b>? [Y/n]"
+msgstr "打开外部链接 <b>%s</b>？[Y/n]"
+
+msgid "Opening external applications in strict sandbox mode is not permitted"
+msgstr "严格沙盒模式下不允许打开外部应用程序"
+
+#, c-format
+msgid "Link: page %d"
+msgstr "链接：第 %d 页"
+
+#, c-format
+msgid "Link: %s"
+msgstr "链接：%s"
+
+msgid "Link: Invalid"
+msgstr "链接：无效"
+
+#, c-format
+msgid "Copied page number: %d"
+msgstr "已复制页码：%d"
+
+#, c-format
+msgid "Copied link: %s"
+msgstr "已复制链接：%s"
+
+msgid "Path to the config directory"
+msgstr "配置目录路径"
+
+msgid "Path to the data directory"
+msgstr "数据目录路径"
+
+msgid "Path to the cache directory"
+msgstr "缓存目录路径"
+
+msgid "Path to the directories containing plugins"
+msgstr "包含插件的目录路径"
+
+msgid "Fork into the background"
+msgstr "派生到后台"
+
+msgid "Document password"
+msgstr "文档密码"
+
+msgid "Page number to go to"
+msgstr "要跳转到的页码"
+
+msgid "Log level (debug, info, warning, error)"
+msgstr "日志级别（debug、info、warning、error）"
+
+msgid "Print version information"
+msgstr "打印版本信息"
+
+msgid "SyncTeX editor (forwarded to the synctex command)"
+msgstr "SyncTeX 编辑器（转发给 synctex 命令）"
+
+msgid "Move to given SyncTeX position"
+msgstr "移动到给定的 SyncTeX 位置"
+
+msgid "Highlight given position in the given process"
+msgstr "在给定进程中高亮给定位置"
+
+msgid "Start in a non-default mode"
+msgstr "以非默认模式启动"
+
+msgid "Bookmark to go to"
+msgstr "要跳转到的书签"
+
+msgid "Search for the given phrase and display results"
+msgstr "搜索给定短语并显示结果"
+
+#, c-format
+msgid ""
+"Signature is valid.\n"
+"This document is signed by\n"
+"  %s\n"
+"on %s."
+msgstr ""
+"签名有效。\n"
+"此文档签名者为\n"
+"  %s\n"
+"签名时间：%s。"
+
+msgid "Signature certificate is expired."
+msgstr "签名证书已过期。"
+
+msgid "Signature certificate is revoked."
+msgstr "签名证书已被吊销。"
+
+msgid "Signature certificate is not trusted."
+msgstr "签名证书不受信任。"
+
+msgid "Signature certificate is invalid."
+msgstr "签名证书无效。"
+
+msgid "Signature is invalid."
+msgstr "签名无效。"
+
+msgid "Loading..."
+msgstr "正在加载..."
+
+msgid "Copy image"
+msgstr "复制图像"
+
+msgid "Save image as"
+msgstr "图像另存为"
+
+#. Update statusbar.
+#, c-format
+msgid "Printing page %d ..."
+msgstr "正在打印第 %d 页 ..."
+
+#, c-format
+msgid "Printing failed: %s"
+msgstr "打印失败：%s"
+
+#, c-format
+msgid "Invalid adjust mode: %d"
+msgstr "无效的适配模式：%d"
+
+#, c-format
+msgid "Copied file path to selection %s: %s"
+msgstr ""
+
+msgid "This document does not contain any index"
+msgstr "此文档不包含任何索引"
+
+msgid "Could not get path from file."
+msgstr ""
+
+msgid "Open file"
+msgstr "打开文件"
+
+msgid "Supported documents"
+msgstr ""
+
+msgid "All files"
+msgstr ""
+
+#, c-format
+msgid "[Search %d/%d]"
+msgstr "[搜索 %d/%d]"
+
+#, c-format
+msgid "Pattern not found: %s"
+msgstr "未找到模式：%s"
+
+msgid "[No name]"
+msgstr "[无名称]"
+
+msgid "Could not read file from stdin and write it to a temporary file."
+msgstr "无法从 stdin 读取文件并写入临时文件。"
+
+msgid "Could not read file from GIO and copy it to a temporary file."
+msgstr "无法从 GIO 读取文件并复制到临时文件。"
+
+msgid "Unsupported file type. Please install the necessary plugin."
+msgstr "不支持的文件类型。请安装必要的插件。"
+
+msgid "Document does not contain any pages"
+msgstr "文档不包含任何页面"
+
+#, c-format
+msgid "File already exists: %s. Use :write! to overwrite it."
+msgstr "文件已存在：%s。使用 :write! 覆盖它。"
+
+msgid "Failed to save document."
+msgstr "保存文档失败。"
+
+msgid "Document saved."
+msgstr "文档已保存。"

@@ -22,7 +22,7 @@
  */
 void girara_setting_free(girara_setting_t* setting);
 
-void girara_config_handle_free(girara_config_handle_t* handle);
+void girara_config_handle_free(void* handle);
 
 void girara_shortcut_mapping_free(girara_shortcut_mapping_t* mapping);
 
@@ -73,6 +73,16 @@ bool girara_cmd_unmap(girara_session_t* session, girara_list_t* argument_list);
  * @return FALSE An error occurred
  */
 bool girara_cmd_set(girara_session_t* session, girara_list_t* argument_list);
+
+/**
+ * Run a shortcut command
+ *
+ * @param session The used girara session
+ * @param argument_list List of passed arguments
+ * @return TRUE No error occurred
+ * @return FALSE An error occurred
+ */
+bool girara_cmd_shortcut(girara_session_t* session, girara_list_t* argument_list);
 
 /**
  * Dump current settings to a JSON file
@@ -177,18 +187,9 @@ struct girara_mouse_event_s {
 };
 
 /**
- * Config handle
- */
-struct girara_config_handle_s {
-  char* identifier;
-  girara_command_function_t handle;
-};
-
-/**
  * Structure of a statusbar item
  */
 struct girara_statusbar_item_s {
-  GtkWidget* box; /**< Event box */
   GtkLabel* text; /**< Text label */
 };
 

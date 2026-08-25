@@ -1,5 +1,14 @@
-data/org.pwmt.zathura.metainfo.xml.in
 data/org.pwmt.zathura.desktop.in
+data/org.pwmt.zathura.metainfo.xml.in
+girara-gtk/callbacks.c
+girara-gtk/commands.c
+girara-gtk/completion.c
+girara-gtk/config.c
+girara-gtk/session.c
+girara-gtk/settings.c
+girara-gtk/shortcuts.c
+girara-gtk/statusbar.c
+girara-gtk/utils.c
 zathura/adjustment.c
 zathura/bookmarks.c
 zathura/callbacks.c
@@ -15,6 +24,7 @@ zathura/document.c
 zathura/file-monitor-glib.c
 zathura/file-monitor-signal.c
 zathura/file-monitor.c
+zathura/index-element-object.c
 zathura/jumplist.c
 zathura/links.c
 zathura/main.c
@@ -30,12 +40,3 @@ zathura/synctex.c
 zathura/types.c
 zathura/utils.c
 zathura/zathura.c
-girara-gtk/callbacks.c
-girara-gtk/commands.c
-girara-gtk/completion.c
-girara-gtk/config.c
-girara-gtk/session.c
-girara-gtk/settings.c
-girara-gtk/shortcuts.c
-girara-gtk/statusbar.c
-girara-gtk/utils.c

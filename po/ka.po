@@ -1,0 +1,1835 @@
+# zathura - language file (Georgian)
+# SPDX-License-Identifier: Zlib
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: zathura\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-17 19:40+0200\n"
+"PO-Revision-Date: 2026-02-21 13:30+0100\n"
+"Last-Translator: Sebastian Ramacher <sebastian+dev@ramacher.at>\n"
+"Language-Team: Georgian (http://app.transifex.com/pwmt/zathura/language/"
+"ka/)\n"
+"Language: ka\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+msgid "Zathura"
+msgstr ""
+
+msgid "Minimalistic document viewer"
+msgstr "მინიმალისტიკ დოკუმენტი ვიევერ"
+
+#. Translators: Search terms to find this application. Do not translate or
+#. localize the semicolons. The list must also end with a semicolon.
+msgid "PDF;PS;PostScript;DjVU;document;presentation;viewer;"
+msgstr "PDF;PS;PostScript;DjVU;დოკუმენტი;პრესენტატიონ;ვიევერ;"
+
+msgid ""
+"Zathura is a highly customizable and functional document viewer. It provides "
+"a minimalistic and space saving interface as well as an easy usage that "
+"mainly focuses on keyboard interaction. Zathura makes it possible to "
+"completely view and navigate through documents without using a mouse."
+msgstr ""
+"ზატჰურა ის ა ჰიგჰლი კუსტომიზაბლე ანდ ფუნკტიონალ დოკუმენტი ვიევერ. იტ "
+"პროვიდეს ა მინიმალისტიკ ანდ სპაკე სავინგ ინტერფაკე ას ველლ ას ან ეასი უსაგე "
+"ტჰატ მაინლი ფოკუსეს ონ კეიბოარდ ინტერაკტიონ. ზატჰურა მაკეს იტ პოსსიბლე ტო "
+"კომპლეტელი ვიევ ანდ ნავიგატე ტჰროუგჰ დოკუმენტს ვიტჰოუტ უსინგ ა მოუსე."
+
+msgid ""
+"Zathura can be extended to support multiple document formats using plugins. "
+"Other features include:"
+msgstr ""
+"ზატჰურა კან ბე ექსტენდედ ტო სუპპორტ მულტიპლე დოკუმენტი ფორმატს უსინგ "
+"პლუგინს. ოტჰერ ფეატურეს ინკლუდე:"
+
+msgid "SyncTeX forward and backward synchronization support."
+msgstr "სინკტექს ფორვარდ ანდ ბაკკვარდ სინკჰრონიზატიონ სუპპორტ."
+
+msgid "Quickmarks and bookmarks."
+msgstr "ქუიკკმარკს ანდ ბოოკმარკს."
+
+msgid "Automatic document reloading."
+msgstr "აუტომატიკ დოკუმენტი რელოადინგ."
+
+msgid "Reading a PDF file"
+msgstr "რეადინგ ა PDF ფაილი"
+
+msgid "Opening a file with the `open` command"
+msgstr "ოპენინგ ა ფაილი ვიტჰ ტჰე `open` კომმანდ"
+
+msgid "Following links"
+msgstr "ფოლლოვინგ ლინკს"
+
+msgid "Listing and selecting bookmarks"
+msgstr "ლისტინგ ანდ სელეკტინგ ბოოკმაკრს"
+
+msgid "Add page-mode setting"
+msgstr ""
+
+msgid "Fix reloading of files (#969)"
+msgstr ""
+
+msgid "Fix CSS handling (#970)"
+msgstr ""
+
+msgid "Replace test feature with test-x11 and test-wayland features"
+msgstr ""
+
+msgid "Various fixes and improvements"
+msgstr "ვარიოუს ფიქსეს ანდ იმპროვემენტს"
+
+msgid ""
+"Port to Gtk 4 (#871). Note that due to changes between Gtk 3 and 4, window "
+"embedding is no longer supported (#216, #432). Also, the setting 'window-"
+"icon-document' has been removed."
+msgstr ""
+
+msgid "Fix issues with forking on macOS (#907)"
+msgstr ""
+
+msgid "Fix first-page-column handling regression (#948)"
+msgstr ""
+
+msgid "Support SIGSTOP in sandbox (#945)"
+msgstr ""
+
+msgid "Add setting to open documents in single-page mode"
+msgstr ""
+
+msgid "Bind toggle-single-page to w (#966)"
+msgstr ""
+
+msgid "Make link confirmation optional"
+msgstr ""
+
+msgid "Replace use of SHA256 with XXH3-128 for faster file hashing"
+msgstr ""
+
+msgid "Fix sandbox on X11 (#928)"
+msgstr ""
+
+msgid "Fix crashes on document reload (#164, #462, #729, #993)"
+msgstr ""
+
+msgid "Add option to keep selection highlights (#693)"
+msgstr ""
+
+msgid "Add user feedback to copy_filepath"
+msgstr ""
+
+msgid "Handle unsigned integer values in set command"
+msgstr ""
+
+msgid "Handle key press events for notification area (#897)"
+msgstr ""
+
+msgid "Fix documentation of mouse buttons (#912)"
+msgstr ""
+
+msgid "Make shortcuts available as commands (#225)"
+msgstr ""
+
+msgid "Fix more cases of flickering when rendering pages (#864)"
+msgstr ""
+
+msgid "Add search result counter (#450)"
+msgstr ""
+
+msgid "Fix search result cycling in documents with one page (#902)"
+msgstr ""
+
+msgid "Fix some page rendering regressions (#876, #877, #879, #886)"
+msgstr ""
+
+msgid "Fix warning when using 'null' database (#881)"
+msgstr ""
+
+msgid "Include manpages in tarballs (#674)"
+msgstr ""
+
+msgid "Update translations"
+msgstr "უპდატე ტრანსლატიონს"
+
+msgid ""
+"Implement single page layout and equal height/width modes (#706, #724, #447, "
+"#289)"
+msgstr ""
+
+msgid "Use single page layout for presentation mode (#686, #666)"
+msgstr ""
+
+msgid "Fix blurry rendering and repeated loading messages (#864, #860)"
+msgstr ""
+
+msgid "Allow to disable copying to clipboard (#835)"
+msgstr ""
+
+msgid "Fix smooth scrolling using Ctrl and arrow keys (#872)"
+msgstr ""
+
+msgid ""
+"Fork to background if opening with multiple files only if --fork is "
+"specified (#855)"
+msgstr ""
+
+msgid "Fix handling of PageUp and PageDown (#861)"
+msgstr ""
+
+msgid "Fix handling of mappings with special keys (#862)"
+msgstr ""
+
+msgid "Integrate Gtk+-specific parts of girara"
+msgstr ""
+
+msgid "Switch to date-based version numbers"
+msgstr "სვიტკჰ ტო დატე-ბასედ ვერსიონ ნუმბერს"
+
+msgid "Fix warnings from CSS generation (#824)"
+msgstr "ფიქს ვარნინგს ფრომ კსს გენერატიონ (#824)"
+
+msgid "Apply correct scaling when recoloring (#836)"
+msgstr ""
+
+msgid "Make sure jumplist stays valid after close (#835)"
+msgstr "მაკე სურე ჯუმპლისტ სტაის ვალიდ აფტერ კლოსე (#835)"
+
+msgid "Disable message in incremental search (#227, #847)"
+msgstr "გამორთვა მესსაგე ინ ინკრემენტალ სეარკჰ (#227, #847)"
+
+msgid "Fix seccomp rules with musl (#843)"
+msgstr ""
+
+msgid ""
+"Implement custom drawing for document widget (#580, #657, #736, #785, #795, "
+"#797, #826)"
+msgstr ""
+"იმპლემენტ კუსტომ დრავინგ ფორ დოკუმენტი ვიდგეტ (#580, #657, #736, #785, #795, "
+"#797, #826)"
+
+msgid "Switch default database to sqlite and drop plain database"
+msgstr "სვიტკჰ დეფაულტ დატაბასე ტო სქლიტე ანდ დროპ პლაინ დატაბასე"
+
+msgid "Notify users if no attachments and images are available to export"
+msgstr "ნოტიფი უსერს იფ ნო ატტაკჰმენტს ანდ იმაგეს არე ავაილაბლე ტო ექსპორტ"
+
+msgid "Make index-* configurable after init (#799)"
+msgstr "მაკე index-* კონფიგურაბლე აფტერ ინიტ (#799)"
+
+msgid "Support numeric keypad mappings"
+msgstr ""
+
+msgid "Provide correct number of pages (#814)"
+msgstr "პროვიდე კორრეკტ ნუმბერ ოფ გვერდები (#814)"
+
+msgid "Undo size-allocate callback changes"
+msgstr "უნდო size-allocate კალლბაკკ კჰანგეს"
+
+msgid "Fix temporary file names for better content-type detection"
+msgstr ""
+
+msgid "Validate appstream files with appstreamcli"
+msgstr ""
+
+msgid "Split page-padding into page-h-padding and page-v-padding"
+msgstr ""
+
+msgid "Fix memory leak and callback type error (#767)"
+msgstr "ფიქს მემორი ლეაკ ანდ კალლბაკკ ტიპე ერრორ (#767)"
+
+msgid "Warn if plugins do not support exporting images or attachments (#334)"
+msgstr "ვარნ იფ პლუგინს დო ნოტ სუპპორტ ექსპორტინგ იმაგეს ორ ატტაკჰმენტს (#334)"
+
+msgid "Add shortcut to open files via file chooser dialog"
+msgstr "ადდ სჰორტკუტ ტო ოპენ ფილეს ვია ფაილი კჰოოსერ დიალოგ"
+
+msgid "Refactor rendering of pages"
+msgstr "რეფაკტორ რენდერინგ ოფ გვერდები"
+
+msgid "Add lightness adjustment for recoloring"
+msgstr ""
+
+msgid "Initial support for OpenBSD sandbox"
+msgstr ""
+
+msgid "Fix closing of documents"
+msgstr "ფიქს კლოსინგ ოფ დოკუმენტს"
+
+msgid "Fix crash when opening documents"
+msgstr "ფიქს კრასჰ ვჰენ ოპენინგ დოკუმენტს"
+
+msgid "Fix build on macOS"
+msgstr ""
+
+msgid "Hide page label if the same as page number"
+msgstr "დამალვა გვერდი ლაბელ იფ ტჰე სამე ას გვერდი ნუმბერ"
+
+msgid "Cache SyncTeX parser for faster operation"
+msgstr ""
+
+msgid "Revert changes for documents with multiple page sizes"
+msgstr "რევერტ კჰანგეს ფორ დოკუმენტს ვიტჰ მულტიპლე გვერდი სიზეს"
+
+msgid "Bump plugin ABI"
+msgstr ""
+
+msgid "Split sandbox functionality into separate zathura-sandbox binary"
+msgstr "სპლიტ სანდბოქს ფუნკტიონალიტი ინტო სეპარატე ზატჰურა-სანდბოქს ბინარი"
+
+msgid "Split off new command bjump from blist"
+msgstr "სპლიტ ოფფ ნევ კომმანდ ბჯუმპ ფრომ ბლისტ"
+
+msgid "Add initial landlock support to sandbox"
+msgstr "ადდ ინიტიალ ლანდლოკკ სუპპორტ ტო სანდბოქს"
+
+msgid "Fix repeated search"
+msgstr "ფიქს რეპეატედ სეარკჰ"
+
+msgid "Implement jumplist command"
+msgstr "იმპლემენტ ჯუმპლისტ კომმანდ"
+
+msgid "Fix issues with document with multiple page sizes"
+msgstr "ფიქს ისსუეს ვიტჰ დოკუმენტი ვიტჰ მულტიპლე გვერდი სიზეს"
+
+msgid "Move to Github"
+msgstr ""
+
+msgid "Reduce minimum glib version"
+msgstr "რედუკე მინიმუმ გლიბ ვერსიონ"
+
+msgid "Remove normal sandbox mode"
+msgstr "რემოვე ნორმალ სანდბოქს მოდე"
+
+msgid "Compatibility with girara 0.4.3"
+msgstr "კომპატიბილიტი ვიტჰ girara 0.4.3"
+
+msgid ""
+"Remove highlight-transparency setting. Set the alpha component of highlight-"
+"color, highlight-active-color and highlight-fg instead."
+msgstr ""
+
+msgid "Remove smooth-reload setting. Smooth reloading is now always enabled."
+msgstr ""
+
+msgid ""
+"Remove plain database backend. The sqlite database backend imports the data "
+"from the plain database the first time. sqlite is now a hard dependency."
+msgstr ""
+
+msgid "Fix a segfault if dbus is not enabled."
+msgstr ""
+
+msgid "Add support to display signatures"
+msgstr "ადდ სუპპორტ ტო დისპლაი სიგნატურეს"
+
+msgid "Fix clearing of highlighted links"
+msgstr "ფიქს კლეარინგ ოფ ჰიგჰლიგჰტედ ლინკს"
+
+msgid "Make some key modifiers configurable"
+msgstr "მაკე სომე კეი მოდიფიერს კონფიგურაბლე"
+
+msgid "Fix text selection on rotated pages"
+msgstr "ფიქს ტექსტ სელეკტიონ ონ როტატედ გვერდები"
+
+msgid "Fix gap between pages"
+msgstr "ფიქს გაპ ბეტვეენ გვერდები"
+
+msgid "Improve text selection"
+msgstr "იმპროვე ტექსტ სელეკტიონ"
+
+msgid "`seccomp`: Make glibc fallback to clone instead of using clone3"
+msgstr "`seccomp`: მაკე გლიბკ ფალლბაკკ ტო კლონე ინსტეად ოფ უსინგ clone3"
+
+msgid "`magic` is now a required dependency"
+msgstr "`magic` ის ნოვ ა რექუირედ დეპენდენკი"
+
+msgid "Add '$f' and '$p' expansions to 'exec' shortcut function"
+msgstr "ადდ '$f' ანდ '$p' ექსპანსიონს ტო 'exec' სჰორტკუტ ფუნკტიონ"
+
+msgid "Fix build with meson 0.60"
+msgstr "ფიქს ბუილდ ვიტჰ meson 0.60"
+
+msgid "Add :source command"
+msgstr "ადდ :სოურკე კომმანდ"
+
+msgid "Account for page padding in full scroll"
+msgstr "აკკოუნტ ფორ გვერდი პადდინგ ინ ფულლ სკროლლ"
+
+msgid "Add foreground color for links"
+msgstr ""
+
+msgid "Add :save and :save! aliases for :write and :write!"
+msgstr "ადდ :save ანდ :save! ალიასეს ფორ :write ანდ :write!"
+
+msgid "Fix invalid zoom when opening document with 'adjust-open width' option"
+msgstr ""
+"ფიქს ინვალიდ ზოომ ვჰენ ოპენინგ დოკუმენტი ვიტჰ 'adjust-open width' ოპტიონ"
+
+msgid "Add --find option to the CLI"
+msgstr "ადდ --find ოპტიონ ტო ტჰე კლი"
+
+msgid "Support recolor with transparency"
+msgstr "სუპპორტ რეკოლორ ვიტჰ ტრანსპარენკი"
+
+msgid "Fix step size for mouse wheel scrolling"
+msgstr "ფიქს სტეპ სიზე ფორ მოუსე ვჰეელ სკროლლინგ"
+
+msgid "Lookup fileinfo from database by hash as fallback"
+msgstr "ლოოკუპ ფილეინფო ფრომ დატაბასე ბი ჰასჰ ას ფალლბაკკ"
+
+msgid "Fix expansion of ~ and ~user when opening files"
+msgstr "ფიქს ექსპანსიონ ოფ ~ ანდ ~user ვჰენ ოპენინგ ფილეს"
+
+msgid "Add fish completion"
+msgstr ""
+
+msgid "Drop support for old libsynctex"
+msgstr ""
+
+msgid "Add bash and zsh completions"
+msgstr ""
+
+msgid "Add RTL layout of pages"
+msgstr "ადდ რტლ ლაიოუტ ოფ გვერდები"
+
+msgid "Port to newer libsynctex"
+msgstr ""
+
+msgid "Improved HiDPI support"
+msgstr ""
+
+msgid "Display page labels"
+msgstr "დისპლაი გვერდი ლაბელს"
+
+msgid "Add experimental seccomp filters"
+msgstr ""
+
+msgid "Replace build system with meson"
+msgstr "რეპლაკე ბუილდ სისტემ ვიტჰ მესონ"
+
+msgid "Fix memory leaks"
+msgstr "ფიქს მემორი ლეაკს"
+
+msgid "Rework plugin initialization"
+msgstr "რევორკ პლუგინ ინიტიალიზატიონ"
+
+msgid "Improved logging"
+msgstr "იმპროვედ ლოგგინგ"
+
+msgid "Improve page mode toggling"
+msgstr "იმპროვე გვერდი მოდე ტოგგლინგ"
+
+msgid "Parallel build of manpages"
+msgstr "პარალლელ ბუილდ ოფ მანპაგეს"
+
+msgid "Build even without SyncTex"
+msgstr "ბუილდ ევენ ვიტჰოუტ სინკტექს"
+
+msgid "Children should not fork"
+msgstr "კჰილდრენ სჰოულდ ნოტ ფორკ"
+
+msgid "Recent files support"
+msgstr "რეკენტ ფილეს სუპპორტ"
+
+msgid "Substitute home with tilde"
+msgstr "სუბსტიტუტე ჰომე ვიტჰ ტილდე"
+
+msgid "Open URLs"
+msgstr ""
+
+msgid "Store tmp files in only one location"
+msgstr "სტორე ტმპ ფილეს ინ ონლი ონე ლოკატიონ"
+
+msgid "Print target selection"
+msgstr "ბეჭდვა ტარგეტ სელეკტიონ"
+
+msgid "Allow .dylib plugins on Mac OS X"
+msgstr ""
+
+msgid "Fix dual page render breakage of adjust_window"
+msgstr "ფიქს დუალ გვერდი რენდერ ბრეაკაგე ოფ adjust_window"
+
+msgid "Resolve memory leak while reloading file"
+msgstr "რესოლვე მემორი ლეაკ ვჰილე რელოადინგ ფაილი"
+
+msgid "Prevent segmentation fault when smooth zooming with mouse"
+msgstr "პრევენტ სეგმენტატიონ ფაულტ ვჰენ სმოოტჰ ზოომინგ ვიტჰ მოუსე"
+
+msgid "Cache thumbnails to support smooth zooming"
+msgstr "კაკჰე ტჰუმბნაილს ტო სუპპორტ სმოოტჰ ზოომინგ"
+
+msgid "Check scale value correctness"
+msgstr "კჰეკკ სკალე ვალუე კორრეკტნესს"
+
+msgid "Fix segmentation fault caused by bidirectional scrolling"
+msgstr "ფიქს სეგმენტატიონ ფაულტ კაუსედ ბი ბიდირეკტიონალ სკროლლინგ"
+
+msgid "Add SyntaxView"
+msgstr ""
+
+msgid "Print debug information to D-Bus"
+msgstr ""
+
+msgid "Fix scroll down/up in dual-page mode"
+msgstr "ფიქს სკროლლ დოვნ/უპ ინ დუალ-გვერდი მოდე"
+
+msgid "Option to hide notification after selection"
+msgstr "ოპტიონ ტო ჰიდე ნოტიფიკატიონ აფტერ სელეკტიონ"
+
+msgid "Introduce cache directory"
+msgstr "ინტროდუკე კაკჰე დირეკტორი"
+
+msgid "Introduce smooth-scroll and smooth-zoom"
+msgstr ""
+
+msgid "Add vim style exec"
+msgstr ""
+
+msgid "Option to ignore images while recoloring"
+msgstr "ოპტიონ ტო იგნორე იმაგეს ვჰილე რეკოლორინგ"
+
+msgid "Take advantage of shared or system SyncTex parser library"
+msgstr "ტაკე ადვანტაგე ოფ სჰარედ ორ სისტემ სინკტექს პარსერ ლიბრარი"
+
+msgid "Update dependency version of girara"
+msgstr ""
+
+msgid "Better SyncTex support"
+msgstr ""
+
+msgid "Change cursor if mouse is over link"
+msgstr "კჰანგე კურსორ იფ მოუსე ის ოვერ ლინკ"
+
+msgid "Colored build output"
+msgstr "კოლორედ ბუილდ ოუტპუტ"
+
+msgid "Sphinx documentation"
+msgstr ""
+
+msgid "Full SyncTex support"
+msgstr ""
+
+msgid "D-Bus interface"
+msgstr ""
+
+msgid "Simple vim plugin for SyncTex support"
+msgstr ""
+
+msgid "Add shortcuts for ^C and Esc in all modes"
+msgstr ""
+
+msgid "Use the actual mode in mode toggle calls"
+msgstr "უსე ტჰე აკტუალ მოდე ინ მოდე ტოგგლე კალლს"
+
+msgid "Only copy selected text in normal and fullscreen mode"
+msgstr "ონლი კოპი სელეკტედ ტექსტ ინ ნორმალ ანდ ფულლსკრეენ მოდე"
+
+msgid "Translate error messages"
+msgstr "ტრანსლატე ერრორ მესსაგეს"
+
+msgid "Correctly safe print setting state"
+msgstr "კორრეკტლი საფე პრინტ სეტტინგ სტატე"
+
+msgid "Add --mode option"
+msgstr "ადდ --mode ოპტიონ"
+
+msgid "Expose more properties via D-Bus"
+msgstr "ექსპოსე მორე პროპერტიეს ვია D-Bus"
+
+msgid "Center pages"
+msgstr "კენტერ გვერდები"
+
+msgid "Replace glib memory functions with try version"
+msgstr ""
+
+msgid "Align highlighted rectangles correctly"
+msgstr "ალიგნ ჰიგჰლიგჰტედ რეკტანგლეს კორრეკტლი"
+
+msgid "Implement G and gg for index mode"
+msgstr "იმპლემენტ G ანდ gg ფორ ინდექს მოდე"
+
+msgid "Implement TOGGLE for sc_navigate_index"
+msgstr ""
+
+msgid "Preserve horizontal position when scrolling to PAGE_TOP/BOTTOM"
+msgstr "პრესერვე ჰორიზონტალ პოსიტიონ ვჰენ სკროლლინგ ტო PAGE_TOP/BOTTOM"
+
+msgid "Implement shortcuts for scrolling to page top/bottom"
+msgstr "იმპლემენტ სჰორტკუტს ფორ სკროლლინგ ტო გვერდი ტოპ/ბოტტომ"
+
+msgid "Set position on document load only if no page was specified"
+msgstr "სეტ პოსიტიონ ონ დოკუმენტი ლოად ონლი იფ ნო გვერდი ვას სპეკიფიედ"
+
+msgid "Bail out early if we get TOP or BOTTOM"
+msgstr ""
+
+msgid "Replace fullscreen mode with presentation mode"
+msgstr "რეპლაკე ფულლსკრეენ მოდე ვიტჰ პრესენტატიონ მოდე"
+
+msgid "Remove GTK+2 support"
+msgstr ""
+
+msgid "Update documentation"
+msgstr "უპდატე დოკუმენტატიონ"
+
+msgid "Resolve layout problems"
+msgstr "რესოლვე ლაიოუტ პრობლემს"
+
+msgid "Use GTK+3 by default"
+msgstr ""
+
+msgid "Rewritten render logic"
+msgstr "რევრიტტენ რენდერ ლოგიკ"
+
+msgid "Fixed page refresh in certain situations"
+msgstr "ფიქსედ გვერდი რეფრესჰ ინ კერტაინ სიტუატიონს"
+
+msgid "Make the X clipboard buffer"
+msgstr ""
+
+msgid "Allow number in quickmarks"
+msgstr "ალლოვ ნუმბერ ინ ქუიკკმარკს"
+
+msgid "Workaround for print quality issues"
+msgstr "ვორკაროუნდ ფორ პრინტ ქუალიტი ისსუეს"
+
+msgid "Resolve memory leak"
+msgstr "რესოლვე მემორი ლეაკ"
+
+msgid "Report missing plugin or unsupported file types"
+msgstr "რეპორტ მისსინგ პლუგინ ორ უნსუპპორტედ ფაილი ტიპეს"
+
+msgid "More vim-like search behaviour"
+msgstr "მორე ვიმ-ლიკე სეარკჰ ბეჰავიოურ"
+
+msgid "Introduced show-{h,v}-scrollbar settings"
+msgstr "ინტროდუკედ სჰოვ-{ჰ,ვ}-სკროლლბარ სეტტინგს"
+
+msgid "Enhancement of the jumplist mechanism"
+msgstr "ენჰანკემენტ ოფ ტჰე ჯუმპლისტ მეკჰანისმ"
+
+msgid "Use jumplists with marks"
+msgstr "უსე ჯუმპლისტს ვიტჰ მარკს"
+
+msgid "More vim-like jump behaviour"
+msgstr "მორე ვიმ-ლიკე ჯუმპ ბეჰავიოურ"
+
+msgid "Improved bisect"
+msgstr "იმპროვედ ბისეკტ"
+
+msgid "Update page number on mouse scroll"
+msgstr "უპდატე გვერდი ნუმბერ ონ მოუსე სკროლლ"
+
+msgid "Introduced window-title-page option"
+msgstr "ინტროდუკედ ვინდოვ-ტიტლე-გვერდი ოპტიონ"
+
+msgid "LRU caching algorithm"
+msgstr "ლრუ კაკჰინგ ალგორიტჰმ"
+
+msgid "Bisect functionality"
+msgstr "ბისეკტ ფუნკტიონალიტი"
+
+msgid "Allow negative offsets"
+msgstr "ალლოვ ნეგატივე ოფფსეტს"
+
+msgid "Option --page to open at the specified page"
+msgstr ""
+
+msgid "Scale vertical/horizontal scrolling in respect to the buffer"
+msgstr "სკალე ვერტიკალ/ჰორიზონტალ სკროლლინგ ინ რესპეკტ ტო ტჰე ბუფფერ"
+
+msgid "Add statusbar-basename option"
+msgstr "ადდ სტატუსბარ-ბასენამე ოპტიონ"
+
+msgid "Implement colors for 'Loading...'-text"
+msgstr "იმპლემენტ კოლორს ფორ 'იტვირთება...'-ტექსტ"
+
+msgid "Don't render same page multiple times"
+msgstr "დონ'ტ რენდერ სამე გვერდი მულტიპლე ტიმეს"
+
+msgid "Use libmagic if available"
+msgstr "უსე ლიბმაგიკ იფ ავაილაბლე"
+
+msgid "Implemented jumplist (^o, ^i)"
+msgstr "იმპლემენტედ ჯუმპლისტ (^o, ^i)"
+
+msgid "Update current page when following links"
+msgstr "უპდატე კურრენტ გვერდი ვჰენ ფოლლოვინგ ლინკს"
+
+msgid "Scroll horizontally with shift and mouse wheel"
+msgstr "გადახვევა ჰორიზონტალლი ვიტჰ სჰიფტ ანდ მოუსე ვჰეელ"
+
+msgid "Page aware scrolling"
+msgstr "გვერდი ავარე სკროლლინგ"
+
+msgid "SyncTeX forward synchronisation"
+msgstr ""
+
+msgid "Update shortcuts"
+msgstr "უპდატე სჰორტკუტს"
+
+msgid "SyncTeX backwards synchronisation"
+msgstr ""
+
+msgid "Fix request-page-setup"
+msgstr "ფიქს რექუესტ-გვერდი-სეტუპ"
+
+msgid "Fix window adustment"
+msgstr "ფიქს ვინდოვ ადუსტმენტ"
+
+msgid "Update GTK3 support"
+msgstr "უპდატე GTK3 სუპპორტ"
+
+msgid "Added first-page-colum setting"
+msgstr "ადდედ ფირსტ-გვერდი-კოლუმ სეტტინგ"
+
+msgid "Added recolor-keephue setting"
+msgstr "ადდედ რეკოლორ-კეეპჰუე სეტტინგ"
+
+msgid "Better print support"
+msgstr "ბეტტერ პრინტ სუპპორტ"
+
+msgid "Improve document links"
+msgstr "იმპროვე დოკუმენტი ლინკს"
+
+msgid "Render last-viewed pages with a higher priority"
+msgstr "რენდერ ლასტ-ვიევედ გვერდები ვიტჰ ა ჰიგჰერ პრიორიტი"
+
+msgid "Export images and attachments"
+msgstr "ექსპორტ იმაგეს ანდ ატტაკჰმენტს"
+
+msgid "Open multiple documents"
+msgstr "გახსნა მულტიპლე დოკუმენტს"
+
+msgid "Plugin manager"
+msgstr "პლუგინ მანაგერ"
+
+msgid "Add 'open-first-page' setting"
+msgstr "ადდ 'ოპენ-ფირსტ-გვერდი' სეტტინგ"
+
+msgid "Free invisible pages after specific time"
+msgstr "ფრეე ინვისიბლე გვერდები აფტერ სპეკიფიკ ტიმე"
+
+msgid "Set log level via command line"
+msgstr "სეტ ლოგ ლეველ ვია კომმანდ ლინე"
+
+msgid "Completion for :write command"
+msgstr "კომპლეტიონ ფორ :ვრიტე კომმანდ"
+
+msgid "Simplified plugin loading"
+msgstr "სიმპლიფიედ პლუგინ ლოადინგ"
+
+msgid "Allow counter-clockwise rotation"
+msgstr "ალლოვ კოუნტერ-კლოკკვისე როტატიონ"
+
+msgid "Changeable page-padding"
+msgstr "კჰანგეაბლე გვერდი-პადდინგ"
+
+msgid "Introduced girara version check"
+msgstr "ინტროდუკედ გირარა ვერსიონ კჰეკკ"
+
+msgid "Detect sqlite automatically"
+msgstr "დეტეკტ სქლიტე აუტომატიკალლი"
+
+msgid "Update window title"
+msgstr "უპდატე ვინდოვ ტიტლე"
+
+msgid "Macro to register plugins"
+msgstr "მაკრო ტო რეგისტერ პლუგინს"
+
+msgid "Fix issues with the display of the current page number"
+msgstr "ფიქს ისსუეს ვიტჰ ტჰე დისპლაი ოფ ტჰე კურრენტ გვერდი ნუმბერ"
+
+msgid "Ability to scroll to the full left or full right border"
+msgstr "აბილიტი ტო სკროლლ ტო ტჰე ფულლ ლეფტ ორ ფულლ რიგჰტ ბორდერ"
+
+msgid "Reimplement the render thread with GThreadPool"
+msgstr "რეიმპლემენტ ტჰე რენდერ ტჰრეად ვიტჰ გტჰრეადპოოლ"
+
+msgid "Use the correct color to highlight results"
+msgstr "უსე ტჰე კორრეკტ ფერი ტო ჰიგჰლიგჰტ რესულტს"
+
+msgid "Support to use both database backends"
+msgstr "სუპპორტ ტო უსე ბოტჰ დატაბასე ბაკკენდს"
+
+msgid "Additional notifications on errors"
+msgstr "ადდიტიონალ ნოტიფიკატიონს ონ ერრორს"
+
+msgid "Option to hide hidden directories"
+msgstr "ოპტიონ ტო ჰიდე ჰიდდენ დირეკტორიეს"
+
+msgid "Do not overwrite existing files with :write"
+msgstr "დო ნოტ ოვერვრიტე ექსისტინგ ფილეს ვიტჰ :ვრიტე"
+
+msgid "Fix flicker in text selection"
+msgstr "ფიქს ფლიკკერ ინ ტექსტ სელეკტიონ"
+
+msgid "Fixed several memory leaks"
+msgstr "ფიქსედ სევერალ მემორი ლეაკს"
+
+msgid "Complete rewrite of zathura"
+msgstr "კომპლეტე რევრიტე ოფ ზატჰურა"
+
+msgid "Uses the girara interface library"
+msgstr "უსეს ტჰე გირარა ინტერფაკე ლიბრარი"
+
+msgid "Plugin system for different document types"
+msgstr "პლუგინ სისტემ ფორ დიფფერენტ დოკუმენტი ტიპეს"
+
+msgid "Better configuration"
+msgstr "ბეტტერ კონფიგურატიონ"
+
+msgid "Quickmarks"
+msgstr "ქუიკკმარკს"
+
+msgid "Ignoring MOD5 which is used on some keyboards"
+msgstr "იგნორინგ MOD5 ვჰიკჰ ის უსედ ონ სომე კეიბოარდს"
+
+msgid "Fix scroll_wrap (#52)"
+msgstr "ფიქს scroll_wrap (#52)"
+
+msgid "Don't invert y coordinates (#42)"
+msgstr "დონ'ტ ინვერტ ი კოორდინატეს (#42)"
+
+msgid "Certain memory leaks and other small issues"
+msgstr "კერტაინ მემორი ლეაკს ანდ ოტჰერ სმალლ ისსუეს"
+
+msgid "Fixed bookmark handling"
+msgstr "ფიქსედ ბოოკმარკ ჰანდლინგ"
+
+msgid "Support :digits"
+msgstr "სუპპორტ :დიგიტს"
+
+msgid "Save zoom level per file"
+msgstr "შენახვა ზოომ ლეველ პერ ფაილი"
+
+msgid "Fix backwards searching"
+msgstr "ფიქს ბაკკვარდს სეარკჰინგ"
+
+msgid "Fix blinking while switching pages"
+msgstr "ფიქს ბლინკინგ ვჰილე სვიტკჰინგ გვერდები"
+
+msgid "Fix input issues in fullscreen mode"
+msgstr "ფიქს ინპუტ ისსუეს ინ ფულლსკრეენ მოდე"
+
+msgid "Update text searching"
+msgstr ""
+
+msgid "Support for poppler >= 0.15"
+msgstr "სუპპორტ ფორ პოპპლერ >= 0.15"
+
+msgid "Fixed print command with multiple arguments"
+msgstr "ფიქსედ პრინტ კომმანდ ვიტჰ მულტიპლე არგუმენტს"
+
+msgid "Fixed GOptionEntries"
+msgstr "ფიქსედ გოპტიონენტრიეს"
+
+msgid "Fixed segmentation faults"
+msgstr "ფიქსედ სეგმენტატიონ ფაულტს"
+
+msgid "Wrap around scrolling"
+msgstr "ვრაპ აროუნდ სკროლლინგ"
+
+msgid "Display scroll percentage in statusbar"
+msgstr "დისპლაი სკროლლ პერკენტაგე ინ სტატუსბარ"
+
+msgid "More familiar zoom key bindings"
+msgstr "მორე ფამილიარ ზოომ კეი ბინდინგს"
+
+msgid "Support reading files from stdin"
+msgstr "სუპპორტ რეადინგ ფილეს ფრომ სტდინ"
+
+msgid "Open command with appended current file path"
+msgstr "გახსნა კომმანდ ვიტჰ აპპენდედ კურრენტ ფაილი პატჰ"
+
+msgid "Following XDG specification"
+msgstr "ფოლლოვინგ ქსდგ სპეკიფიკატიონ"
+
+msgid "Colored window and view port"
+msgstr "კოლორედ ვინდოვ ანდ ვიევ პორტ"
+
+msgid "File reloading fix"
+msgstr "ფაილი რელოადინგ ფიქს"
+
+msgid "Update manpage"
+msgstr ""
+
+msgid "Fixed critical usability bug"
+msgstr "ფიქსედ კრიტიკალ უსაბილიტი ბუგ"
+
+msgid "Improved and fixed completion"
+msgstr "იმპროვედ ანდ ფიქსედ კომპლეტიონ"
+
+msgid "Optional parameters for the print command"
+msgstr "ოპტიონალ პარამეტერს ფორ ტჰე პრინტ კომმანდ"
+
+msgid "Escape filenames"
+msgstr "ესკაპე ფილენამეს"
+
+msgid "Resolved some memory leaks"
+msgstr "რესოლვედ სომე მემორი ლეაკს"
+
+msgid "Global configuration file"
+msgstr "გლობალ კონფიგურატიონ ფაილი"
+
+msgid "Specify configuration directory"
+msgstr "სპეკიფი კონფიგურატიონ დირეკტორი"
+
+msgid "Configureable modes"
+msgstr "კონფიგურეაბლე მოდეს"
+
+msgid "Smooth scrolling"
+msgstr "სმოოტჰ სკროლლინგ"
+
+msgid "Extended statusbar string manipulation"
+msgstr "ექსტენდედ სტატუსბარ სტრინგ მანიპულატიონ"
+
+msgid "`function`"
+msgstr ""
+
+msgid "Strip executable"
+msgstr "სტრიპ ექსეკუტაბლე"
+
+msgid "Change window title to filename"
+msgstr "კჰანგე ვინდოვ ტიტლე ტო ფილენამე"
+
+msgid "Fixation of the URI command"
+msgstr "ფიქსატიონ ოფ ტჰე ური კომმანდ"
+
+msgid "Update the behaviour of sc_scroll"
+msgstr ""
+
+msgid "Half/Full-page scrolling"
+msgstr "ჰალფ/ფულლ-გვერდი სკროლლინგ"
+
+msgid "Check document health in sc_reload"
+msgstr "კჰეკკ დოკუმენტი ჰეალტჰ ინ sc_reload"
+
+msgid "`tabbed` support"
+msgstr "`tabbed` სუპპორტ"
+
+msgid "Define look with the set function"
+msgstr "დეფინე ლოოკ ვიტჰ ტჰე სეტ ფუნკტიონ"
+
+msgid "Implemented map function"
+msgstr "იმპლემენტედ მაპ ფუნკტიონ"
+
+msgid "`zathurarc` file"
+msgstr "`zathurarc` ფაილი"
+
+msgid "Prevent buffer overflow in realpath"
+msgstr "პრევენტ ბუფფერ ოვერფლოვ ინ რეალპატჰ"
+
+msgid "Key evaluation when buffer is not empty"
+msgstr "კეი ევალუატიონ ვჰენ ბუფფერ ის ნოტ ემპტი"
+
+msgid "Use GFileMonitor instead of inotify"
+msgstr ""
+
+msgid "Added document reload shortcut"
+msgstr "ადდედ დოკუმენტი რელოად სჰორტკუტ"
+
+msgid "Fixed toggle index"
+msgstr "ფიქსედ ტოგგლე ინდექს"
+
+msgid "Fixed print command"
+msgstr "ფიქსედ პრინტ კომმანდ"
+
+msgid "Fullscreen mode"
+msgstr "ფულლსკრეენ მოდე"
+
+msgid "Correct search result highlighting"
+msgstr "კორრეკტ სეარკჰ რესულტ ჰიგჰლიგჰტინგ"
+
+msgid "Document password dialog"
+msgstr "დოკუმენტი პასსვორდ დიალოგ"
+
+msgid "Mouse support (Scroll, Mark and copy text to clipboard)"
+msgstr "მოუსე სუპპორტ (გადახვევა, მარკ ანდ კოპი ტექსტ ტო კლიპბოარდ)"
+
+msgid "Keyboard navigation in the index view"
+msgstr "კეიბოარდ ნავიგატიონ ინ ტჰე ინდექს ვიევ"
+
+msgid "Different goto modes"
+msgstr "დიფფერენტ გოტო მოდეს"
+
+msgid "Auto adjustment when opening a document"
+msgstr "აუტო ადჯუსტმენტ ვჰენ ოპენინგ ა დოკუმენტი"
+
+msgid "Reload modified document automatically"
+msgstr "რელოად მოდიფიედ დოკუმენტი აუტომატიკალლი"
+
+msgid "Recolor the page instead of inverting the colors"
+msgstr "რეკოლორ ტჰე გვერდი ინსტეად ოფ ინვერტინგ ტჰე კოლორს"
+
+msgid "Working search function"
+msgstr "ვორკინგ სეარკჰ ფუნკტიონ"
+
+msgid "Show and hide document information"
+msgstr "ჩვენება ანდ ჰიდე დოკუმენტი ინფორმატიონ"
+
+msgid "Follow internal links or open URI in a predefined browser"
+msgstr "ფოლლოვ ინტერნალ ლინკს ორ ოპენ ური ინ ა პრედეფინედ ბროვსერ"
+
+msgid "Save the document"
+msgstr "შენახვა ტჰე დოკუმენტი"
+
+msgid "Complete new, re-written interface"
+msgstr "კომპლეტე ნევ, რე-ვრიტტენ ინტერფაკე"
+
+msgid "Multiple printer support"
+msgstr "მულტიპლე პრინტერ სუპპორტ"
+
+msgid "Command history"
+msgstr "ბრძანება ჰისტორი"
+
+msgid "Show document index"
+msgstr "ჩვენება დოკუმენტი ინდექს"
+
+msgid "Centered view"
+msgstr "კენტერედ ვიევ"
+
+msgid "Add, save and open bookmarks"
+msgstr "ადდ, სავე ანდ ოპენ ბოოკმარკს"
+
+msgid "Marker support"
+msgstr "მარკერ სუპპორტ"
+
+msgid "Highlight search results"
+msgstr "მონიშვნა სეარკჰ რესულტს"
+
+msgid "Buffered commands"
+msgstr "ბუფფერედ კომმანდს"
+
+msgid "`set` Function"
+msgstr "`set` ფუნკტიონ"
+
+msgid "Revert video function"
+msgstr "რევერტ ვიდეო ფუნკტიონ"
+
+msgid "Command completion"
+msgstr "ბრძანება კომპლეტიონ"
+
+msgid "Initial release"
+msgstr "ინიტიალ რელეასე"
+
+#, c-format
+msgid "Invalid number of arguments passed: %zu instead of at least %u"
+msgstr "არასწორი ნუმბერ ოფ არგუმენტს პასსედ: %zu ინსტეად ოფ ატ ლეასტ %u"
+
+#, c-format
+msgid "Unregistered mode specified: %s"
+msgstr "უნრეგისტერედ მოდე სპეკიფიედ: %s"
+
+msgid "Invalid number of arguments passed"
+msgstr "არასწორი ნუმბერ ოფ არგუმენტს პასსედ"
+
+#, c-format
+msgid "Invalid modifier in %s"
+msgstr "არასწორი მოდიფიერ ინ %s"
+
+#, c-format
+msgid "Invalid special key value for %s"
+msgstr "არასწორი სპეკიალ კეი ვალუე ფორ %s"
+
+#, c-format
+msgid "Invalid special key value or mode %s"
+msgstr "არასწორი სპეკიალ კეი ვალუე ორ მოდე %s"
+
+#, c-format
+msgid "Not a valid shortcut function: %s"
+msgstr "ნოტ ა ვალიდ სჰორტკუტ ფუნკტიონ: %s"
+
+msgid "Not enough arguments."
+msgstr "ნოტ ენოუგჰ არგუმენტს."
+
+msgid "Too many arguments."
+msgstr "ტოო მანი არგუმენტს."
+
+#, c-format
+msgid "Unknown option: %s"
+msgstr "უნკნოვნ ოპტიონ: %s"
+
+msgid "true"
+msgstr "ტრუე"
+
+msgid "false"
+msgstr "ფალსე"
+
+#, c-format
+msgid "No value defined for option: %s"
+msgstr "ნო ვალუე დეფინედ ფორ ოპტიონ: %s"
+
+#, c-format
+msgid "Unknown value for option: %s"
+msgstr "უნკნოვნ ვალუე ფორ ოპტიონ: %s"
+
+#, c-format
+msgid "Invalid value for option: %s"
+msgstr ""
+
+#. unhandled command
+#, c-format
+msgid "Not a valid command: %s"
+msgstr "ნოტ ა ვალიდ კომმანდ: %s"
+
+#, c-format
+msgid "Invalid number of arguments passed: %zu instead of 1"
+msgstr "არასწორი ნუმბერ ოფ არგუმენტს პასსედ: %zu ინსტეად ოფ 1"
+
+#, c-format
+msgid "Failed to write JSON: %s"
+msgstr "ფაილედ ტო ვრიტე JSON: %s"
+
+#, c-format
+msgid "'%s' must not be 0. Set to 1."
+msgstr "'%s' მუსტ ნოტ ბე 0. სეტ ტო 1."
+
+#, c-format
+msgid "Invalid input '%s' given."
+msgstr "არასწორი ინპუტ '%s' გივენ."
+
+#, c-format
+msgid "Invalid index '%s' given."
+msgstr "არასწორი ინდექს '%s' გივენ."
+
+msgid "Enter password:"
+msgstr "ენტერ პასსვორდ:"
+
+#, c-format
+msgid "Copied selected text to selection %s: %s"
+msgstr "კოპიედ სელეკტედ ტექსტ ტო სელეკტიონ %s: %s"
+
+#, c-format
+msgid "Copied selected image to selection %s"
+msgstr "კოპიედ სელეკტედ იმაგე ტო სელეკტიონ %s"
+
+msgid "No document opened."
+msgstr "ნო დოკუმენტი ოპენედ."
+
+msgid "Invalid number of arguments given."
+msgstr "არასწორი ნუმბერ ოფ არგუმენტს გივენ."
+
+#, c-format
+msgid "Could not update bookmark: %s"
+msgstr "კოულდ ნოტ უპდატე ბოოკმარკ: %s"
+
+#, c-format
+msgid "Could not create bookmark: %s"
+msgstr "კოულდ ნოტ კრეატე ბოოკმარკ: %s"
+
+#, c-format
+msgid "Bookmark successfully updated: %s"
+msgstr "სანიშნე სუკკესსფულლი უპდატედ: %s"
+
+#, c-format
+msgid "Bookmark successfully created: %s"
+msgstr "სანიშნე სუკკესსფულლი კრეატედ: %s"
+
+#, c-format
+msgid "Removed bookmark: %s"
+msgstr "რემოვედ ბოოკმარკ: %s"
+
+#, c-format
+msgid "Failed to remove bookmark: %s"
+msgstr "ფაილედ ტო რემოვე ბოოკმარკ: %s"
+
+msgid "No bookmarks available."
+msgstr "ნო ბოოკმარკს ავაილაბლე."
+
+#, c-format
+msgid "No such bookmark: %s"
+msgstr "ნო სუკჰ ბოოკმარკ: %s"
+
+msgid "Argument must be a nonzero number."
+msgstr "არგუმენტ მუსტ ბე ა ნონზერო ნუმბერ."
+
+#, c-format
+msgid "[%d]: page=<b>%2d</b>, x=%f, y=%f %s\n"
+msgstr "[%d]: გვერდი=<ბ>%2d</ბ>, ქს=%f, ი=%f %s\n"
+
+msgid "(current)"
+msgstr "(კურრენტ)"
+
+msgid "No jumplist available."
+msgstr "ნო ჯუმპლისტ ავაილაბლე."
+
+msgid "Title"
+msgstr "ტიტლე"
+
+msgid "Subject"
+msgstr "სუბჯეკტ"
+
+msgid "Keywords"
+msgstr "კეივორდს"
+
+msgid "Author"
+msgstr "აუტჰორ"
+
+msgid "Creator"
+msgstr "კრეატორ"
+
+msgid "Producer"
+msgstr "პროდუკერ"
+
+msgid "Creation date"
+msgstr "კრეატიონ დატე"
+
+msgid "Modification date"
+msgstr "მოდიფიკატიონ დატე"
+
+msgid "Format"
+msgstr "ფორმატ"
+
+msgid "Other"
+msgstr "ოტჰერ"
+
+msgid "No information available."
+msgstr "ნო ინფორმატიონ ავაილაბლე."
+
+msgid ""
+"Please check the man pages zathura(1) and zathurarc(5) for more information."
+msgstr ""
+"პლეასე კჰეკკ ტჰე მან გვერდები zathura(1) ანდ zathurarc(5) ფორ მორე "
+"ინფორმატიონ."
+
+msgid "No arguments given."
+msgstr "ნო არგუმენტს გივენ."
+
+msgid "Printing is not permitted in strict sandbox mode"
+msgstr "პრინტინგ ის ნოტ პერმიტტედ ინ სტრიკტ სანდბოქს მოდე"
+
+msgid "Saving is not permitted in strict sandbox mode"
+msgstr "სავინგ ის ნოტ პერმიტტედ ინ სტრიკტ სანდბოქს მოდე"
+
+msgid "Invalid number of arguments."
+msgstr "არასწორი ნუმბერ ოფ არგუმენტს."
+
+msgid "Exporting attachments is not permitted in strict sandbox mode"
+msgstr "ექსპორტინგ ატტაკჰმენტს ის ნოტ პერმიტტედ ინ სტრიკტ სანდბოქს მოდე"
+
+#, c-format
+msgid "Couldn't write attachment '%s' to '%s'."
+msgstr "კოულდნ'ტ ვრიტე ატტაკჰმენტ '%s' ტო '%s'."
+
+#, c-format
+msgid "Wrote attachment '%s' to '%s'."
+msgstr "ვროტე ატტაკჰმენტ '%s' ტო '%s'."
+
+#, c-format
+msgid "Wrote image '%s' to '%s'."
+msgstr "ვროტე იმაგე '%s' ტო '%s'."
+
+#, c-format
+msgid "Couldn't write image '%s' to '%s'."
+msgstr "კოულდნ'ტ ვრიტე იმაგე '%s' ტო '%s'."
+
+#, c-format
+msgid "Unknown image '%s'."
+msgstr "უნკნოვნ იმაგე '%s'."
+
+#, c-format
+msgid "Unknown attachment or image '%s'."
+msgstr "უნკნოვნ ატტაკჰმენტ ორ იმაგე '%s'."
+
+#, c-format
+msgid "Failed to execute command: %s"
+msgstr "ფაილედ ტო ექსეკუტე კომმანდ: %s"
+
+msgid "Exec is not permitted in strict sandbox mode"
+msgstr "ექსეკ ის ნოტ პერმიტტედ ინ სტრიკტ სანდბოქს მოდე"
+
+msgid "Argument must be a number."
+msgstr "არგუმენტ მუსტ ბე ა ნუმბერ."
+
+msgid "Files"
+msgstr ""
+
+msgid "Recent files"
+msgstr ""
+
+#, c-format
+msgid "Page %d"
+msgstr "გვერდი %d"
+
+msgid "Attachments"
+msgstr "ატტაკჰმენტს"
+
+#. add images
+msgid "Images"
+msgstr "იმაგეს"
+
+msgid "Plugin does not support exporting attachments and images."
+msgstr "პლუგინ დოეს ნოტ სუპპორტ ექსპორტინგ ატტაკჰმენტს ანდ იმაგეს."
+
+msgid "Document contains no images or attachments"
+msgstr "დოკუმენტი კონტაინს ნო იმაგეს ორ ატტაკჰმენტს"
+
+#. clang-format off
+#. settings
+msgid "Font"
+msgstr "ფონტ"
+
+#. colors affecting the CSS
+msgid "Default foreground color"
+msgstr "დეფაულტ წინა პლანი ფერი"
+
+msgid "Default background color"
+msgstr "დეფაულტ ფონი ფერი"
+
+msgid "Inputbar foreground color"
+msgstr "ინპუტბარ წინა პლანი ფერი"
+
+msgid "Inputbar background color"
+msgstr "ინპუტბარ ფონი ფერი"
+
+msgid "Statusbar foreground color"
+msgstr "სტატუსბარ წინა პლანი ფერი"
+
+msgid "Statsubar background color"
+msgstr "სტატსუბარ ფონი ფერი"
+
+msgid "Completion foreground color"
+msgstr "კომპლეტიონ წინა პლანი ფერი"
+
+msgid "Completion background color"
+msgstr "კომპლეტიონ ფონი ფერი"
+
+msgid "Completion group foreground color"
+msgstr "კომპლეტიონ გროუპ წინა პლანი ფერი"
+
+msgid "Completion group background color"
+msgstr "კომპლეტიონ გროუპ ფონი ფერი"
+
+msgid "Completion highlight foreground color"
+msgstr "კომპლეტიონ ჰიგჰლიგჰტ წინა პლანი ფერი"
+
+msgid "Completion highlight background color"
+msgstr "კომპლეტიონ ჰიგჰლიგჰტ ფონი ფერი"
+
+msgid "Error notification foreground color"
+msgstr "შეცდომა ნოტიფიკატიონ წინა პლანი ფერი"
+
+msgid "Error notification background color"
+msgstr "შეცდომა ნოტიფიკატიონ ფონი ფერი"
+
+msgid "Warning notification foreground color"
+msgstr "გაფრთხილება ნოტიფიკატიონ წინა პლანი ფერი"
+
+msgid "Warning notifaction background color"
+msgstr "გაფრთხილება ნოტიფაკტიონ ფონი ფერი"
+
+msgid "Notification foreground color"
+msgstr "ნოტიფიკატიონ წინა პლანი ფერი"
+
+msgid "Notification background color"
+msgstr "ნოტიფიკატიონ ფონი ფერი"
+
+msgid "Index mode foreground color"
+msgstr "ინდექს მოდე წინა პლანი ფერი"
+
+msgid "Index mode background color"
+msgstr "ინდექს მოდე ფონი ფერი"
+
+msgid "Index mode foreground color (active element)"
+msgstr "ინდექს მოდე წინა პლანი ფერი (აკტივე ელემენტ)"
+
+msgid "Index mode background color (active element)"
+msgstr "ინდექს მოდე ფონი ფერი (აკტივე ელემენტ)"
+
+msgid "Scrollbar foreground color"
+msgstr "სკროლლბარ წინა პლანი ფერი"
+
+msgid "Scrollbar background color"
+msgstr "სკროლლბარ ფონი ფერი"
+
+msgid "Initial window width"
+msgstr "ინიტიალ ვინდოვ ვიდტჰ"
+
+msgid "Initial window height"
+msgstr "ინიტიალ ვინდოვ ჰეიგჰტ"
+
+msgid "Horizontal padding for the status, input, and notification bars"
+msgstr "ჰორიზონტალური პადდინგ ფორ ტჰე სტატუს, ინპუტ, ანდ ნოტიფიკატიონ ბარს"
+
+msgid "Vertical padding for the status, input, and notification bars"
+msgstr "ვერტიკალური პადდინგ ფორ ტჰე სტატუს, ინპუტ, ანდ ნოტიფიკატიონ ბარს"
+
+msgid "Number of completion items"
+msgstr "რიცხვი ოფ კომპლეტიონ იტემს"
+
+msgid "Command to execute in :exec"
+msgstr "ბრძანება ტო ექსეკუტე ინ :ექსეკ"
+
+msgid "Show or hide certain GUI elements"
+msgstr "ჩვენება ორ ჰიდე კერტაინ გუი ელემენტს"
+
+msgid "Database backend"
+msgstr "დატაბასე ბაკკენდ"
+
+msgid "File monitor backend"
+msgstr "ფაილი მონიტორ ბაკკენდ"
+
+msgid "Zoom step"
+msgstr "მასშტაბი სტეპ"
+
+msgid "Horizontal padding between pages"
+msgstr "ჰორიზონტალური პადდინგ ბეტვეენ გვერდები"
+
+msgid "Vertical padding between pages"
+msgstr "ვერტიკალური პადდინგ ბეტვეენ გვერდები"
+
+msgid "Number of pages per row"
+msgstr "რიცხვი ოფ გვერდები პერ როვ"
+
+msgid "Column of the first page"
+msgstr "კოლუმნ ოფ ტჰე ფირსტ გვერდი"
+
+msgid "Render pages from right to left"
+msgstr "რენდერ გვერდები ფრომ რიგჰტ ტო ლეფტ"
+
+msgid "Scroll step"
+msgstr "გადახვევა სტეპ"
+
+msgid "Horizontal scroll step"
+msgstr "ჰორიზონტალური სკროლლ სტეპ"
+
+msgid "Full page scroll overlap"
+msgstr "ფულლ გვერდი სკროლლ ოვერლაპ"
+
+msgid "Zoom minimum"
+msgstr "მასშტაბი მინიმუმ"
+
+msgid "Zoom maximum"
+msgstr "მასშტაბი მაქსიმუმ"
+
+msgid "Maximum number of pages to keep in the cache"
+msgstr "მაქსიმუმი ნუმბერ ოფ გვერდები ტო კეეპ ინ ტჰე კაკჰე"
+
+msgid "Maximum size in pixels of thumbnails to keep in the cache"
+msgstr "მაქსიმუმი სიზე ინ პიქსელს ოფ ტჰუმბნაილს ტო კეეპ ინ ტჰე კაკჰე"
+
+msgid "Number of positions to remember in the jumplist"
+msgstr "რიცხვი ოფ პოსიტიონს ტო რემემბერ ინ ტჰე ჯუმპლისტ"
+
+msgid "Recoloring (dark color)"
+msgstr "რეკოლორინგ (დარკ ფერი)"
+
+msgid "Recoloring (light color)"
+msgstr "რეკოლორინგ (ლიგჰტ ფერი)"
+
+msgid "Color for highlighting"
+msgstr "ფერი ფორ ჰიგჰლიგჰტინგ"
+
+msgid "Foreground color for highlighting"
+msgstr "წინა პლანი ფერი ფორ ჰიგჰლიგჰტინგ"
+
+msgid "Color for highlighting (active)"
+msgstr "ფერი ფორ ჰიგჰლიგჰტინგ (აკტივე)"
+
+msgid "'Loading ...' background color"
+msgstr "'იტვირთება ...' ფონი ფერი"
+
+msgid "'Loading ...' foreground color"
+msgstr "'იტვირთება ...' წინა პლანი ფერი"
+
+msgid "Color used to highlight valid signatures"
+msgstr "ფერი უსედ ტო ჰიგჰლიგჰტ ვალიდ სიგნატურეს"
+
+msgid "Color used to highlight signatures with warnings"
+msgstr "ფერი უსედ ტო ჰიგჰლიგჰტ სიგნატურეს ვიტჰ ვარნინგს"
+
+msgid "Color used to highlight invalid signatures"
+msgstr "ფერი უსედ ტო ჰიგჰლიგჰტ ინვალიდ სიგნატურეს"
+
+msgid "Recolor pages"
+msgstr "რეკოლორ გვერდები"
+
+msgid "When recoloring keep original hue and adjust lightness only"
+msgstr "ვჰენ რეკოლორინგ კეეპ ორიგინალ ჰუე ანდ ადჯუსტ ლიგჰტნესს ონლი"
+
+msgid "When recoloring keep original image colors"
+msgstr "ვჰენ რეკოლორინგ კეეპ ორიგინალ იმაგე კოლორს"
+
+msgid "When recoloring adjust lightness"
+msgstr "ვჰენ რეკოლორინგ ადჯუსტ ლიგჰტნესს"
+
+msgid "Wrap scrolling"
+msgstr "ვრაპ სკროლლინგ"
+
+msgid "Advance number of pages per row"
+msgstr "ადვანკე ნუმბერ ოფ გვერდები პერ როვ"
+
+msgid "Horizontally centered zoom"
+msgstr "ჰორიზონტალლი კენტერედ ზოომ"
+
+msgid "Vertically center pages"
+msgstr "ვერტიკალლი კენტერ გვერდები"
+
+msgid "Align link target to the left"
+msgstr "ალიგნ ლინკ ტარგეტ ტო ტჰე ლეფტ"
+
+msgid "Let zoom be changed when following links"
+msgstr "ლეტ ზოომ ბე კჰანგედ ვჰენ ფოლლოვინგ ლინკს"
+
+msgid "Center result horizontally"
+msgstr "კენტერ რესულტ ჰორიზონტალლი"
+
+msgid "Render 'Loading ...'"
+msgstr "რენდერ 'იტვირთება ...'"
+
+msgid "Adjust to when opening file"
+msgstr "ადჯუსტ ტო ვჰენ ოპენინგ ფაილი"
+
+msgid "Default page mode (none, equal_width, equal_height)"
+msgstr ""
+
+msgid "Show hidden files and directories"
+msgstr "ჩვენება ჰიდდენ ფილეს ანდ დირეკტორიეს"
+
+msgid "Show directories"
+msgstr "ჩვენება დირეკტორიეს"
+
+msgid "Show recent files"
+msgstr "ჩვენება რეკენტ ფილეს"
+
+msgid "Always open on first page"
+msgstr "ალვაის ოპენ ონ ფირსტ გვერდი"
+
+msgid "Disable highlighting of search results"
+msgstr "გამორთვა ჰიგჰლიგჰტინგ ოფ სეარკჰ რესულტს"
+
+msgid "Double click to follow links"
+msgstr "დოუბლე კლიკკ ტო ფოლლოვ ლინკს"
+
+msgid "Enable incremental search"
+msgstr "ჩართვა ინკრემენტალ სეარკჰ"
+
+msgid "Clear search results on abort"
+msgstr "კლეარ სეარკჰ რესულტს ონ აბორტ"
+
+msgid "Use basename of the file in the window title"
+msgstr "უსე ბასენამე ოფ ტჰე ფაილი ინ ტჰე ვინდოვ ტიტლე"
+
+msgid "Use ~ instead of $HOME in the filename in the window title"
+msgstr "უსე ~ ინსტეად ოფ $ჰომე ინ ტჰე ფილენამე ინ ტჰე ვინდოვ ტიტლე"
+
+msgid "Display the page number in the window title"
+msgstr "დისპლაი ტჰე გვერდი ნუმბერ ინ ტჰე ვინდოვ ტიტლე"
+
+msgid "Use basename of the file in the statusbar"
+msgstr "უსე ბასენამე ოფ ტჰე ფაილი ინ ტჰე სტატუსბარ"
+
+msgid "Use ~ instead of $HOME in the filename in the statusbar"
+msgstr "უსე ~ ინსტეად ოფ $ჰომე ინ ტჰე ფილენამე ინ ტჰე სტატუსბარ"
+
+msgid "Display (current page / total pages) as a percent in the statusbar"
+msgstr ""
+"დისპლაი (კურრენტ გვერდი / ტოტალ გვერდები) ას ა პერკენტ ინ ტჰე სტატუსბარ"
+
+msgid "Enable SyncTeX support"
+msgstr "ჩართვა სინკტექს სუპპორტ"
+
+msgid "SyncTeX editor command"
+msgstr "სინკტექს ედიტორ კომმანდ"
+
+msgid "SyncTeX edit modifier"
+msgstr "სინკტექს ედიტ მოდიფიერ"
+
+msgid "Highlighter modifier"
+msgstr "ჰიგჰლიგჰტერ მოდიფიერ"
+
+msgid "Enable D-Bus service"
+msgstr "ჩართვა დ-ბუს სერვიკე"
+
+msgid "Raise window on certain D-Bus commands"
+msgstr "რაისე ვინდოვ ონ კერტაინ დ-ბუს კომმანდს"
+
+msgid "Save history at each page change"
+msgstr "შენახვა ჰისტორი ატ ეაკჰ გვერდი კჰანგე"
+
+msgid "The clipboard into which mouse-selected data will be written"
+msgstr "ტჰე კლიპბოარდ ინტო ვჰიკჰ მოუსე-სელეკტედ დატა ვილლ ბე ვრიტტენ"
+
+msgid "Enable notification after selecting text"
+msgstr "ჩართვა ნოტიფიკატიონ აფტერ სელეკტინგ ტექსტ"
+
+msgid "Keep selection highlighted after mouse release"
+msgstr ""
+
+msgid "Disable additional information for signatures embedded in the document."
+msgstr ""
+"გამორთვა ადდიტიონალ ინფორმატიონ ფორ სიგნატურეს ემბედდედ ინ ტჰე დოკუმენტი."
+
+msgid "Enable prompt to confirm when opening links"
+msgstr ""
+
+msgid "Open documents in single-page mode"
+msgstr ""
+
+#. define default inputbar commands
+msgid "Map a key sequence"
+msgstr "მაპ ა კეი სექუენკე"
+
+msgid "Set an option"
+msgstr "სეტ ან ოპტიონ"
+
+msgid "Run a shortcut"
+msgstr ""
+
+msgid "Unmap a key sequence"
+msgstr "უნმაპ ა კეი სექუენკე"
+
+msgid "Dump settings to a file"
+msgstr "დუმპ სეტტინგს ტო ა ფაილი"
+
+msgid "Add a bookmark"
+msgstr "ადდ ა ბოოკმარკ"
+
+msgid "Delete a bookmark"
+msgstr "წაშლა ა ბოოკმარკ"
+
+msgid "List all bookmarks"
+msgstr "ლისტ ალლ ბოოკმარკს"
+
+msgid "Jump to bookmark"
+msgstr "ჯუმპ ტო ბოოკმარკ"
+
+msgid "Show recent jumps in jumplist"
+msgstr "ჩვენება რეკენტ ჯუმპს ინ ჯუმპლისტ"
+
+msgid "Close current file"
+msgstr "დახურვა კურრენტ ფაილი"
+
+msgid "Show file information"
+msgstr "ჩვენება ფაილი ინფორმატიონ"
+
+msgid "Execute a command"
+msgstr "ექსეკუტე ა კომმანდ"
+
+#. like vim
+msgid "Show help"
+msgstr "ჩვენება ჰელპ"
+
+msgid "Open document"
+msgstr "გახსნა დოკუმენტი"
+
+msgid "Close zathura"
+msgstr "დახურვა ზატჰურა"
+
+msgid "Print document"
+msgstr "ბეჭდვა დოკუმენტი"
+
+msgid "Save document"
+msgstr "შენახვა დოკუმენტი"
+
+msgid "Save document (and force overwriting)"
+msgstr "შენახვა დოკუმენტი (ანდ ფორკე ოვერვრიტინგ)"
+
+msgid "Save attachments"
+msgstr "შენახვა ატტაკჰმენტს"
+
+msgid "Set page offset"
+msgstr "სეტ გვერდი ოფფსეტ"
+
+msgid "Mark current location within the document"
+msgstr "მარკ კურრენტ ლოკატიონ ვიტჰინ ტჰე დოკუმენტი"
+
+msgid "Delete the specified marks"
+msgstr "წაშლა ტჰე სპეკიფიედ მარკს"
+
+msgid "Remove highlights of current search results"
+msgstr "რემოვე ჰიგჰლიგჰტს ოფ კურრენტ სეარკჰ რესულტს"
+
+msgid "Highlight current search results"
+msgstr "მონიშვნა კურრენტ სეარკჰ რესულტს"
+
+msgid "Show version information"
+msgstr "ჩვენება ვერსიონ ინფორმატიონ"
+
+msgid "Source config file"
+msgstr "სოურკე კონფიგ ფაილი"
+
+msgid "Failed to run xdg-open."
+msgstr "ფაილედ ტო რუნ ქსდგ-ოპენ."
+
+msgid "y"
+msgstr ""
+
+msgid "Y"
+msgstr ""
+
+msgid "Cancelled."
+msgstr "გაუქმებულია."
+
+#, c-format
+msgid "Open external link <b>%s</b>? [Y/n]"
+msgstr ""
+
+msgid "Opening external applications in strict sandbox mode is not permitted"
+msgstr ""
+"ოპენინგ ექსტერნალ აპპლიკატიონს ინ სტრიკტ სანდბოქს მოდე ის ნოტ პერმიტტედ"
+
+#, c-format
+msgid "Link: page %d"
+msgstr "ბმული: გვერდი %d"
+
+#, c-format
+msgid "Link: %s"
+msgstr "ბმული: %s"
+
+msgid "Link: Invalid"
+msgstr "ბმული: არასწორი"
+
+#, c-format
+msgid "Copied page number: %d"
+msgstr "კოპიედ გვერდი ნუმბერ: %d"
+
+#, c-format
+msgid "Copied link: %s"
+msgstr "კოპიედ ლინკ: %s"
+
+msgid "Path to the config directory"
+msgstr "პატჰ ტო ტჰე კონფიგ დირეკტორი"
+
+msgid "Path to the data directory"
+msgstr "პატჰ ტო ტჰე დატა დირეკტორი"
+
+msgid "Path to the cache directory"
+msgstr "პატჰ ტო ტჰე კაკჰე დირეკტორი"
+
+msgid "Path to the directories containing plugins"
+msgstr "პატჰ ტო ტჰე დირეკტორიეს კონტაინინგ პლუგინს"
+
+msgid "Fork into the background"
+msgstr "ფორკ ინტო ტჰე ფონი"
+
+msgid "Document password"
+msgstr "დოკუმენტი პასსვორდ"
+
+msgid "Page number to go to"
+msgstr "გვერდი ნუმბერ ტო გო ტო"
+
+msgid "Log level (debug, info, warning, error)"
+msgstr "ლოგ ლეველ (დებუგ, ინფო, ვარნინგ, ერრორ)"
+
+msgid "Print version information"
+msgstr "ბეჭდვა ვერსიონ ინფორმატიონ"
+
+msgid "SyncTeX editor (forwarded to the synctex command)"
+msgstr "სინკტექს ედიტორ (ფორვარდედ ტო ტჰე სინკტექს კომმანდ)"
+
+msgid "Move to given SyncTeX position"
+msgstr "მოვე ტო გივენ სინკტექს პოსიტიონ"
+
+msgid "Highlight given position in the given process"
+msgstr "მონიშვნა გივენ პოსიტიონ ინ ტჰე გივენ პროკესს"
+
+msgid "Start in a non-default mode"
+msgstr "სტარტ ინ ა ნონ-დეფაულტ მოდე"
+
+msgid "Bookmark to go to"
+msgstr "სანიშნე ტო გო ტო"
+
+msgid "Search for the given phrase and display results"
+msgstr "ძიება ფორ ტჰე გივენ პჰრასე ანდ დისპლაი რესულტს"
+
+#, c-format
+msgid ""
+"Signature is valid.\n"
+"This document is signed by\n"
+"  %s\n"
+"on %s."
+msgstr ""
+
+msgid "Signature certificate is expired."
+msgstr "ხელმოწერა კერტიფიკატე ის ექსპირედ."
+
+msgid "Signature certificate is revoked."
+msgstr "ხელმოწერა კერტიფიკატე ის რევოკედ."
+
+msgid "Signature certificate is not trusted."
+msgstr "ხელმოწერა კერტიფიკატე ის ნოტ ტრუსტედ."
+
+msgid "Signature certificate is invalid."
+msgstr "ხელმოწერა კერტიფიკატე ის ინვალიდ."
+
+msgid "Signature is invalid."
+msgstr "ხელმოწერა ის ინვალიდ."
+
+msgid "Loading..."
+msgstr "იტვირთება..."
+
+msgid "Copy image"
+msgstr "კოპირება იმაგე"
+
+msgid "Save image as"
+msgstr "შენახვა იმაგე ას"
+
+#. Update statusbar.
+#, c-format
+msgid "Printing page %d ..."
+msgstr "პრინტინგ გვერდი %d ..."
+
+#, c-format
+msgid "Printing failed: %s"
+msgstr "პრინტინგ ფაილედ: %s"
+
+#, c-format
+msgid "Invalid adjust mode: %d"
+msgstr "არასწორი ადჯუსტ მოდე: %d"
+
+#, c-format
+msgid "Copied file path to selection %s: %s"
+msgstr ""
+
+msgid "This document does not contain any index"
+msgstr "ტჰის დოკუმენტი დოეს ნოტ კონტაინ ანი ინდექს"
+
+msgid "Could not get path from file."
+msgstr ""
+
+msgid "Open file"
+msgstr "ფაილის გახსნა"
+
+msgid "Supported documents"
+msgstr ""
+
+msgid "All files"
+msgstr ""
+
+#, c-format
+msgid "[Search %d/%d]"
+msgstr "[ძებნა %d/%d]"
+
+#, c-format
+msgid "Pattern not found: %s"
+msgstr "პატტერნ ნოტ ფოუნდ: %s"
+
+msgid "[No name]"
+msgstr "[ნო ნამე]"
+
+msgid "Could not read file from stdin and write it to a temporary file."
+msgstr "კოულდ ნოტ რეად ფაილი ფრომ სტდინ ანდ ვრიტე იტ ტო ა ტემპორარი ფაილი."
+
+msgid "Could not read file from GIO and copy it to a temporary file."
+msgstr "კოულდ ნოტ რეად ფაილი ფრომ გიო ანდ კოპი იტ ტო ა ტემპორარი ფაილი."
+
+msgid "Unsupported file type. Please install the necessary plugin."
+msgstr "უნსუპპორტედ ფაილი ტიპე. პლეასე ინსტალლ ტჰე ნეკესსარი პლუგინ."
+
+msgid "Document does not contain any pages"
+msgstr "დოკუმენტი დოეს ნოტ კონტაინ ანი გვერდები"
+
+#, c-format
+msgid "File already exists: %s. Use :write! to overwrite it."
+msgstr "ფაილი ალრეადი ექსისტს: %s. უსე :ვრიტე! ტო ოვერვრიტე იტ."
+
+msgid "Failed to save document."
+msgstr "ფაილედ ტო სავე დოკუმენტი."
+
+msgid "Document saved."
+msgstr "დოკუმენტი სავედ."

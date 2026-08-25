@@ -263,4 +263,6 @@ ZATHURA_PLUGIN_API bool zathura_page_label_is_number(zathura_page_t* page);
  */
 ZATHURA_PLUGIN_API girara_list_t* zathura_page_get_signatures(zathura_page_t* page, zathura_error_t* error);
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(zathura_page_t, zathura_page_free)
+
 #endif // PAGE_H

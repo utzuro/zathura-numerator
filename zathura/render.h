@@ -31,12 +31,19 @@ struct zathura_renderer_class_s {
  * Returns the type of the renderer.
  * @return the type
  */
-GType zathura_renderer_get_type(void) G_GNUC_CONST;
+GType zathura_renderer_get_type(void);
 /**
  * Create a renderer.
  * @return a renderer object
  */
 ZathuraRenderer* zathura_renderer_new(size_t cache_size);
+
+/* Render a page synchronously through the same locked path as the render thread.
+ * The caller owns the returned surface and must destroy it. */
+cairo_surface_t* zathura_renderer_render_page(ZathuraRenderer* renderer, zathura_page_t* page);
+
+/* Parses the page with its plugin if needed, taking the render lock internally. */
+bool zathura_renderer_load_page(ZathuraRenderer* renderer, zathura_page_t* page);
 
 /**
  * Return whether recoloring is enabled.
@@ -108,7 +115,8 @@ void zathura_renderer_set_recolor_colors_str(ZathuraRenderer* renderer, const ch
  */
 void zathura_renderer_get_recolor_colors(ZathuraRenderer* renderer, GdkRGBA* light, GdkRGBA* dark);
 /**
- * Stop rendering.
+ * Stop rendering. This is a terminal operation: after it returns, no more
+ * render jobs will be accepted or executed.
  * @param renderer a render object
  */
 void zathura_renderer_stop(ZathuraRenderer* renderer);
@@ -160,7 +168,7 @@ struct zathura_render_request_class_s {
  * Returns the type of the render request.
  * @return the type
  */
-GType zathura_render_request_get_type(void) G_GNUC_CONST;
+GType zathura_render_request_get_type(void);
 /**
  * Create a render request object
  * @param renderer a renderer object

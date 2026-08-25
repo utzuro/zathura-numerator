@@ -13,7 +13,6 @@ typedef struct girara_session_s girara_session_t;
 typedef struct girara_session_private_s girara_session_private_t;
 typedef struct girara_command_s girara_command_t;
 typedef struct girara_mouse_event_s girara_mouse_event_t;
-typedef struct girara_config_handle_s girara_config_handle_t;
 typedef struct girara_mode_string_s girara_mode_string_t;
 typedef struct girara_tab_s girara_tab_t;
 typedef struct girara_statusbar_item_s girara_statusbar_item_t;
@@ -100,6 +99,7 @@ typedef enum girara_setting_type_e {
   BOOLEAN = G_TYPE_BOOLEAN, /**< Boolean type */
   FLOAT   = G_TYPE_FLOAT,   /**< Floating number */
   INT     = G_TYPE_INT,     /**< Integer */
+  UINT    = G_TYPE_UINT,    /** < Unsigned integer */
   STRING  = G_TYPE_STRING,  /**< String */
   UNKNOWN = 0xFFFF          /**< Unknown type */
 } girara_setting_type_t;

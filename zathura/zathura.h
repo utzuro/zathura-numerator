@@ -4,14 +4,13 @@
 #define ZATHURA_H
 
 #include <stdbool.h>
+#include <stdio.h>
+#include <glib.h>
 #include <girara-gtk/types.h>
 #include <girara-gtk/session.h>
 #include <gtk/gtk.h>
 #ifdef WITH_SYNCTEX
 #include <synctex/synctex_parser.h>
-#endif
-#ifdef GDK_WINDOWING_X11
-#include <gtk/gtkx.h>
 #endif
 #include "macros.h"
 #include "types.h"
@@ -102,9 +101,10 @@ struct zathura_s {
     girara_session_t* session; /**< girara interface session */
 
     struct {
-      girara_statusbar_item_t* buffer;      /**< buffer statusbar entry */
-      girara_statusbar_item_t* file;        /**< file statusbar entry */
-      girara_statusbar_item_t* page_number; /**< page number statusbar entry */
+      girara_statusbar_item_t* buffer;       /**< buffer statusbar entry */
+      girara_statusbar_item_t* file;         /**< file statusbar entry */
+      girara_statusbar_item_t* page_number;  /**< page number statusbar entry */
+      girara_statusbar_item_t* search_count; /**< search count statusbar entry */
     } statusbar;
 
     struct {
@@ -118,9 +118,9 @@ struct zathura_s {
       GdkRGBA signature_error;        /**> Color for highlighing invalid signatures */
     } colors;
 
-    GtkWidget* view;            /**< Scrolled Window */
-    GtkWidget* document_widget; /**< Widget that contains all rendered pages */
-    GtkWidget* index;           /**< Widget to show the index of the document */
+    GtkWidget* view;                        /**< Scrolled Window */
+    ZathuraDocumentWidget* document_widget; /**< Widget that contains all rendered pages */
+    GtkWidget* index;                       /**< Widget to show the index of the document */
   } ui;
 
   struct {
@@ -149,7 +149,9 @@ struct zathura_s {
     GdkModifierType synctex_edit_modmask; /**< Modifier to trigger synctex edit */
     GdkModifierType highlighter_modmask;  /**< Modifier to draw with a highlighter */
     bool double_click_follow;             /**< Double/Single click to follow link */
-    GtkTreePath* current_index_path;      /**< Current index path */
+    guint current_index_position;         /**< current row in index */
+    int current_search_result;
+    int total_search_results;
   } global;
 
   struct {
@@ -171,21 +173,20 @@ struct zathura_s {
 #ifdef G_OS_UNIX
     guint sigterm;
 #endif
-
-    gulong monitors_changed_handler; /**< Signal handler for monitors-changed */
+    gulong monitors_handler; /**< Signal handler for monitors items-changed */
+    gulong destroy_handler;  /**< Signal handler for the window's destroy signal */
   } signals;
 
   struct {
     gchar* file;
   } stdin_support;
 
-  zathura_document_t* document;                     /**< The current document */
-  zathura_document_t* predecessor_document;         /**< The document from before a reload */
-  GtkWidget** pages;                                /**< The page widgets */
-  GtkWidget** predecessor_pages;                    /**< The page widgets from before a reload */
-  zathura_database_t* database;                     /**< The database */
-  ZathuraDbus* dbus;                                /**< D-Bus service */
-  ZathuraRenderRequest* window_icon_render_request; /**< Render request for window icon */
+  zathura_document_t* document;             /**< The current document */
+  zathura_document_t* predecessor_document; /**< The document from before a reload */
+  GtkWidget** pages;                        /**< The page widgets */
+  GtkWidget** predecessor_pages;            /**< The page widgets from before a reload */
+  zathura_database_t* database;             /**< The database */
+  ZathuraDbus* dbus;                        /**< D-Bus service */
 
   /**
    * File monitor
@@ -213,7 +214,7 @@ struct zathura_s {
       int y;
     } mouse;
     struct {
-      int pages;
+      unsigned int pages;
     } toggle_page_mode;
     struct {
       int pages;
@@ -232,6 +233,13 @@ struct zathura_s {
     double initial_zoom;
   } gesture;
 
+  struct {
+    unsigned int counter; /**< Sequential counter for page markers */
+    char* file_path;      /**< Path to the exported coordinates file */
+    FILE* file;           /**< Handle to the exported coordinates file */
+    GSList* history;      /**< Stack of placed markers for undo */
+  } numbering;
+
   /**
    * Context for MIME type detection
    */
@@ -246,6 +254,9 @@ struct zathura_s {
   } synctex;
 #endif
 };
+
+bool zathura_numbering_undo(zathura_t* zathura);
+void zathura_numbering_record(zathura_t* zathura, ZathuraPageWidget* page, unsigned int number, long file_offset);
 
 /**
  * Creates a zathura session
@@ -270,15 +281,6 @@ bool zathura_init(zathura_t* zathura);
 void zathura_free(zathura_t* zathura);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(zathura_t, zathura_free)
-
-/**
- * Set parent window id. This does not have an effect if the underlying Gtk
- * backend is not X11.
- *
- * @param zathura The zathura session
- * @param xid The window id
- */
-void zathura_set_xid(zathura_t* zathura, Window xid);
 
 /**
  * Set the path to the configuration directory
@@ -327,19 +329,6 @@ void zathura_set_argv(zathura_t* zathura, char** argv);
  */
 void zathura_update_view_ppi(zathura_t* zathura);
 
-/**
- * Init locale
- */
-void zathura_init_locale(void);
-
-/**
- * Set log level
- *
- * If no loglevel is given, an argument of "info" is assumed.
- *
- * @param Log level
- */
-void zathura_set_log_level(const char* loglevel);
 /**
  * Opens a file
  *
@@ -500,5 +489,22 @@ bool zathura_has_document(zathura_t* zathura);
  * @return the currently opened document
  */
 zathura_document_t* zathura_get_document(zathura_t* zathura);
+
+/**
+ * Modify and normalize the current search result count
+ * so that it always inferior or equal to the total count
+ *
+ * @param zathura The zathura session
+ * @param diff The amount to modify
+ */
+void zathura_modify_current_search_result(zathura_t* zathura, int diff);
+
+/**
+ * Set the current search result count to the last one before the current page
+ *
+ * @param zathura The zathura session
+ * @param current_page_number The current page number
+ */
+void zathura_set_current_search_result_previous_pages(zathura_t* zathura, unsigned int current_page_number);
 
 #endif // ZATHURA_H

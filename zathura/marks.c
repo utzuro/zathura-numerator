@@ -1,5 +1,7 @@
 /* SPDX-License-Identifier: Zlib */
 
+#include "marks.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <girara-gtk/session.h>
@@ -9,58 +11,46 @@
 #include "callbacks.h"
 #include "database.h"
 #include "document.h"
-#include "marks.h"
+#include "document-widget.h"
 #include "render.h"
 #include "utils.h"
 
 static void mark_add(zathura_t* zathura, int key);
 static void mark_evaluate(zathura_t* zathura, int key);
 
-static gboolean cb_marks_view_key_press_event_add(GtkWidget* UNUSED(widget), GdkEventKey* event, gpointer user_data) {
-  g_return_val_if_fail(user_data != NULL, FALSE);
+static gboolean cb_marks_one_shot(GtkEventControllerKey* controller, guint keyval, guint UNUSED(keycode),
+                                  GdkModifierType UNUSED(state), gpointer user_data) {
   girara_session_t* session = user_data;
-  g_return_val_if_fail(session->gtk.view != NULL, FALSE);
-  g_return_val_if_fail(session->global.data != NULL, FALSE);
+  g_return_val_if_fail(session != NULL && session->global.data != NULL, FALSE);
   zathura_t* zathura = session->global.data;
 
-  /* reset signal handler */
-  g_signal_handler_disconnect(G_OBJECT(session->gtk.view), session->signals.view_key_pressed);
-  session->signals.view_key_pressed = g_signal_connect(G_OBJECT(session->gtk.view), "key-press-event",
-                                                       G_CALLBACK(girara_callback_view_key_press_event), session);
+  GtkEventController* ctrl = GTK_EVENT_CONTROLLER(controller);
+  gboolean evaluate        = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(ctrl), "evaluate"));
+  GtkWidget* win           = gtk_event_controller_get_widget(ctrl);
 
-  /* evaluate key */
-  if (((event->keyval >= '0' && event->keyval <= '9') || (event->keyval >= 'a' && event->keyval <= 'z') ||
-       (event->keyval >= 'A' && event->keyval <= 'Z')) == false) {
-    return FALSE;
-  }
+  /* remove the controller from its own callback so it only fires once */
+  gtk_widget_remove_controller(win, ctrl);
 
-  mark_add(zathura, event->keyval);
-
-  return TRUE;
-}
-
-static gboolean cb_marks_view_key_press_event_evaluate(GtkWidget* UNUSED(widget), GdkEventKey* event,
-                                                       gpointer user_data) {
-  g_return_val_if_fail(user_data != NULL, FALSE);
-  girara_session_t* session = user_data;
-  g_return_val_if_fail(session->gtk.view != NULL, FALSE);
-  g_return_val_if_fail(session->global.data != NULL, FALSE);
-  zathura_t* zathura = session->global.data;
-
-  /* reset signal handler */
-  g_signal_handler_disconnect(G_OBJECT(session->gtk.view), session->signals.view_key_pressed);
-  session->signals.view_key_pressed = g_signal_connect(G_OBJECT(session->gtk.view), "key-press-event",
-                                                       G_CALLBACK(girara_callback_view_key_press_event), session);
-
-  /* evaluate key */
-  if (((event->keyval >= '0' && event->keyval <= '9') || (event->keyval >= 'a' && event->keyval <= 'z') ||
-       (event->keyval >= 'A' && event->keyval <= 'Z')) == false) {
+  if (((keyval >= '0' && keyval <= '9') || (keyval >= 'a' && keyval <= 'z') || (keyval >= 'A' && keyval <= 'Z')) ==
+      false) {
     return TRUE;
   }
 
-  mark_evaluate(zathura, event->keyval);
-
+  if (evaluate) {
+    mark_evaluate(zathura, keyval);
+  } else {
+    mark_add(zathura, keyval);
+  }
   return TRUE;
+}
+
+/* set up a one-shot controller, evaluate selects between add and evaluate */
+static void marks_install_one_shot(girara_session_t* session, gboolean evaluate) {
+  GtkEventController* ctrl = gtk_event_controller_key_new();
+  gtk_event_controller_set_propagation_phase(ctrl, GTK_PHASE_CAPTURE);
+  g_object_set_data(G_OBJECT(ctrl), "evaluate", GINT_TO_POINTER(evaluate));
+  g_signal_connect(ctrl, "key-pressed", G_CALLBACK(cb_marks_one_shot), session);
+  gtk_widget_add_controller(session->gtk.window, ctrl);
 }
 
 bool sc_mark_add(girara_session_t* session, girara_argument_t* UNUSED(argument), girara_event_t* UNUSED(event),
@@ -68,11 +58,7 @@ bool sc_mark_add(girara_session_t* session, girara_argument_t* UNUSED(argument),
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->gtk.view != NULL, false);
 
-  /* redirect signal handler */
-  g_signal_handler_disconnect(G_OBJECT(session->gtk.view), session->signals.view_key_pressed);
-  session->signals.view_key_pressed = g_signal_connect(G_OBJECT(session->gtk.view), "key-press-event",
-                                                       G_CALLBACK(cb_marks_view_key_press_event_add), session);
-
+  marks_install_one_shot(session, FALSE);
   return true;
 }
 
@@ -81,11 +67,7 @@ bool sc_mark_evaluate(girara_session_t* session, girara_argument_t* UNUSED(argum
   g_return_val_if_fail(session != NULL, false);
   g_return_val_if_fail(session->gtk.view != NULL, false);
 
-  /* redirect signal handler */
-  g_signal_handler_disconnect(G_OBJECT(session->gtk.view), session->signals.view_key_pressed);
-  session->signals.view_key_pressed = g_signal_connect(G_OBJECT(session->gtk.view), "key-press-event",
-                                                       G_CALLBACK(cb_marks_view_key_press_event_evaluate), session);
-
+  marks_install_one_shot(session, TRUE);
   return true;
 }
 
@@ -111,7 +93,7 @@ bool cmd_marks_add(girara_session_t* session, girara_list_t* argument_list) {
 
   mark_add(zathura, key);
 
-  return false;
+  return true;
 }
 
 bool cmd_marks_delete(girara_session_t* session, girara_list_t* argument_list) {
@@ -208,7 +190,7 @@ static void mark_evaluate(zathura_t* zathura, int key) {
                                 zathura_correct_zoom_value(zathura->ui.session, mark->zoom));
 
       adjust_view(zathura);
-      render_all(zathura);
+      zathura_document_widget_render_all(zathura->ui.document_widget);
 
       zathura_jumplist_add(zathura);
       page_set(zathura, mark->page);
